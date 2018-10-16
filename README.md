@@ -25,7 +25,7 @@ tips： 1 如果没有修改example.c程序就不需要重新make了
 
  2 Makefile里面的路径根据python实际的路径修改
        
- 3 调用c函数出问题多半是路径文件路径问题 
+ 3 调用c函数出问题多半是文件路径问题（example.c内的一些读写文件路径）
        
  4 如果cartpole.py内找不到astEncoder.py等 可将当前的项目路径加入系统路径中
      
