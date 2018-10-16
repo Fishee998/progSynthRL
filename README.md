@@ -1,5 +1,6 @@
 # progSynthRL
 我的系统是macOS High Sierra 10.13.5
+
 python 2.7
 
 1 安装swig
