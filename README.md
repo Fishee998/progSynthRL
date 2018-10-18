@@ -16,6 +16,7 @@ python版本2.7
      python runthis.py 
   
 tips： 
+
   1 rewards的设定说明在reward.txt
   
   2 探索率的衰减变量为e_greedy_increment （RL_brain）
