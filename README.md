@@ -13,7 +13,7 @@ python版本2.7
    
 4 运行
 
-     python runthis.py 
+     python run_this.py 
   
 tips： 
 
