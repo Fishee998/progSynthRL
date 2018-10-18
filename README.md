@@ -9,11 +9,11 @@ python版本2.7
 
 3 用swig包装c文件使之可以被python调用
   
-    命令 make 
+     make 
    
 4 运行
 
-  python runthis.py 
+     python runthis.py 
   
 tips： 
   1 rewards的设定说明在reward.txt
