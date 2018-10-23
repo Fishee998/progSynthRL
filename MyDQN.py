@@ -12,6 +12,7 @@ import astEncoder
 import example
 from random import choice
 import StringIO
+import random
 
 
 class DQN():
@@ -59,6 +60,7 @@ class DQN():
         action1 = choice(act1Set1[0])
         return action1
 
+
     def getAction2(self, candidate, action1, action2_value):
         action2 = example.getLegalAction2(candidate, action1)
         action2set_ = self.action2set(action2)
@@ -98,13 +100,18 @@ class DQN():
         if np.random.uniform() > epsilon:
             # print("action by rl")
             action1_value, action2_value = self.Q.forward(state)
-            action1 = self.getAction1(act1Set, action1_value)
-            action2 = self.getAction2(candidate, action1, action2_value)
+            #actions_value = self.Q.forward(state)
+            action1 = torch.max(action1_value, 1)[1].data.numpy()[0]
+            action2 = torch.max(action2_value, 1)[1].data.numpy()[0]
+            # action1 = self.getAction1(act1Set, action1_value)
+            # action2 = self.getAction2(candidate, action1, action2_value)
             action = self.getAction(action1, action2)
         else:
             # print("action randomly")
-            action1 = self.getAction1_random(act1Set)
-            action2 = self.getAction2_random(candidate, action1)
+            action1 = random.randint(0, 34)
+            action2 = random.randint(0, 49)
+            # action1 = self.getAction1_random(act1Set)
+            # action2 = self.getAction2_random(candidate, action1)
             action = self.getAction(action1, action2)
 
         return action
@@ -164,7 +171,6 @@ class DQN():
     def train_CartPole(self,label):
         loss=[]
         buf = StringIO.StringIO()
-        print("error1")
         # buf2 = StringIO.StringIO()
         buf3 = StringIO.StringIO()
         state_init, info_init = self.env.reset()
@@ -177,10 +183,12 @@ class DQN():
             print("new episode")
             actIndex = astEncoder.setAction1s(info_)
             loss_num = 0
+            epr = 0
             buf2 = StringIO.StringIO()
             # buf2.write("episode: %d" % (i_episode))
             for t in range(self.step_count):
                 # env.render()
+
                 action = self.choose_action(state, i_episode, actIndex, info_.candidate)
                 next_state, reward, done, info_ = self.env.step(action)
                 #if info_.fitness > 69:
@@ -204,9 +212,8 @@ class DQN():
                         print("safety")
                     reward = reward + spin_reward
 
-                reward += reward
-
                 self.store_transition(state, action[0], action[1], reward, done, next_state)
+                epr += reward
                 if self.memory_num > self.memory_size:
                     loss_num += self.learn()
 
@@ -214,7 +221,7 @@ class DQN():
                     loss.append(loss_num / (t + 1))
                 state = next_state
                 if t % 100 == 0:
-                    print("i_ep: ", i_episode, "step: ", t, "reward: ", ep_r)
+                    print("i_ep: ", i_episode, "step: ", t, "reward: ", epr)
                     #buf2.write("i_ep %d: step:%d reward: %f\n" % (i_episode, t, ep_r))
             fou = open("./rewards.txt", "a+")
             fou.write(buf2.getvalue())

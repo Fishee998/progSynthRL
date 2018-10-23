@@ -57,7 +57,7 @@ void searchNode(treenode* root,treeRank* tr,int type,int maxdepth)
     }
     else if(type == 2)        //??
     {
-        if(root->depth != 1 && root->numofstatements < 6 && root->depth == 2)
+        if(root->depth != 1 && root->numofstatements < 5 && root->depth == 2)
             addNode(tr,root);
         else
             if(root->depth != 1 && root->numofstatements < 2 && root->depth != 2)
@@ -102,7 +102,7 @@ int compareNode(treenode* root,int type,int maxdepth)
     }
     else if(type == 2)        //??
     {
-        if(root->depth != 1 && root->numofstatements < 6 && root->depth < maxdepth)
+        if(root->depth != 1 && root->numofstatements < 5 && root->depth < maxdepth)
             return 0;
     }
     else if(type == 3)
@@ -652,11 +652,21 @@ int* getLegalAction2(program* parent, int nodeNum)
 {
     program* newprog = copyProgram(parent);
     newprog->checkedBySpin = 0;
-    treenode* chnode = findNode(newprog->root, newprog, nodeNum);
+    printf("findnode");
+    treenode* chnode = NULL;
+    findNode(newprog->root, newprog, nodeNum, chnode);
+    printf("findnode erro");
     if (chnode == NULL) {
         newprog->illegal = 1;
-        printf("treenode1 error");
+        printf("chnode 1");
     }
+    else
+    {
+        printf("chnode 2");
+        printprog(chnode, 0, newprog);
+        printf("chnode 3");
+    }
+    printf("chnode 4");
     //Replacement Mutation type
     treenode* mnode = chnode;
     int* action = (int*)malloc(sizeof(int)*50);
@@ -745,7 +755,7 @@ int* getLegalAction2(program* parent, int nodeNum)
         }
         else if(actionNum >= 42 && actionNum < 48 )
         {
-            if(!(mnode->depth != 1 && mnode->numofstatements < 6 && mnode->depth == 2) && !(mnode->depth != 1 && mnode->numofstatements < 2 && mnode->depth != 2))
+            if(!(mnode->depth != 1 && mnode->numofstatements < 5 && mnode->depth == 2) && !(mnode->depth != 1 && mnode->numofstatements < 2 && mnode->depth != 2))
             {
                 int illegal = 1;
             }
@@ -1469,12 +1479,12 @@ void printprog(treenode* root,int blank,program* prog)
 
 
 //0:IF  1:WHILE  2:UNTIL  3:SEQ  4:ASGN
-treenode* findNode(treenode* root, program* prog, int number)
+void findNode(treenode* root, program* prog, int number, treenode* result)
 {
-    treenode* result = NULL;
+    // treenode* result = NULL;
     int i;
     if(root == NULL)
-        return result;
+        return;
     //printf("parent type :%d",prog->parent->type);
     switch(root->type)
     {
@@ -1482,20 +1492,21 @@ treenode* findNode(treenode* root, program* prog, int number)
             if(root->number == number)
                 result = root;
             else
-                result = findNode(root->treenode1, prog, number);
+                findNode(root->treenode1, prog, number, result);
             break;
             
         case 1:
             if(root->number == number)
                 result = root;
             else
-                result = findNode(root->treenode1, prog, number);
+                findNode(root->treenode1, prog, number, result);
             break;
             
         case 3:
-            result = findNode(root->treenode1, prog, number);
-            if (result == NULL) {
-                result = findNode(root->treenode2, prog, number);
+            findNode(root->treenode1, prog, number, result);
+            if (result == NULL)
+            {
+                findNode(root->treenode2, prog, number, result);
             }
             break;
             
@@ -1505,13 +1516,13 @@ treenode* findNode(treenode* root, program* prog, int number)
             break;
         case 5:
             if(root->number == number)
-        {
-            printf("wrong number");
-            result = NULL;
-        }
+            {
+                // printf("wrong number");
+                result = NULL;
+            }
             
     }
-    return result;
+    return;
 }
 
 
@@ -1564,9 +1575,9 @@ int setCondNum(cond* c,program* prog, int number)
 void printAst(program* prog)
 {
     setTreenodeNum(prog->root, prog, 0);
-    char* s = (char*)malloc(sizeof(char)*1000);
-    s = newprintprog(prog->root,prog,s);
-    s[strlen(s) - 1] = 0;
+    char* s = (char*)malloc(sizeof(char)*2000);
+    memset(s, 0, sizeof(char)*2000);
+    newprintprog(prog->root,prog,s);
     FILE *fp;
     fp = fopen("./data/ast.txt","w+");
     fprintf(fp,"%s",s);
@@ -1614,11 +1625,11 @@ int setTreenodeNum(treenode* root, program* prog, int number)
 //newprint
 
 //0:CONST  1:VAR  2:TIMES  3:PLUS  4:MINUS //5:DIV
-char* newprintexp(exp_* e,program* prog, int node, char* s)
+void newprintexp(exp_* e,program* prog, int node, char* s)
 {
     
     if(e == NULL)
-        return s;
+        return;
     if (node == 1) {
         switch(e->type)
         {
@@ -1645,15 +1656,15 @@ char* newprintexp(exp_* e,program* prog, int node, char* s)
     else{
         strcat(s, iToStr(e->number));
     }
-    return s;
+    return;
 }
 
 //0:CONST  1:VAR  2:TIMES  3:PLUS  4:MINUS //5:DIV
-char* newprintexp_(exp_* e,program* prog, char* s)
+void newprintexp_(exp_* e,program* prog, char* s)
 {
     
     if(e == NULL)
-        return s;
+        return;
     
     //   printf("%d", e->number);
     switch(e->type)
@@ -1677,7 +1688,7 @@ char* newprintexp_(exp_* e,program* prog, char* s)
             strcat(s, "v[other]");
             //case 1:printf("v[%d]",e->index);break;
     }
-    return s;
+    return;
 }
 //expNode
 void expNode(exp_* e,program* prog)
@@ -1710,7 +1721,7 @@ void expNode(exp_* e,program* prog)
 
 
 //condNode
-char* condNode(cond* c,program* prog, int node, char* s)
+void condNode(cond* c,program* prog, int node, char* s)
 {
     //   printf("%d",c->type);
     if(c == NULL)
@@ -1731,7 +1742,7 @@ char* condNode(cond* c,program* prog, int node, char* s)
             case 4:strcat(s,"or");break;
         }
     }
-    return s;
+    return;
     
 }
 
@@ -1743,10 +1754,10 @@ char* iToStr(int number)
 }
 
 //0:IF  1:WHILE  2:UNTIL  3:SEQ  4:ASGN
-char* newprintprog(treenode* root,program* prog, char* s)
+void newprintprog(treenode* root,program* prog, char* s)
 {    //printf("newprintprog progtype:%d blank:%d\n",prog->type,blank);
     if(root == NULL)
-        return s;
+        return;
     //strcat(s,"parent type :%d",prog->parent->type);
     switch(root->type)
     {
@@ -1754,14 +1765,14 @@ char* newprintprog(treenode* root,program* prog, char* s)
             strcat(s,iToStr(root->number));
             strcat(s, "node:if;");
             strcat(s, "children:");
-            s = condNode(root->cond1, prog, 0, s);
+            condNode(root->cond1, prog, 0, s);
             strcat(s,";");
-            s = treeNode_(root->treenode1, prog, 0, s);
+            treeNode_(root->treenode1, prog, 0, s);
             strcat(s,";\n");
             //condnode
             strcat(s,iToStr(root->cond1->number));
             strcat(s,"node:");
-            s = condNode(root->cond1, prog, 1, s);
+            condNode(root->cond1, prog, 1, s);
             strcat(s,";children:");
             //strcat(s,"%d", root->cond1->type);
             if (root->cond1->type < 1)
@@ -1770,86 +1781,86 @@ char* newprintprog(treenode* root,program* prog, char* s)
             }
             else if(root->cond1->type < 3)
             {
-                s = newprintexp(root->cond1->exp1, prog, 0, s);
+                newprintexp(root->cond1->exp1, prog, 0, s);
                 strcat(s,";");
-                s = newprintexp(root->cond1->exp2, prog, 0, s);
+                newprintexp(root->cond1->exp2, prog, 0, s);
                 strcat(s,";\n");
                 //exp1
                 strcat(s,iToStr(root->cond1->exp1->number));
                 strcat(s,"node:");
-                s = newprintexp(root->cond1->exp1, prog, 1, s);
+                newprintexp(root->cond1->exp1, prog, 1, s);
                 strcat(s,";children:null\n");
                 //exp2
                 strcat(s,iToStr(root->cond1->exp2->number));
                 strcat(s,"node:");
-                s = newprintexp(root->cond1->exp2, prog, 1, s);
+                newprintexp(root->cond1->exp2, prog, 1, s);
                 strcat(s,";children:null\n");
             }
             else
             {
-                s = condNode(root->cond1->cond1, prog, 0, s);
+                condNode(root->cond1->cond1, prog, 0, s);
                 strcat(s,";");
-                s = condNode(root->cond1->cond2, prog, 0, s);
+                condNode(root->cond1->cond2, prog, 0, s);
                 strcat(s,"\n");
                 //cond1
                 strcat(s,iToStr(root->cond1->cond1->number));
                 strcat(s,"node:");
-                s = condNode(root->cond1->cond1, prog, 1, s);
+                condNode(root->cond1->cond1, prog, 1, s);
                 strcat(s,";");
                 strcat(s,"children:");
-                s = newprintexp(root->cond1->cond1->exp1, prog, 0, s);
+                newprintexp(root->cond1->cond1->exp1, prog, 0, s);
                 strcat(s,";");
-                s = newprintexp(root->cond1->cond1->exp2, prog, 0, s);
+                newprintexp(root->cond1->cond1->exp2, prog, 0, s);
                 strcat(s,";\n");
                 //exp1
                 strcat(s,iToStr(root->cond1->cond1->exp1->number));
                 strcat(s,"node:");
-                s = newprintexp(root->cond1->cond1->exp1, prog, 1, s);
+                newprintexp(root->cond1->cond1->exp1, prog, 1, s);
                 strcat(s,";children:null\n");
                 //exp2
                 strcat(s,iToStr(root->cond1->cond1->exp2->number));
                 strcat(s,"node:");
-                s = newprintexp(root->cond1->cond1->exp2, prog, 1, s);
+                newprintexp(root->cond1->cond1->exp2, prog, 1, s);
                 strcat(s,";children:null\n");
                 //cond2
                 strcat(s,iToStr(root->cond1->cond2->number));
                 strcat(s,"node:");
-                s = condNode(root->cond1->cond2, prog, 1, s);
+                condNode(root->cond1->cond2, prog, 1, s);
                 strcat(s,";");
                 strcat(s,"children:");
-                s = newprintexp(root->cond1->cond2->exp1, prog, 0, s);
+                newprintexp(root->cond1->cond2->exp1, prog, 0, s);
                 strcat(s,";");
-                s = newprintexp(root->cond1->cond2->exp2, prog, 0, s);
+                newprintexp(root->cond1->cond2->exp2, prog, 0, s);
                 strcat(s,";\n");
                 //exp1
                 strcat(s,iToStr(root->cond1->cond2->exp1->number));
                 strcat(s,"node:");
-                s = newprintexp(root->cond1->cond2->exp1, prog, 1, s);
+                newprintexp(root->cond1->cond2->exp1, prog, 1, s);
                 strcat(s,";children:null\n");
                 //exp2
                 strcat(s,iToStr(root->cond1->cond2->exp2->number));
                 strcat(s,"node:");
-                s = newprintexp(root->cond1->cond2->exp2, prog, 1, s);
+                newprintexp(root->cond1->cond2->exp2, prog, 1, s);
                 strcat(s,";children:null\n");
             }
             
             //  newprintcond(root->cond1, prog);
-            s = newprintprog(root->treenode1,prog, s);
+            newprintprog(root->treenode1,prog, s);
             break;
             
         case 1://treenode
             strcat(s ,iToStr(root->number));
             strcat(s, "node:while;");
             strcat(s, "children:");
-            s = condNode(root->cond1, prog, 0, s);
+            condNode(root->cond1, prog, 0, s);
             strcat(s, ";");
-            s = treeNode_(root->treenode1, prog, 0, s);
+            treeNode_(root->treenode1, prog, 0, s);
             strcat(s, ";\n");
             
             //condnode
             strcat(s, iToStr(root->cond1->number));
             strcat(s, "node:");
-            s = condNode(root->cond1, prog, 1, s);
+            condNode(root->cond1, prog, 1, s);
             strcat(s, ";children:");
             //  strcat(s,"%d", root->cond1->type);
             if (root->cond1->type < 1)
@@ -1858,75 +1869,75 @@ char* newprintprog(treenode* root,program* prog, char* s)
             }
             else if(root->cond1->type < 3)
             {
-                s = newprintexp(root->cond1->exp1, prog, 0, s);
+                newprintexp(root->cond1->exp1, prog, 0, s);
                 strcat(s,";");
-                s = newprintexp(root->cond1->exp2, prog, 0, s);
+                newprintexp(root->cond1->exp2, prog, 0, s);
                 strcat(s,";\n");
                 //exp1
                 strcat(s,iToStr(root->cond1->exp1->number));
                 strcat(s,"node:");
-                s = newprintexp(root->cond1->exp1, prog, 1, s);
+                newprintexp(root->cond1->exp1, prog, 1, s);
                 strcat(s,";children:null\n");
                 //exp2
                 strcat(s,iToStr(root->cond1->exp2->number));
                 strcat(s,"node:");
-                s = newprintexp(root->cond1->exp2, prog, 1, s);
+                newprintexp(root->cond1->exp2, prog, 1, s);
                 strcat(s,";children:null\n");
             }
             else
             {
-                s = condNode(root->cond1->cond1, prog, 0, s);
+                condNode(root->cond1->cond1, prog, 0, s);
                 strcat(s,";");
-                s = condNode(root->cond1->cond2, prog, 0, s);
+                condNode(root->cond1->cond2, prog, 0, s);
                 strcat(s,"\n");
                 //cond1
                 strcat(s,iToStr(root->cond1->cond1->number));
                 strcat(s,"node:");
-                s = condNode(root->cond1->cond1, prog, 1, s);
+                condNode(root->cond1->cond1, prog, 1, s);
                 strcat(s,";");
                 strcat(s,"children:");
-                s = newprintexp(root->cond1->cond1->exp1, prog, 0, s);
+                newprintexp(root->cond1->cond1->exp1, prog, 0, s);
                 strcat(s,";");
-                s = newprintexp(root->cond1->cond1->exp2, prog, 0, s);
+                newprintexp(root->cond1->cond1->exp2, prog, 0, s);
                 strcat(s,";\n");
                 //exp1
                 strcat(s,iToStr(root->cond1->cond1->exp1->number));
                 strcat(s,"node:");
-                s = newprintexp(root->cond1->cond1->exp1, prog, 1, s);
+                newprintexp(root->cond1->cond1->exp1, prog, 1, s);
                 strcat(s,";children:null\n");
                 //exp2
                 strcat(s,iToStr(root->cond1->cond1->exp2->number));
                 strcat(s,"node:");
-                s = newprintexp(root->cond1->cond1->exp2, prog, 1, s);
+                newprintexp(root->cond1->cond1->exp2, prog, 1, s);
                 strcat(s,";children:null\n");
                 //cond2
                 strcat(s,iToStr(root->cond1->cond2->number));
                 strcat(s,"node:");
-                s = condNode(root->cond1->cond2, prog, 1, s);
+                condNode(root->cond1->cond2, prog, 1, s);
                 strcat(s,";");
                 strcat(s,"children:");
-                s = newprintexp(root->cond1->cond2->exp1, prog, 0, s);
+                newprintexp(root->cond1->cond2->exp1, prog, 0, s);
                 strcat(s,";");
-                s = newprintexp(root->cond1->cond2->exp2, prog, 0, s);
+                newprintexp(root->cond1->cond2->exp2, prog, 0, s);
                 strcat(s,";\n");
                 //exp1
                 strcat(s,iToStr(root->cond1->cond2->exp1->number));
                 strcat(s,"node:");
-                s = newprintexp(root->cond1->cond2->exp1, prog, 1, s);
+                newprintexp(root->cond1->cond2->exp1, prog, 1, s);
                 strcat(s,";children:null\n");
                 //exp2
                 strcat(s,iToStr(root->cond1->cond2->exp2->number));
                 strcat(s,"node:");
-                s = newprintexp(root->cond1->cond2->exp2, prog, 1, s);
+                newprintexp(root->cond1->cond2->exp2, prog, 1, s);
                 strcat(s,";children:null\n");
             }
             //  newprintcond(root->cond1, prog);
-            s = newprintprog(root->treenode1, prog, s);
+            newprintprog(root->treenode1, prog, s);
             break;
             
-        case 3: s = newprintprog(root->treenode1,prog, s);
+        case 3: newprintprog(root->treenode1,prog, s);
             //strcat(s," ");
-            s = newprintprog(root->treenode2, prog, s);
+            newprintprog(root->treenode2, prog, s);
             break;
             
         case 4:strcat(s,iToStr(root->number));
@@ -1936,7 +1947,7 @@ char* newprintprog(treenode* root,program* prog, char* s)
             int number = root->number;
             strcat(s,iToStr(++number));
             strcat(s,";");
-            s = newprintexp(root->exp1, prog,false, s);
+            newprintexp(root->exp1, prog,false, s);
             strcat(s,"\n");
             //exp1
             strcat(s,iToStr(number));
@@ -1952,25 +1963,29 @@ char* newprintprog(treenode* root,program* prog, char* s)
             {
                 strcat(s, "v[me]");
             }
+            else if(root->index == 4)
+            {
+                strcat(s, "v[other]");
+            }
             strcat(s, ";children:null\n");
             //exp2
             strcat(s,iToStr(++number));
             strcat(s, "node:");
-            s = newprintexp_(root->exp1, prog, s);
+            newprintexp_(root->exp1, prog, s);
             strcat(s, ";children:null\n");
             break;
         case 5:strcat(s,iToStr(root->number));
             strcat(s, "node:cs;children:null\n");
     }
-    return s;
+    return;
 }
 
 //treeNode
-char* treeNode_(treenode* root,program* prog, int node, char* s)
+void treeNode_(treenode* root,program* prog, int node, char* s)
 {    //sprintf(s,"newprintprog progtype:%d blank:%d\n",prog->type,blank);
     //  int i;
     if(root == NULL)
-        return s;
+        return;
     //sprintf(s,"parent type :%d",prog->parent->type);
     if (node == 0 && root->type != 3) {
         strcat(s,iToStr(root->number));
@@ -1987,9 +2002,9 @@ char* treeNode_(treenode* root,program* prog, int node, char* s)
                 strcat(s,"while");
                 break;
                 
-            case 3:s = treeNode_(root->treenode1,prog, 0, s);
+            case 3:treeNode_(root->treenode1,prog, 0, s);
                 strcat(s,";");
-                s = treeNode_(root->treenode2,prog, 0, s);
+                treeNode_(root->treenode2,prog, 0, s);
                 break;
                 
             case 4:strcat(s,iToStr(root->number));
@@ -2000,7 +2015,7 @@ char* treeNode_(treenode* root,program* prog, int node, char* s)
                 strcat(s,"cs");
         }
     }
-    return s;
+    return;
 }
 
 int setNumOfStatementsUp(treenode* t)
@@ -3151,7 +3166,8 @@ program** genNewCandidate(int numofcandidate,program** candidate,int numofmutati
             //!!result[count] = (program*)malloc(sizeof(program));
             
             
-            if(candidate[i] == NULL)printf("gennewcandidate error candidate null\n");
+            if(candidate[i] == NULL)
+            printf("gennewcandidate error candidate null\n");
             
             //printType(candidate[i]->progs[1]->root);
             //printprog(candidate[i]->progs[1]->root,0);
@@ -4170,8 +4186,12 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
     program* newprog = copyProgram(parent);
     newprog->checkedBySpin = 0;
     treenode* new = newprog->root;
-    treenode* chnode = findNode(newprog->root, newprog, nodeNum);
+    // printf("findnode");
+    treenode* chnode = NULL;
+    findNode(newprog->root, newprog, nodeNum, chnode);
+    // printf("findnode erro");
     if (chnode == NULL) {
+        // printf("findnode null");
         newprog->illegal = 1;
         return newprog;
     }
@@ -4369,10 +4389,23 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
     }
     else if(actionNum > 41 && actionNum < 48 )
     {
-        if(!(mnode->depth != 1 && mnode->numofstatements < 6 && mnode->depth == 2) && !(mnode->depth != 1 && mnode->numofstatements < 2 && mnode->depth != 2))
+        if (mnode->depth == 1)
         {
-            illegal = 1;
-            return newprog;
+                illegal = 1;
+                return newprog;
+        }
+        else if (mnode->depth == 2) {
+            if (mnode->numofstatements >= 5) {
+                illegal = 1;
+                return newprog;
+            }
+        }
+        else if(mnode->depth != 2)
+        {
+            if (mnode->numofstatements >= 2) {
+                illegal = 1;
+                return newprog;
+            }
         }
         else{
             switch (actionNum)
@@ -4391,6 +4424,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                         newprog->illegal = 1;
                         return newprog;
                     }
+
                     break;
                 case 43:
                     newnode = createTreenode(3,0,NULL,NULL,NULL,NULL);

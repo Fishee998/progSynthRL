@@ -28,6 +28,8 @@ def getchildNode(ast, childInFirst):
         #childrenInSecond.append(childrenInSecond_)
         for childInSecond in childrenInSecond_:
             x = ast[int(childInSecond)]['name']
+            if x == '':
+                print("null error")
             second_.append(NODE_MAP[x] + 1)
         second_action_.append(0)
         for ind in range(ast[int(childInFirst)]['numOfChildren']):
@@ -47,7 +49,7 @@ def getAstDict():
     # get dictionary of AST
     with open("./data/ast.txt", "r") as f:
         samples_before = f.read()
-        samples = samples_before.split("\n")
+        samples = samples_before.split("\n")[:-1]
         ast = []
         for sample in samples:
             if sample == '':
@@ -212,6 +214,8 @@ def astEncoder(ast):
     action_layer3 = reduce(operator.add, action_layer3)
     action_layer234 = action_layer1 + action_layer2 + action_layer3
     state = first + second + third + fourth + fifth
+    if len(state) > 300:
+        print("state error")
     return state, action_layer234
 
 def setActSet():
