@@ -47,7 +47,7 @@ class Maze(object):
         # self.geometry('{0}x{1}'.format(MAZE_H * UNIT, MAZE_H * UNIT))
 
         # actionTuple[0] = nodeNum  actionTuple[1] = actionType
-        self.action_space = spaces.Tuple((spaces.Discrete(35), spaces.Discrete(50)))
+        self.action_space = spaces.Tuple((spaces.Discrete(49), spaces.Discrete(50)))
         #self.observation_space = spaces.Box(low=0.0, high=20.0, shape=(300,))
         #self.action_space = spaces.Discrete(85)
         self.observation_space = spaces.Box(low=0.0, high=20.0, shape=(300,), dtype = np.int)

@@ -247,7 +247,7 @@ def get_action1(action_layer234, ast, actionSet):
 def setAction1s(info_):
     treenode = ["assign", "if", "while"]
     actIndex = []
-    for index in range(50):
+    for index in range(49):
         actIndex.append(0)
     for index in info_.astActNodes:
         a = int(index)

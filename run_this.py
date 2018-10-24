@@ -22,8 +22,9 @@ def run_maze():
             action = RL.choose_action(observation, episode, actIndex, info_.candidate)
 
             # RL take action and get next observation and reward
-            observation_, reward, done, info_ = env.step(action)
 
+            observation_, reward, done, info_ = env.step(action)
+            # print("step ok")
             if done and example.get_fitness(info_.candidate) > 78.4:
                 reward = target_reward
                 print(

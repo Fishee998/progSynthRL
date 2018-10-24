@@ -26,14 +26,14 @@ void addNode(treeRank* tr,treenode* node)
     if(tr->numcandidate == tr->maxnumcandidate)
     {
         tr->maxnumcandidate *= 2;
-        mutationNode** new = (mutationNode**)malloc(sizeof(mutationNode*) * tr->maxnumcandidate);
+        mutationNode** new1 = (mutationNode**)malloc(sizeof(mutationNode*) * tr->maxnumcandidate);
         int i;
         for(i = 0;i < tr->numcandidate;i++)
         {
-            new[i] = tr->candidate[i];
+            new1[i] = tr->candidate[i];
         }
         free(tr->candidate);
-        tr->candidate = new;
+        tr->candidate = new1;
     }
     
     mutationNode* p = (mutationNode*)malloc(sizeof(mutationNode));
@@ -57,7 +57,7 @@ void searchNode(treenode* root,treeRank* tr,int type,int maxdepth)
     }
     else if(type == 2)        //??
     {
-        if(root->depth != 1 && root->numofstatements < 5 && root->depth == 2)
+        if(root->depth != 1 && root->numofstatements < 6 && root->depth == 2)
             addNode(tr,root);
         else
             if(root->depth != 1 && root->numofstatements < 2 && root->depth != 2)
@@ -102,7 +102,7 @@ int compareNode(treenode* root,int type,int maxdepth)
     }
     else if(type == 2)        //??
     {
-        if(root->depth != 1 && root->numofstatements < 5 && root->depth < maxdepth)
+        if(root->depth != 1 && root->numofstatements < 6 && root->depth < maxdepth)
             return 0;
     }
     else if(type == 3)
@@ -655,18 +655,21 @@ int* getLegalAction2(program* parent, int nodeNum)
     program* newprog = copyProgram(parent);
     newprog->checkedBySpin = 0;
     treenode* chnode = NULL;
-    findNode(newprog->root, newprog, nodeNum, chnode);
+    // treenode* chnode = NULL;
+    chnode = findNode(newprog->root, newprog, nodeNum);
     if (chnode == NULL) {
         newprog->illegal = 1;
         action[0] = 0;
         return action;
     }
-    else
-    {
-        printprog(chnode, 0, newprog);
-    }
+    //else
+    //{
+    //    printprog(chnode, 0, newprog);
+    //}
     //Replacement Mutation type
+
     treenode* mnode = chnode;
+
     int index = 0;
     for (int actionNum = 0; actionNum < 50; actionNum++) {
         if (actionNum >= 0 && actionNum < 3 )
@@ -1476,12 +1479,11 @@ void printprog(treenode* root,int blank,program* prog)
 
 
 //0:IF  1:WHILE  2:UNTIL  3:SEQ  4:ASGN
-void findNode(treenode* root, program* prog, int number, treenode* result)
+treenode* findNode(treenode* root, program* prog, int number)
 {
-    // treenode* result = NULL;
-    int i;
+    treenode* result = NULL;
     if(root == NULL)
-        return;
+        return NULL;
     //printf("parent type :%d",prog->parent->type);
     switch(root->type)
     {
@@ -1489,37 +1491,33 @@ void findNode(treenode* root, program* prog, int number, treenode* result)
             if(root->number == number)
                 result = root;
             else
-                findNode(root->treenode1, prog, number, result);
+                result = findNode(root->treenode1, prog, number);
             break;
-            
+
         case 1:
             if(root->number == number)
                 result = root;
             else
-                findNode(root->treenode1, prog, number, result);
+                result = findNode(root->treenode1, prog, number);
             break;
-            
+
         case 3:
-            findNode(root->treenode1, prog, number, result);
-            if (result == NULL)
-            {
-                findNode(root->treenode2, prog, number, result);
+            result = findNode(root->treenode1, prog, number);
+            if (result == NULL) {
+                result = findNode(root->treenode2, prog, number);
             }
             break;
-            
-        case 4:
-            if(root->number == number)
+
+        case 4:if(root->number == number)
                 result = root;
             break;
-        case 5:
-            if(root->number == number)
-            {
-                // printf("wrong number");
-                result = NULL;
-            }
-            
+        case 5:if(root->number == number)
+        {
+            result = NULL;
+        }
+
     }
-    return;
+    return result;
 }
 
 
@@ -2730,18 +2728,18 @@ void mutationCond(cond* root,program* prog,int type)    //type == 1:can add     
         return;
     if(root->type == 0)
     {    //printf("0");
-        cond* new = gencond(prog,3);
-        while(new->type == 0)
+        cond* new1 = gencond(prog,3);
+        while(new1->type == 0)
         {
-            free(new);
-            new = gencond(prog,3);
+            free(new1);
+            new1 = gencond(prog,3);
         }
-        root->type = new->type;
-        root->exp1 = new->exp1;
-        root->exp2 = new->exp2;
-        root->cond1 = new->cond1;
-        root->cond2 = new->cond2;
-        free(new);
+        root->type = new1->type;
+        root->exp1 = new1->exp1;
+        root->exp2 = new1->exp2;
+        root->cond1 = new1->cond1;
+        root->cond2 = new1->cond2;
+        free(new1);
     }
     else if(root->type == 1 || root->type == 2)
     {
@@ -2759,18 +2757,18 @@ void mutationCond(cond* root,program* prog,int type)    //type == 1:can add     
             free(root->cond1);
             free(root->cond2);
             
-            cond* new;
+            cond* new1;
             if(type == 1)
-                new = gencond(prog,5);
+                new1 = gencond(prog,5);
             else
-                new = gencond(prog,3);
+                new1 = gencond(prog,3);
             
-            root->type = new->type;
-            root->exp1 = new->exp1;
-            root->exp2 = new->exp2;
-            root->cond1 = new->cond1;
-            root->cond2 = new->cond2;
-            free(new);
+            root->type = new1->type;
+            root->exp1 = new1->exp1;
+            root->exp2 = new1->exp2;
+            root->cond1 = new1->cond1;
+            root->cond2 = new1->cond2;
+            free(new1);
         }
         else         //change to &&/||
         {
@@ -2821,14 +2819,14 @@ void mutationCond(cond* root,program* prog,int type)    //type == 1:can add     
             free(root->cond1);
             free(root->cond2);
             
-            cond* new = gencond(prog,5);
+            cond* new1 = gencond(prog,5);
             
-            root->type = new->type;
-            root->exp1 = new->exp1;
-            root->exp2 = new->exp2;
-            root->cond1 = new->cond1;
-            root->cond2 = new->cond2;
-            free(new);
+            root->type = new1->type;
+            root->exp1 = new1->exp1;
+            root->exp2 = new1->exp2;
+            root->cond1 = new1->cond1;
+            root->cond2 = new1->cond2;
+            free(new1);
         }
     }
 }
@@ -2862,7 +2860,7 @@ program* mutation(program* parent)
 {
     program* newprog = copyProgram(parent);
     newprog->checkedBySpin = 0;
-    treenode* new = newprog->root;
+    treenode* new1 = newprog->root;
     
     //printf("mutationtype = %d\n",mutationtype);
     int mutationtype;
@@ -2876,7 +2874,7 @@ program* mutation(program* parent)
         tr->maxnumcandidate = 10;
         tr->ranksum = 0;
         mutationtype = nextrand(4) + 1;
-        searchNode(new,tr,mutationtype,newprog->maxdepth);
+        searchNode(new1,tr,mutationtype,newprog->maxdepth);
         chnode = chooseNode(tr);
     }while(chnode == NULL);
     
@@ -2894,7 +2892,7 @@ program* mutation(program* parent)
                 newnode = genprog(newprog->maxdepth,newprog);
             
             if(mnode->parent == NULL)
-                new = newnode;
+                new1 = newnode;
             else
             {
                 if(mnode->parent->treenode1 == mnode)
@@ -2953,7 +2951,7 @@ program* mutation(program* parent)
             if(mnode->parent == NULL)
             {    //printf("first\n");
                 mnode->parent = newnode;
-                new = newnode;
+                new1 = newnode;
             }
             else
             {   // treenode* pp =  mnode->parent;
@@ -3008,7 +3006,7 @@ program* mutation(program* parent)
             if(mnode->parent == NULL)
             {
                 mnode->parent = newnode;
-                new = newnode;
+                new1 = newnode;
             }
             else
             {
@@ -3031,8 +3029,8 @@ program* mutation(program* parent)
         {
             if(mnode->parent == NULL)    //mnode == new
             {
-                new = mnode->treenode1;
-                new->parent = NULL;
+                new1 = mnode->treenode1;
+                new1->parent = NULL;
             }
             else                         //mnode != new
             {
@@ -3048,8 +3046,8 @@ program* mutation(program* parent)
         {
             if(mnode->parent == NULL)    //mnode == new
             {
-                new = mnode->treenode2;
-                new->parent = NULL;
+                new1 = mnode->treenode2;
+                new1->parent = NULL;
             }
             else                         //mnode != new
             {
@@ -3076,7 +3074,7 @@ program* mutation(program* parent)
             mnode->treenode1 = NULL;
         }
     }
-    newprog->root = new;
+    newprog->root = new1;
     return newprog;
 }
 
@@ -3924,20 +3922,20 @@ int mutationCond_(cond* root,program* prog,int type, int action)    //type == 1:
         return 1;
     if(root->type == 0)
     {    //printf("0");
-        cond* new = gencond(prog,3);
-        while(new->type == 0)
+        cond* new1 = gencond(prog,3);
+        while(new1->type == 0)
         {
-            freeAll(NULL, NULL, NULL, new, NULL, 4);
+            freeAll(NULL, NULL, NULL, new1, NULL, 4);
             // free(new);
-            new = gencond(prog,3);
+            new1 = gencond(prog,3);
         }
-        root->type = new->type;
-        root->exp1 = new->exp1;
-        root->exp2 = new->exp2;
-        root->cond1 = new->cond1;
-        root->cond2 = new->cond2;
+        root->type = new1->type;
+        root->exp1 = new1->exp1;
+        root->exp2 = new1->exp2;
+        root->cond1 = new1->cond1;
+        root->cond2 = new1->cond2;
         // freeAll(NULL, NULL, NULL, new, NULL, 4);
-        free(new);
+        free(new1);
     }
     if (action > 2 && action < 12)
     {
@@ -4064,24 +4062,24 @@ int mutationCond_(cond* root,program* prog,int type, int action)    //type == 1:
                     // free(root);
                     free(root->exp1);
                     free(root->exp2);
-                    cond* new;
+                    cond* new1;
                     if(type == 1)
                     {
                         condRandom = 321112100;
-                        new = gencond_(prog,5, condRandom);
+                        new1 = gencond_(prog,5, condRandom);
                     }
                     else
                     {
                         condRandom = 2100;
-                        new = gencond_(prog,3, condRandom );
+                        new1 = gencond_(prog,3, condRandom );
                     }
-                    root->type = new->type;
-                    root->exp1 = new->exp1;
-                    root->exp2 = new->exp2;
-                    root->cond1 = new->cond1;
-                    root->cond2 = new->cond2;
+                    root->type = new1->type;
+                    root->exp1 = new1->exp1;
+                    root->exp2 = new1->exp2;
+                    root->cond1 = new1->cond1;
+                    root->cond2 = new1->cond2;
                     //freeAll(NULL, NULL, NULL, new, NULL, 4);
-                    free(new);
+                    free(new1);
                     break;
                 case 23:
                     condRandom = 2100;
@@ -4155,14 +4153,14 @@ int mutationCond_(cond* root,program* prog,int type, int action)    //type == 1:
                     freeAll(NULL, NULL, NULL, root->cond1, NULL, 4);
                     freeAll(NULL, NULL, NULL, root->cond2, NULL, 4);
                     condRandom = 311212100;
-                    cond* new = gencond_(prog,5, condRandom);
-                    root->type = new->type;
-                    root->exp1 = new->exp1;
-                    root->exp2 = new->exp2;
-                    root->cond1 = new->cond1;
-                    root->cond2 = new->cond2;
+                    cond* new1 = gencond_(prog,5, condRandom);
+                    root->type = new1->type;
+                    root->exp1 = new1->exp1;
+                    root->exp2 = new1->exp2;
+                    root->cond1 = new1->cond1;
+                    root->cond2 = new1->cond2;
                     // freeAll(NULL, NULL, NULL, new, NULL, 4);
-                    free(new);
+                    free(new1);
                     break;
             }
         }
@@ -4176,28 +4174,36 @@ int mutationCond_(cond* root,program* prog,int type, int action)    //type == 1:
 program* mutation1(program* parent, int nodeNum, int actionNum)
 {
     int mutationtype = 0;
-    int illegal = 0;
     int commandtypeVarindex[2];
     int assignRandom;
     long condrandom;
+    treenode* newnode;
     program* newprog = copyProgram(parent);
     newprog->checkedBySpin = 0;
-    treenode* new = newprog->root;
+    treenode* new1 = newprog->root;
     // printf("findnode");
+    // treenode* chnode = NULL;
     treenode* chnode = NULL;
-    findNode(newprog->root, newprog, nodeNum, chnode);
-    // printf("findnode erro");
+    chnode = findNode(newprog->root, newprog, nodeNum);
+    // printf("findnode ok");
     if (chnode == NULL) {
         // printf("findnode null");
         newprog->illegal = 1;
         return newprog;
     }
+    /*
+    else
+        printprog(chnode, 0, newprog);
+    */
     mutype = mutationtype;
     newprog->illegal = 0;
     //Replacement Mutation type
     treenode* mnode = chnode;
+
+    // printf("%d", mnode->depth);
     if (actionNum >= 0 && actionNum < 3 )
     {
+        // printf("actionNum 2");
         if(mnode->fixed == 0)
         {
             treenode* newnode = NULL;
@@ -4238,7 +4244,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                     break;
             }
             if(mnode->parent == NULL)
-                new = newnode;
+                new1 = newnode;
             else
             {
                 if(mnode->parent->treenode1 == mnode)
@@ -4257,6 +4263,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
     }
     else if (actionNum >= 3 && actionNum < 31 )
     {
+        // printf("actionNum 3");
         if(mnode->cond1 != NULL)
         {
             newprog->illegal = mutationCond_(mnode->cond1,newprog,1,actionNum);
@@ -4273,6 +4280,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
     }
     else if (actionNum >= 31 && actionNum < 40)
     {
+        // printf("actionNum 31");
         if (mnode->exp1 != NULL)
         {
             exp_* e = NULL;
@@ -4317,10 +4325,9 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
             return newprog;
         }
     }
-    //Insert Mutation types
-    treenode* newnode;
-    if (actionNum > 39 && actionNum < 42)
+    else if (actionNum > 39 && actionNum < 42)  //Insert Mutation types
     {
+        // printf("40");
         if(mnode->fixed == 1 || mnode->depth + mnode->height == newprog->maxdepth + 1 || mnode->depth == 2)
         {
             newprog->illegal = 1;
@@ -4338,7 +4345,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                     if(mnode->parent == NULL)
                     {    //printf("first\n");
                         mnode->parent = newnode;
-                        new = newnode;
+                        new1 = newnode;
                     }
                     else
                     {
@@ -4363,7 +4370,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                     if(mnode->parent == NULL)
                     {    //printf("first\n");
                         mnode->parent = newnode;
-                        new = newnode;
+                        new1 = newnode;
                     }
                     else
                     {
@@ -4386,25 +4393,24 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
     }
     else if(actionNum > 41 && actionNum < 48 )
     {
+        // printf("%d", mnode->numofstatements);
         if (mnode->depth == 1)
         {
-                illegal = 1;
-                return newprog;
+            newprog->illegal = 1;
+            return newprog;
         }
-        else if (mnode->depth == 2) {
-            if (mnode->numofstatements >= 5) {
-                illegal = 1;
-                return newprog;
-            }
-        }
-        else if(mnode->depth != 2)
+        else if (mnode->depth == 2 && mnode->numofstatements >= 6)
         {
-            if (mnode->numofstatements >= 2) {
-                illegal = 1;
+                newprog->illegal = 1;
                 return newprog;
-            }
         }
-        else{
+        else if(mnode->depth != 2 && mnode->numofstatements >= 2)
+        {
+            newprog->illegal = 1;
+            return newprog;
+        }
+        else
+        {
             switch (actionNum)
             {
                 case 42:
@@ -4490,6 +4496,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                     break;
                 case 46:
                     newnode = createTreenode(3,0,NULL,NULL,NULL,NULL);
+
                     if(getStatement(mnode,0)->type != 5)
                     {
                         if (mnode->depth == 3)
@@ -4540,10 +4547,11 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                     break;
             }
         }
+
         if(mnode->parent == NULL)
         {
             mnode->parent = newnode;
-            new = newnode;
+            new1 = newnode;
         }
         else
         {
@@ -4565,8 +4573,8 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                 {
                     if(mnode->parent == NULL)    //mnode == new
                     {
-                        new = mnode->treenode1;
-                        new->parent = NULL;
+                        new1 = mnode->treenode1;
+                        new1->parent = NULL;
                     }
                     else                         //mnode != new
                     {
@@ -4589,8 +4597,8 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                 {
                     if(mnode->parent == NULL)    //mnode == new
                     {
-                        new = mnode->treenode2;
-                        new->parent = NULL;
+                        new1 = mnode->treenode2;
+                        new1->parent = NULL;
                     }
                     else                         //mnode != new
                     {
@@ -4612,7 +4620,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                 break;
         }
     }
-    newprog->root = new;
+    newprog->root = new1;
     return newprog;
 }
 
