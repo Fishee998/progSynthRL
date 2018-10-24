@@ -14,6 +14,7 @@ import example
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+import random
 
 np.random.seed(1)
 tf.set_random_seed(1)
@@ -150,20 +151,15 @@ class DeepQNetwork:
         return action2Seleced
 
     def getAction1(self, act1Set, action1_value):
-        action1Set = np.nonzero(act1Set)[0]
-        index = tf.Variable(action1Set)
-        #action1_value = tf.Variable(action1_value)
-        # action1_value = action1_value[0]
-        # action1_value = tf.Variable(action1_value)
-        # action1_value = tf.gather(action1_value, index)
-        # action1_index = tf.argmax(action1_value)
-        action1_index = tf.argmax(tf.gather(tf.Variable(action1_value[0]),index))
-        # print(action1_value)
-        # print(index)
+        # action1Set = np.nonzero(act1Set)[0]
+        # index = tf.Variable(action1Set)
+        # action1_index = tf.argmax(tf.gather(tf.Variable(action1_value[0]),index))
+        action1_index = tf.argmax(tf.Variable(action1_value[0]))
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
             action1_index = sess.run(action1_index)
-        action1 = action1Set[action1_index]
+        action1 = action1_index
+        # action1 = action1Set[action1_index]
         return action1
 
     def getAction1_random(self, act1Set):
@@ -172,6 +168,13 @@ class DeepQNetwork:
         return action1
 
     def getAction2(self, candidate, action1, action2_value):
+        '''
+        action2_index = tf.argmax(tf.Variable(action2_value[0]))
+        with tf.Session() as sess:
+            sess.run(tf.global_variables_initializer())
+            action1_index = sess.run(action2_index)
+        action2 = action1_index
+        '''
         action2 = example.getLegalAction2(candidate, action1)
         action2set_ = self.action2set(action2)
         action2_ = []
@@ -182,17 +185,12 @@ class DeepQNetwork:
             action2_[a] = 1
         action2Set = np.nonzero(action2_)[0]
         index = tf.Variable(action2Set)
-        # action1_value = tf.Variable(action1_value)
-        # action1_value = action1_value[0]
-        # action1_value = tf.Variable(action1_value)
-        # action1_value = tf.gather(action1_value, index)
-        # action1_index = tf.argmax(action1_value)
         action2_index = tf.argmax(tf.gather(tf.Variable(action2_value[0]), index))
-        # print(index)
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
             action2_index = sess.run(action2_index)
         action2 = action2Set[action2_index]
+
         return action2
 
     def getAction2_random(self, candidate, action1):
@@ -221,8 +219,10 @@ class DeepQNetwork:
             action2 = self.getAction2(candidate, action1, actions_value2)
             action = self.getAction(action1, action2)
         else:
-            action1 = self.getAction1_random(act1Set)
-            action2 = self.getAction2_random(candidate, action1)
+            action1 = random.randint(0, 34)
+            action2 = random.randint(0, 49)
+            # action1 = self.getAction1_random(act1Set)
+            # action2 = self.getAction2_random(candidate, action1)
             action = self.getAction(action1, action2)
         return action
 

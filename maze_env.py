@@ -33,21 +33,21 @@ from gym import spaces, logger
 from gym.utils import seeding
 import numpy as np
 
-class Maze(tk.Tk, object):
+class Maze(object):
 
 
     actionSet = astEncoder.setActSet()
 
     def __init__(self):
-        super(Maze, self).__init__()
+        # super(Maze, self).__init__()
         # self.action_space = ['u', 'd', 'l', 'r']
         # self.n_actions = len(self.action_space)
         self.n_features = 2
-        self.title('maze')
+        # self.title('maze')
         # self.geometry('{0}x{1}'.format(MAZE_H * UNIT, MAZE_H * UNIT))
 
         # actionTuple[0] = nodeNum  actionTuple[1] = actionType
-        self.action_space = spaces.Tuple((spaces.Discrete(35), spaces.Discrete(49)))
+        self.action_space = spaces.Tuple((spaces.Discrete(35), spaces.Discrete(50)))
         #self.observation_space = spaces.Box(low=0.0, high=20.0, shape=(300,))
         #self.action_space = spaces.Discrete(85)
         self.observation_space = spaces.Box(low=0.0, high=20.0, shape=(300,), dtype = np.int)
@@ -67,18 +67,18 @@ class Maze(tk.Tk, object):
         return [seed]
 
     def step(self, action):
-        reward = 0
         assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
-        state = self.state
-        newfitnessValue = oldfitnessValue = example.get_fitness(self.candidate)
-        newCandidate = prog.mutation(self.candidate, action[0], action[1])
-        illegal = example.illegal(newCandidate)
+        self.fitness = example.get_fitness(self.candidate)
+        self.candidate = prog.mutation(self.candidate, action[0], action[1])
+        illegal = example.illegal(self.candidate)
         if illegal == 1:
             reward = -10
             # self.numIll =self.numIll + 1
         else:
+            oldfitnessValue = self.fitness
             ast = astEncoder.getAstDict()
             state_, astActNodes = astEncoder.astEncoder(ast)
+            # print(state_)
             if state_ == self.state:
                 # self.numlegalButwrong = self.numlegalButwrong + 1
                 reward = -5
@@ -86,12 +86,15 @@ class Maze(tk.Tk, object):
             # self.state = self.np_random.uniform(low=-0.05, high=0.05, size=(4,))
             self.state = tuple(state_)
             self.steps_beyond_done = None
-            self.candidate = newCandidate
+            # self.candidate = newCandidate
             self.astActNodes = astActNodes
-            self.fitness = newfitnessValue
             # self.numlega = self.numlega + 1
-            newfitnessValue = example.get_fitness(newCandidate)
+            newfitnessValue = example.get_fitness(self.candidate)
+            self.fitness = newfitnessValue
             # print(newfitnessValue)
+            if newfitnessValue > 80:
+                print newfitnessValue
+            # reward = newfitnessValue - oldfitnessValue
             '''
             if oldfitnessValue > 20:
                 if newfitnessValue > 29:
@@ -118,36 +121,34 @@ class Maze(tk.Tk, object):
             if newfitnessValue > 75:
                 reward = 10
             '''
-            if newfitnessValue == oldfitnessValue:
-                self.badaction = self.badaction +1
+            if self.fitness == oldfitnessValue:
+                self.badaction = self.badaction + 1
                 # print(self.badaction)
             reward = 0
             if newfitnessValue > 30:
-                reward = 0.02 * (newfitnessValue - oldfitnessValue)
+                reward = 0.02 * (self.fitness - oldfitnessValue)
             if newfitnessValue > 40:
-                reward = 0.02 * (newfitnessValue - oldfitnessValue)
+                reward = 0.02 * (self.fitness - oldfitnessValue)
             if newfitnessValue > 50:
-                reward = 0.02 * (newfitnessValue - oldfitnessValue)
+                reward = 0.02 * (self.fitness - oldfitnessValue)
             if newfitnessValue > 60:
-                reward = 0.02 * (newfitnessValue - oldfitnessValue)
-
-            #if oldfitnessValue < 40:
-             #   if newfitnessValue > 50:
-                   # print(newfitnessValue)
-              #     reward = reward + 0.1 * (newfitnessValue - oldfitnessValue)
-            #if oldfitnessValue < 50:
-             #   if newfitnessValue > 60:
-              #      reward = reward + 0.1 * (newfitnessValue - oldfitnessValue)
+                reward = 0.02 * (self.fitness - oldfitnessValue)
             if newfitnessValue > 69:
                 print(newfitnessValue)
-                # reward = 10
-                reward = 0.1 * (newfitnessValue - oldfitnessValue)
+                reward = 0.1 * (self.fitness - oldfitnessValue)
+                # if oldfitnessValue < 40:
+                #   if newfitnessValue > 50:
+                # print(newfitnessValue)
+                #     reward = reward + 0.1 * (newfitnessValue - oldfitnessValue)
+                # if oldfitnessValue < 50:
+                #   if newfitnessValue > 60:
+                #      reward = reward + 0.1 * (newfitnessValue - oldfitnessValue)
 
-        done = bool(newfitnessValue  > 78.4)
+        done = bool(self.fitness > 78.4)
         if done:
-            print(self.badaction)
             reward = 5
-        if not done :
+            print(self.badaction)
+        if not done:
             reward = reward - 0.05
         return np.array(self.state), reward, done, self
 

@@ -48,6 +48,10 @@ int getCheckedBySpin(program* org)
 {
     return org->checkedBySpin;
 }
+treenode* getroot(program* prog)
+{
+    return prog->root;
+}
 %}
 
 extern int spin_(program* candidate);
@@ -67,3 +71,4 @@ extern void freeAll(organism* org,program* prog,treenode* t,cond* c,exp_* e,int 
 extern void setAll(program* prog);
 extern program* initProg(Expr** requirements ,int numofrequirements,double* coef);
 extern program* mutation_(program* candidate0, int nodeNum, int actType,Expr** requirements ,int numofrequirements,double* coef);
+extern void printprog(treenode* root,int blank,program* prog);
