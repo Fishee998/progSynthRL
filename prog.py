@@ -26,11 +26,11 @@ def actionLegal():
 
 def mutation(candidate, nodeNum, actionType):
     requirements, coef, actionSet = some()
-    '''
+
     root = example.getroot(candidate)
     example.printprog(root,0,candidate)
     print(nodeNum)
-    '''
-   # print(actionType)
+
+    print(actionType)
     candidate1 = example.mutation_(candidate, nodeNum, actionType, requirements, numofrequirements, coef)
     return candidate1

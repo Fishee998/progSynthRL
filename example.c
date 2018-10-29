@@ -4237,7 +4237,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
     long condrandom;
     program* newprog = copyProgram(parent);
     newprog->checkedBySpin = 0;
-    treenode* new = newprog->root;
+    treenode* new1 = newprog->root;
     // treenode* chnode = (treenode*)malloc(sizeof(treenode));
     treenode* chnode = NULL;
     chnode = findNode(newprog->root, newprog, nodeNum);
@@ -4303,7 +4303,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                     break;
             }
             if(mnode->parent == NULL)
-                new = newnode;
+                new1 = newnode;
             else
             {
                 if(mnode->parent->treenode1 == mnode)
@@ -4403,7 +4403,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                     if(mnode->parent == NULL)
                     {    //printf("first\n");
                         mnode->parent = newnode;
-                        new = newnode;
+                        new1 = newnode;
                     }
                     else
                     {
@@ -4428,7 +4428,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                     if(mnode->parent == NULL)
                     {    //printf("first\n");
                         mnode->parent = newnode;
-                        new = newnode;
+                        new1 = newnode;
                     }
                     else
                     {
@@ -4451,29 +4451,36 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
     }
     else if(actionNum > 41 && actionNum < 48 )
     {
-        if (mnode->depth == 2) {
-            if (mnode->numofstatements >= 6) {
-                newprog->illegal = 1;
-                return newprog;
-            }
-        }
-        else if(mnode->depth != 2)
+        if (mnode->depth == 1)
         {
-            if (mnode->numofstatements >= 2) {
+            newprog->illegal = 1;
+            return newprog;
+        }
+        else if (mnode->depth == 2 && mnode->numofstatements >= 6)
+        {
                 newprog->illegal = 1;
                 return newprog;
-            }
+        }
+        else if(mnode->depth != 2 && mnode->numofstatements >= 2)
+        {
+            newprog->illegal = 1;
+            return newprog;
         }
         else{
             switch (actionNum)
             {
                 case 42:
+                printf("case 42");
                     newnode = createTreenode(3,0,NULL,NULL,NULL,NULL);
-
+                    printf("case 42");
                         newnode->treenode1 = mnode;
+                        printf("case 42");
                         commandtypeVarindex[0] = 2;
+                        printf("case 42");
                         assignRandom = 0;
+                        printf("case 42");
                         newnode->treenode2 = genprog_(newprog->maxdepth,newprog, commandtypeVarindex, assignRandom, NULL, 0);
+                        printf("case 42");
 
                     break;
                 case 43:
@@ -4566,7 +4573,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
         if(mnode->parent == NULL)
         {
             mnode->parent = newnode;
-            new = newnode;
+            new1 = newnode;
         }
         else
         {
@@ -4589,8 +4596,8 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                     //printf("tf\n");
                     if(mnode->parent == NULL)    //mnode == ne
                     {
-                        new = mnode->treenode1;
-                        new->parent = NULL;
+                        new1 = mnode->treenode1;
+                        new1->parent = NULL;
                         free(mnode)    ;
                     }
                     else  if(((mnode->depth == 2 && mnode->numofstatements == 6)||(mnode->depth != 2 && mnode->numofstatements == 2)) && (mnode->type == 0 || mnode->type == 1) && mnode->treenode1->type == 3)
@@ -4681,7 +4688,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
 
         printf("%d", newprog->illegal);
 
-    newprog->root = new;
+    newprog->root = new1;
     return newprog;
 }
 

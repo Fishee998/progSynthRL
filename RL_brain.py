@@ -157,12 +157,12 @@ class DeepQNetwork:
         action1_prob = []
         for index in action1Set:
             action1_prob.append(action1_value[0][index])
-        action1_index = np.argmax(action1_prob)
-        action1 = action1Set[action1_index]
-
+        action1 = np.argmax(action1_prob)
+        action1 = action1Set[action1]
+        real_action = act1Set[action1]
+        return action1, real_action
         # no restrict
         # action1 = np.argmax(action1_value[0])
-        return action1
 
     def getAction1_random(self, act1Set):
         action1s = np.nonzero(act1Set)
