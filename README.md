@@ -1,11 +1,11 @@
 # progSynthRL
 
 MacOS High Sierra 10.13.5
+Linux 17.10
 python版本2.7
 
-1 修改example.c里面的路径到当前目录 （这里用相对路径会报错）
 
-2 安装Swig 
+1 安装Swig 
 
 3 用swig包装c文件使之可以被python调用
   
