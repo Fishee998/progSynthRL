@@ -1427,7 +1427,10 @@ void printprog(treenode* root,int blank,program* prog)
 {    //printf("printprog progtype:%d blank:%d\n",prog->type,blank);
     int i;
     if(root == NULL)
-        return;
+    {
+	    printf("printprog ok");
+    	    return;
+    }
     //printf("parent type :%d",prog->parent->type);
     switch(root->type)
     {
@@ -1460,15 +1463,17 @@ void printprog(treenode* root,int blank,program* prog)
         case 3: printprog(root->treenode1,blank,prog);
             printprog(root->treenode2,blank,prog);
             break;
-        case 4: for(i = 0;i < blank;i++)printf(" ");
+        case 4:
+	    for(i = 0;i < blank;i++)printf(" ");
             if(root->index <= 2)
                 printf("v[%d] = ",root->index);
             else if(root->index == 3)
                 printf("v[me] = ");
             else if(root->index == 4)    //error
                 printf("v[other] = ");
-            printexp(root->exp1,prog);
-            printf(";\n");
+            
+	    printexp(root->exp1,prog);
+	    printf(";\n");
             break;
         case 5: for(i = 0;i < blank;i++)printf(" ");
             printf("critical section\n");
@@ -4187,19 +4192,26 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
     chnode = findNode(newprog->root, newprog, nodeNum);
     // printf("findnode ok");
     if (chnode == NULL) {
-        // printf("findnode null");
+        //printf("findnode null");
         newprog->illegal = 1;
         return newprog;
     }
     /*
-    else
+    else{
+	//printf("printprog");
         printprog(chnode, 0, newprog);
+   	//printf("printprog ok");
+   }
     */
-    mutype = mutationtype;
+   // printf("printprog ok");
+	mutype = mutationtype;
+//	printf("printprog ok");
     newprog->illegal = 0;
+  //  printf("printprog ok");
+    
     //Replacement Mutation type
     treenode* mnode = chnode;
-
+   // printf("mnode = chnode ok");
     // printf("%d", mnode->depth);
     if (actionNum >= 0 && actionNum < 3 )
     {
@@ -4566,51 +4578,121 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
     //Reduction Mutation type
     else if(actionNum > 47 && actionNum < 50 )
     {
-        
-        switch (actionNum) {
+	newprog->illegal = 1;
+//	return  newprog;
+        switch (actionNum) 
+	{
             case 48:
-                if (mnode->treenode1 != NULL && mnode->treenode1->fixed == 0 && (mnode->treenode2 == NULL || mnode->treenode2->fixed == 0))
-                {
-                    if(mnode->parent == NULL)    //mnode == new
+//			printprog(newprog->root, 0, newprog);	    
+		   // printf("what");
+		    /*if(mnode->treenode1 == NULL){
+		    	printf("mnode->treenode1 error");
+		    }
+		    if(mnode->fixed != 1)
+		    {
+		    	printf("mnode->fixed error");
+		    }
+		    if(mnode->treenode1 != NULL && mnode->treenode1->fixed == 0)
+		    {
+		    	printf("mnode->treenode1 error");
+		    }
+		    if(mnode->treenode2 == NULL)
+		    {
+		    	printf("mnode->treenode2 != NULL");
+		    }
+		    if(mnode->treenode2 != NULL && mnode->treenode2->fixed != 0) 
+		    {
+		    	printf("mnode->treenode2->fixed != 0");
+		    }
+		    */
+		//	return  newprog;
+                    if (mnode->fixed != 1 && mnode->treenode1 != NULL && mnode->treenode1->fixed == 0)
                     {
-                        new1 = mnode->treenode1;
-                        new1->parent = NULL;
-                    }
-                    else                         //mnode != new
-                    {
-                        mnode->treenode1->parent = mnode->parent;
-                        if(mnode->parent->treenode1 == mnode)
-                            mnode->parent->treenode1 = mnode->treenode1;
-                        else
-                            mnode->parent->treenode2 = mnode->treenode1;
-                    }
-                    free(mnode);
-                }
+    			    //printf("tf\n");
+                            if(mnode->parent == NULL)    //mnode == ne
+		      	    {
+			    	    new1 = mnode->treenode1;
+			    	    new1->parent = NULL;
+                   	    	    free(mnode)	;
+			    }	    
+		   	    else  if(((mnode->depth == 2 && mnode->numofstatements == 6)||(mnode->depth != 2 && mnode->numofstatements == 2)) && (mnode->type == 0 || mnode->type == 1) && mnode->treenode1->type == 3)
+			    {
+				    treenode* x1 = NULL;
+	 			    treenode* mnode_ =mnode;
+		 		    treenode* mnodeParent = mnode->parent;
+			 	    int leftOrRight = 1;
+				    if(mnodeParent->treenode2 == mnode)
+					    leftOrRight = 2;
+				    while( mnode_->treenode1->type == 3)
+				    {
+					    if(mnode_->treenode2 != NULL && mnode_->treenode2->fixed == 1)
+				    	    {
+					    	    printf("disgusting!!!!\n");
+				    	    }
+					    freeAll(NULL, NULL, mnode_->treenode2, NULL, NULL, 3);
+					    x1 = mnode_;
+			   		    mnode_ = mnode_->treenode1;
+					    free(x1);
+			    		    printf("%d\n", mnode_->treenode1->type);
+			   	    }
+				    freeAll(NULL, NULL, mnode_->treenode2, NULL, NULL, 3);
+	 			    treenode* new2 = mnode_->treenode1;
+		 		    free(mnode_);
+			 	    new2->parent = mnodeParent;
+				    if(leftOrRight == 1)
+					    mnodeParent->treenode1 = new2;
+				    else
+					    mnodeParent->treenode2 = new2;
+			    	   
+			    }
+			    else
+			    {
+		//		    printf("hengheng\n");
+				    mnode->treenode1->parent = mnode->parent;
+				    if(mnode->parent->treenode1 == mnode)
+		    			    mnode->parent->treenode1 = mnode->treenode1;
+				    else
+				     	    mnode->parent->treenode2 = mnode->treenode1;
+			    	    free(mnode);
+			    }
+			   // free(mnode);
+		 }	
                 else
                 {
+		//	printf("ei\n");
                     newprog->illegal = 1;
                     return newprog;
                 }
-                break;
+ 
+  		break;
             case 49:
-                if (mnode->treenode2 != NULL && mnode->treenode2->fixed == 0 && (mnode->treenode1 == NULL && mnode->treenode1->fixed == 0 ))
-                {
-                    if(mnode->parent == NULL)    //mnode == new
-                    {
-                        new1 = mnode->treenode2;
-                        new1->parent = NULL;
-                    }
-                    else                         //mnode != new
-                    {
-                        mnode->treenode2->parent = mnode->parent;
-                        if(mnode->parent->treenode1 == mnode)
-                            mnode->parent->treenode1 = mnode->treenode2;
-                        else
-                            mnode->parent->treenode2 = mnode->treenode2;
-                    }
-                    // freeAll(NULL, NULL, mnode, NULL, NULL, 3);
-                    free(mnode);
-                }
+		if(mnode->parent != NULL && mnode->fixed != 1 && mnode->parent->type == 3 )
+		{
+		//	printf("49action\n");
+			treenode* new2 = mnode->parent->treenode1;
+			if (mnode->parent->treenode1 == mnode) 
+			{
+				new2 = mnode->parent->treenode2;
+			}
+			if(mnode->parent->parent == NULL)
+				printf("mnode->parent->parent == NULL\n");
+			new2->parent = mnode->parent->parent;
+			if (mnode->parent->parent != NULL) 
+			{
+				if (mnode->parent == mnode->parent->parent->treenode1) 
+				{
+					mnode->parent->parent->treenode1 = new2;
+			        }
+				else
+				{
+					mnode->parent->parent->treenode2 = new2;
+				}
+		//		free(mnode);
+				freeAll(NULL, NULL, mnode, NULL, NULL, 3);
+		
+			}
+		//	printf("49action\n");
+		}
                 else
                 {
                     newprog->illegal = 1;
@@ -4621,6 +4703,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
         }
     }
     newprog->root = new1;
+
     return newprog;
 }
 
@@ -4749,6 +4832,7 @@ program* mutation_(program* candidate0, int nodeNum, int actType, Expr** require
     program* newcandidate = NULL;
     newcandidate = mutation1(candidate0, nodeNum, actType);
     setAll(newcandidate);
+    // printprog(newcandidate->root, 0, newcandidate);
     printAst(newcandidate);
     organism* org = genOrganism(newcandidate);
     double candidatefit1 = calculateFitness(org,requirements,numofrequirements,coef);

@@ -33,7 +33,7 @@ class DeepQNetwork:
             replace_target_iter=300,
             memory_size=500,
             batch_size=32,
-            e_greedy_increment=0.025,
+            e_greedy_increment=0.1,
             output_graph=False,
     ):
         self.n_actions1 = n_actions1
@@ -151,15 +151,16 @@ class DeepQNetwork:
         return action2Seleced
 
     def getAction1(self, act1Set, action1_value):
+        '''
         action1Set = np.nonzero(act1Set)[0]
         action1_prob = []
         for index in action1Set:
             action1_prob.append(action1_value[0][index])
         action1_index = np.argmax(action1_prob)
-
-        # action1_index = tf.argmax(tf.Variable(action1_value[0]))
-        # action1 = action1_index
         action1 = action1Set[action1_index]
+        '''
+        # no restrict
+        action1 = np.argmax(action1_value[0])
         return action1
 
     def getAction1_random(self, act1Set):
@@ -169,19 +170,16 @@ class DeepQNetwork:
 
     def getAction2(self, candidate, action1, action2_value):
         '''
-        action2_index = tf.argmax(tf.Variable(action2_value[0]))
-        with tf.Session() as sess:
-            sess.run(tf.global_variables_initializer())
-            action1_index = sess.run(action2_index)
-        action2 = action1_index
-        '''
         action2 = example.getLegalAction2(candidate, action1)
         action2set = self.action2set(action2)
         action2_prob = []
         for index in list(set(action2set)):
             action2_prob.append(action2_value[0][index])
         action2_index = np.argmax(action2_prob)
+        
         action2 = action2set[action2_index]
+        ''' 
+        action2  = np.argmax(action2_value[0])
         return action2
 
     def getAction2_random(self, candidate, action1):
@@ -210,10 +208,10 @@ class DeepQNetwork:
             action2 = self.getAction2(candidate, action1, actions_value2)
             action = self.getAction(action1, action2)
         else:
-            # action1 = random.randint(0, 48)
-            # action2 = random.randint(0, 49)
+            #action1 = random.randint(0, 48)
+            action2 = random.randint(0, 49)
             action1 = self.getAction1_random(act1Set)
-            action2 = self.getAction2_random(candidate, action1)
+            #action2 = self.getAction2_random(candidate, action1)
             action = self.getAction(action1, action2)
         return action
 

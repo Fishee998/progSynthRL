@@ -1,0 +1,588 @@
+2018-10-27 13:04:41.000947: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2018-10-27 13:04:42.203829: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:898] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2018-10-27 13:04:42.205372: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1356] Found device 0 with properties: 
+name: GeForce GTX 1080 Ti major: 6 minor: 1 memoryClockRate(GHz): 1.582
+pciBusID: 0000:00:0a.0
+totalMemory: 10.91GiB freeMemory: 10.75GiB
+2018-10-27 13:04:42.350459: I tensorflow/stream_executor/cuda/cuda_gpu_executor.cc:898] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero
+2018-10-27 13:04:42.352031: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1356] Found device 1 with properties: 
+name: GeForce GTX 1080 Ti major: 6 minor: 1 memoryClockRate(GHz): 1.582
+pciBusID: 0000:00:0b.0
+totalMemory: 10.91GiB freeMemory: 10.75GiB
+2018-10-27 13:04:42.352092: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1435] Adding visible gpu devices: 0, 1
+2018-10-27 13:04:42.838868: I tensorflow/core/common_runtime/gpu/gpu_device.cc:923] Device interconnect StreamExecutor with strength 1 edge matrix:
+2018-10-27 13:04:42.838922: I tensorflow/core/common_runtime/gpu/gpu_device.cc:929]      0 1 
+2018-10-27 13:04:42.838933: I tensorflow/core/common_runtime/gpu/gpu_device.cc:942] 0:   N N 
+2018-10-27 13:04:42.838939: I tensorflow/core/common_runtime/gpu/gpu_device.cc:942] 1:   N N 
+2018-10-27 13:04:42.839670: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1053] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 10407 MB memory) -> physical GPU (device: 0, name: GeForce GTX 1080 Ti, pci bus id: 0000:00:0a.0, compute capability: 6.1)
+2018-10-27 13:04:42.958905: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1053] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:1 with 10407 MB memory) -> physical GPU (device: 1, name: GeForce GTX 1080 Ti, pci bus id: 0000:00:0b.0, compute capability: 6.1)
+
+target_params_replaced
+
+('episode', 0, 'reward_cum', -18255.327999999376)
+('episode', 1, 'reward_cum', -19597.546666665938)
+('episode', 2, 'reward_cum', -18657.711999999352)
+('episode', 3, 'reward_cum', -18669.32133333259)
+('episode', 4, 'reward_cum', -19418.719999999266)
+4
+('episode', 5, 'reward_cum', -19418.937333332608)
+^[[B^[[B^[[B^[[B^[[B^[[B('episode', 6, 'reward_cum', -19527.133333332597)
+('episode', 7, 'reward_cum', -19488.499333332606)
+('episode', 8, 'reward_cum', -19409.383999999263)
+('episode', 9, 'reward_cum', -18858.05999999927)
+
+target_params_replaced
+
+('episode', 10, 'reward_cum', -16638.635999999537)
+('episode', 11, 'reward_cum', -19528.647999999263)
+('episode', 12, 'reward_cum', -19628.679999999258)
+69.5
+('episode', 13, 'reward_cum', -19638.51999999926)
+('episode', 14, 'reward_cum', -19457.46399999927)
+4
+('episode', 15, 'reward_cum', -19628.26666666594)
+('episode', 16, 'reward_cum', -19469.159999999265)
+('episode', 17, 'reward_cum', -19569.999999999265)
+('episode', 18, 'reward_cum', -19499.07999999927)
+('episode', 19, 'reward_cum', -19448.145999999262)
+
+target_params_replaced
+
+4
+('episode', 20, 'reward_cum', -19409.007999999267)
+('episode', 21, 'reward_cum', -19627.667999999267)
+('episode', 22, 'reward_cum', -19588.023999999263)
+('episode', 23, 'reward_cum', -18928.67199999932)
+('episode', 24, 'reward_cum', -19226.966666665936)
+('episode', 25, 'reward_cum', -18549.203999999267)
+('episode', 26, 'reward_cum', -19378.18199999927)
+('episode', 27, 'reward_cum', -19488.158666665942)
+('episode', 28, 'reward_cum', -19417.83999999927)
+69.5
+69.5
+69.5
+69.5
+('episode', 29, 'reward_cum', -19476.233999999266)
+
+target_params_replaced
+
+('episode', 30, 'reward_cum', -19396.9893333326)
+('episode', 31, 'reward_cum', -19469.287999999266)
+('episode', 32, 'reward_cum', -19508.67999999927)
+('episode', 33, 'reward_cum', -19407.225999999282)
+('episode', 34, 'reward_cum', -19437.75399999927)
+('episode', 35, 'reward_cum', -18478.679999999273)
+('episode', 36, 'reward_cum', -19308.799999999275)
+('episode', 37, 'reward_cum', -19478.370666665942)
+('episode', 38, 'reward_cum', -19359.459999999282)
+('episode', 39, 'reward_cum', -19499.947999999265)
+
+target_params_replaced
+
+4
+('episode', 40, 'reward_cum', -19409.205999999267)
+('episode', 41, 'reward_cum', -19499.99999999926)
+('episode', 42, 'reward_cum', -19479.184666665937)
+('episode', 43, 'reward_cum', -19429.21599999927)
+('episode', 44, 'reward_cum', -19038.562666665974)
+('episode', 45, 'reward_cum', -18569.247999999272)
+('episode', 46, 'reward_cum', -19438.754666665933)
+('episode', 47, 'reward_cum', -19519.159999999265)
+('episode', 48, 'reward_cum', -19559.879999999263)
+4
+('episode', 49, 'reward_cum', -19477.626666665943)
+
+target_params_replaced
+
+4
+('episode', 50, 'reward_cum', -19508.106666665924)
+('episode', 51, 'reward_cum', -19409.399999999267)
+('episode', 52, 'reward_cum', -19549.399999999267)
+('episode', 53, 'reward_cum', -19347.2173333326)
+('episode', 54, 'reward_cum', -19729.38199999926)
+4
+('episode', 55, 'reward_cum', -18529.34399999927)
+('episode', 56, 'reward_cum', -19397.314666665945)
+('episode', 57, 'reward_cum', -19498.018666665932)
+('episode', 58, 'reward_cum', -19529.043999999267)
+('episode', 59, 'reward_cum', -19508.469999999266)
+
+target_params_replaced
+
+('episode', 60, 'reward_cum', -19497.147999999277)
+('episode', 61, 'reward_cum', -19398.326666665955)
+('episode', 62, 'reward_cum', -18959.51599999931)
+('episode', 63, 'reward_cum', -19517.887999999268)
+('episode', 64, 'reward_cum', -19288.53466666593)
+('episode', 65, 'reward_cum', -18860.13999999927)
+('episode', 66, 'reward_cum', -18227.365333332724)
+('episode', 67, 'reward_cum', -19638.107999999258)
+('episode', 68, 'reward_cum', -19199.99999999926)
+('episode', 69, 'reward_cum', -18648.007999999263)
+
+target_params_replaced
+
+('episode', 70, 'reward_cum', -19288.679999999298)
+('episode', 71, 'reward_cum', -19378.203999999267)
+('episode', 72, 'reward_cum', -17988.01799999936)
+('episode', 73, 'reward_cum', -18127.62399999927)
+('episode', 74, 'reward_cum', -19397.651999999267)
+('episode', 75, 'reward_cum', -18968.559999999263)
+('episode', 76, 'reward_cum', -19398.51333333261)
+('episode', 77, 'reward_cum', -19549.4693333326)
+('episode', 78, 'reward_cum', -18888.510666666003)
+('episode', 79, 'reward_cum', -19396.18799999927)
+
+target_params_replaced
+
+('episode', 80, 'reward_cum', -19499.281333332598)
+('episode', 81, 'reward_cum', -17819.999999999345)
+('episode', 82, 'reward_cum', -19497.94533333261)
+('episode', 83, 'reward_cum', -17448.36066666597)
+('episode', 84, 'reward_cum', -19487.955999999278)
+('episode', 85, 'reward_cum', -18648.707999999264)
+('episode', 86, 'reward_cum', -18167.27399999927)
+('episode', 87, 'reward_cum', -19477.83999999927)
+('episode', 88, 'reward_cum', -18528.762666665934)
+('episode', 89, 'reward_cum', -19327.619333332615)
+
+target_params_replaced
+
+('episode', 90, 'reward_cum', -19478.739333332604)
+('episode', 91, 'reward_cum', -19519.651999999267)
+('episode', 92, 'reward_cum', -19159.279999999286)
+('episode', 93, 'reward_cum', -15997.317333332598)
+4
+('episode', 94, 'reward_cum', -19578.74599999926)
+('episode', 95, 'reward_cum', -19309.71866666594)
+('episode', 96, 'reward_cum', -16678.442666665935)
+69.5
+69.5
+('episode', 97, 'reward_cum', -19413.40999999927)
+('episode', 98, 'reward_cum', -19067.127999999284)
+('episode', 99, 'reward_cum', -18639.27999999935)
+
+target_params_replaced
+
+('episode', 100, 'reward_cum', -19468.139999999272)
+('episode', 101, 'reward_cum', -19347.839999999276)
+('episode', 102, 'reward_cum', -19469.053333332602)
+('episode', 103, 'reward_cum', -19069.163999999255)
+('episode', 104, 'reward_cum', -18117.10199999928)
+4
+('episode', 105, 'reward_cum', -16939.150666666177)
+('episode', 106, 'reward_cum', -18558.794666665955)
+('episode', 107, 'reward_cum', -18577.8013333326)
+('episode', 108, 'reward_cum', -18147.843999999346)
+('episode', 109, 'reward_cum', -19458.195999999276)
+
+target_params_replaced
+
+('episode', 110, 'reward_cum', -18877.743333332663)
+('episode', 111, 'reward_cum', -19489.282666665935)
+('episode', 112, 'reward_cum', -17727.855333332645)
+('episode', 113, 'reward_cum', -15599.279999999277)
+('episode', 114, 'reward_cum', -19428.79999999927)
+('episode', 115, 'reward_cum', -17998.788666665932)
+('episode', 116, 'reward_cum', -19479.09199999927)
+('episode', 117, 'reward_cum', -17020.11999999927)
+('episode', 118, 'reward_cum', -18118.2939999993)
+4
+('episode', 119, 'reward_cum', -19447.673333332605)
+
+target_params_replaced
+
+('episode', 120, 'reward_cum', -19519.879999999263)
+69.5
+69.5
+69.5
+69.5
+69.5
+('episode', 121, 'reward_cum', -19484.230666665928)
+('episode', 122, 'reward_cum', -19609.87599999926)
+('episode', 123, 'reward_cum', -19467.72666666594)
+69.5
+69.2333333333
+69.2333333333
+('episode', 124, 'reward_cum', -18916.503333332646)
+('episode', 125, 'reward_cum', -19549.030666665934)
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+('episode', 126, 'reward_cum', -19427.6253333326)
+('episode', 127, 'reward_cum', -18359.411999999287)
+('episode', 128, 'reward_cum', -18459.2013333326)
+('episode', 129, 'reward_cum', -16579.063999999456)
+
+target_params_replaced
+
+('episode', 130, 'reward_cum', -19567.789999999262)
+('episode', 131, 'reward_cum', -19589.343999999262)
+('episode', 132, 'reward_cum', -19449.097333332596)
+('episode', 133, 'reward_cum', -17058.048666666058)
+('episode', 134, 'reward_cum', -17678.053333332682)
+('episode', 135, 'reward_cum', -13859.999999999758)
+4
+('episode', 136, 'reward_cum', -19449.019999999262)
+4
+4
+('episode', 137, 'reward_cum', -16807.46199999926)
+('episode', 138, 'reward_cum', -18808.732666665936)
+('episode', 139, 'reward_cum', -19608.82399999927)
+
+target_params_replaced
+
+('episode', 140, 'reward_cum', -17697.585333332623)
+69.5
+('episode', 141, 'reward_cum', -18443.84199999933)
+('episode', 142, 'reward_cum', -18197.11999999929)
+4
+('episode', 143, 'reward_cum', -19277.655999999282)
+('episode', 144, 'reward_cum', -19647.749999999265)
+('episode', 145, 'reward_cum', -17738.626666665958)
+('episode', 146, 'reward_cum', -19398.523999999277)
+('episode', 147, 'reward_cum', -18589.677333332605)
+('episode', 148, 'reward_cum', -18299.785999999265)
+('episode', 149, 'reward_cum', -18600.35199999926)
+
+target_params_replaced
+
+('episode', 150, 'reward_cum', -16969.401333332826)
+('episode', 151, 'reward_cum', -18119.323999999262)
+('episode', 152, 'reward_cum', -18368.231999999345)
+('episode', 153, 'reward_cum', -19529.27999999926)
+('episode', 154, 'reward_cum', -18007.711999999272)
+('episode', 155, 'reward_cum', -19299.279999999282)
+69.5
+('episode', 156, 'reward_cum', -16267.985333332836)
+('episode', 157, 'reward_cum', -17648.655333332754)
+('episode', 158, 'reward_cum', -17968.029333332604)
+('episode', 159, 'reward_cum', -19478.291999999266)
+
+target_params_replaced
+
+('episode', 160, 'reward_cum', -19509.3253333326)
+('episode', 161, 'reward_cum', -19569.279999999268)
+('episode', 162, 'reward_cum', -17959.35066666595)
+('episode', 163, 'reward_cum', -19317.84399999927)
+('episode', 164, 'reward_cum', -18877.89866666595)
+('episode', 165, 'reward_cum', -19379.39999999927)
+('episode', 166, 'reward_cum', -19429.130666665933)
+('episode', 167, 'reward_cum', -19559.24666666593)
+('episode', 168, 'reward_cum', -18567.6593333326)
+69.5
+('episode', 169, 'reward_cum', -19628.65199999927)
+
+target_params_replaced
+
+('episode', 170, 'reward_cum', -18868.291999999266)
+69.5
+('episode', 171, 'reward_cum', -19508.113999999274)
+('episode', 172, 'reward_cum', -19518.767999999265)
+69.5
+69.5
+69.5
+('episode', 173, 'reward_cum', -19546.881333332614)
+4
+('episode', 174, 'reward_cum', -19519.806666665932)
+('episode', 175, 'reward_cum', -19519.279999999264)
+69.5
+('episode', 176, 'reward_cum', -18985.730666665928)
+('episode', 177, 'reward_cum', -19437.77266666594)
+('episode', 178, 'reward_cum', -19289.002666665954)
+('episode', 179, 'reward_cum', -18447.027999999285)
+
+target_params_replaced
+
+('episode', 180, 'reward_cum', -18486.483999999342)
+('episode', 181, 'reward_cum', -17319.87599999927)
+4
+('episode', 182, 'reward_cum', -18276.959999999315)
+4
+('episode', 183, 'reward_cum', -19409.625333332595)
+73.7333333333
+('episode', 184, 'reward_cum', -18240.983999999324)
+('episode', 185, 'reward_cum', -19447.76666666594)
+('episode', 186, 'reward_cum', -19489.19999999927)
+4
+('episode', 187, 'reward_cum', -18858.10533333266)
+('episode', 188, 'reward_cum', -19398.82266666594)
+('episode', 189, 'reward_cum', -19048.609333332643)
+
+target_params_replaced
+
+('episode', 190, 'reward_cum', -18898.97866666593)
+('episode', 191, 'reward_cum', -19630.465999999255)
+('episode', 192, 'reward_cum', -19458.109999999273)
+('episode', 193, 'reward_cum', -17879.99999999942)
+('episode', 194, 'reward_cum', -19619.279999999264)
+('episode', 195, 'reward_cum', -19580.119999999268)
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+('episode', 196, 'reward_cum', -19494.123999999265)
+('episode', 197, 'reward_cum', -19459.279999999264)
+('episode', 198, 'reward_cum', -19418.07999999927)
+69.5
+69.5
+('episode', 199, 'reward_cum', -19529.751999999266)
+
+target_params_replaced
+
+('episode', 200, 'reward_cum', -19498.4093333326)
+('episode', 201, 'reward_cum', -18649.387999999348)
+4
+('episode', 202, 'reward_cum', -19518.679999999276)
+('episode', 203, 'reward_cum', -19546.647999999266)
+('episode', 204, 'reward_cum', -19188.575999999288)
+('episode', 205, 'reward_cum', -18908.205333332662)
+4
+('episode', 206, 'reward_cum', -18997.76399999927)
+('episode', 207, 'reward_cum', -19008.682666665965)
+('episode', 208, 'reward_cum', -19378.605333332616)
+('episode', 209, 'reward_cum', -19628.163333332595)
+
+target_params_replaced
+
+('episode', 210, 'reward_cum', -19529.427999999265)
+('episode', 211, 'reward_cum', -19467.682666665944)
+4
+('episode', 212, 'reward_cum', -19579.87999999926)
+('episode', 213, 'reward_cum', -17508.41199999945)
+('episode', 214, 'reward_cum', -19599.238666665926)
+('episode', 215, 'reward_cum', -19518.703999999263)
+('episode', 216, 'reward_cum', -19588.911999999265)
+('episode', 217, 'reward_cum', -19337.354666665942)
+('episode', 218, 'reward_cum', -19447.45599999927)
+('episode', 219, 'reward_cum', -19189.639999999297)
+
+target_params_replaced
+
+('episode', 220, 'reward_cum', -18378.579999999278)
+('episode', 221, 'reward_cum', -19757.959999999257)
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+('episode', 222, 'reward_cum', -19411.453999999274)
+('episode', 223, 'reward_cum', -19569.999999999265)
+('episode', 224, 'reward_cum', -19488.02799999927)
+('episode', 225, 'reward_cum', -18520.274666665944)
+('episode', 226, 'reward_cum', -19329.443999999276)
+('episode', 227, 'reward_cum', -19026.96133333261)
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+('episode', 228, 'reward_cum', -17963.683333332603)
+('episode', 229, 'reward_cum', -19569.150666665933)
+
+target_params_replaced
+
+('episode', 230, 'reward_cum', -19538.67199999926)
+('episode', 231, 'reward_cum', -18319.485999999262)
+('episode', 232, 'reward_cum', -19499.978666665935)
+('episode', 233, 'reward_cum', -18608.67999999927)
+('episode', 234, 'reward_cum', -19619.879999999266)
+('episode', 235, 'reward_cum', -19489.279999999268)
+69.5
+('episode', 236, 'reward_cum', -18808.279999999337)
+('episode', 237, 'reward_cum', -17779.399999999263)
+('episode', 238, 'reward_cum', -19528.59199999927)
+4
+('episode', 239, 'reward_cum', -16588.331999999267)
+
+target_params_replaced
+
+('episode', 240, 'reward_cum', -19628.829999999256)
+('episode', 241, 'reward_cum', -19377.735333332603)
+('episode', 242, 'reward_cum', -16299.999999999269)
+4
+('episode', 243, 'reward_cum', -19239.303999999272)
+4
+('episode', 244, 'reward_cum', -19487.806666665943)
+('episode', 245, 'reward_cum', -19456.989333332614)
+('episode', 246, 'reward_cum', -19508.2453333326)
+('episode', 247, 'reward_cum', -19578.658666665928)
+('episode', 248, 'reward_cum', -19439.167999999278)
+('episode', 249, 'reward_cum', -19569.27599999927)
+
+target_params_replaced
+
+('episode', 250, 'reward_cum', -19407.701999999274)
+4
+('episode', 251, 'reward_cum', -18367.46266666594)
+('episode', 252, 'reward_cum', -18777.7093333326)
+4
+('episode', 253, 'reward_cum', -19177.863999999267)
+('episode', 254, 'reward_cum', -18489.04399999935)
+('episode', 255, 'reward_cum', -17749.23399999931)
+('episode', 256, 'reward_cum', -14689.046666666023)
+('episode', 257, 'reward_cum', -19477.483999999266)
+('episode', 258, 'reward_cum', -18489.13599999932)
+('episode', 259, 'reward_cum', -19508.999999999265)
+
+target_params_replaced
+
+('episode', 260, 'reward_cum', -19439.474666665938)
+('episode', 261, 'reward_cum', -19537.482666665936)
+('episode', 262, 'reward_cum', -19459.121999999268)
+('episode', 263, 'reward_cum', -19457.839999999273)
+4
+('episode', 264, 'reward_cum', -19478.061333332607)
+('episode', 265, 'reward_cum', -18506.734666665958)
+('episode', 266, 'reward_cum', -18779.99999999927)
+('episode', 267, 'reward_cum', -19609.99999999926)
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+69.5
+('episode', 268, 'reward_cum', -19361.42066666594)
+('episode', 269, 'reward_cum', -18588.11399999927)
+
+target_params_replaced
+
+('episode', 270, 'reward_cum', -19548.347999999267)
+('episode', 271, 'reward_cum', -19547.522666665936)
+('episode', 272, 'reward_cum', -18768.551999999265)
+('episode', 273, 'reward_cum', -19499.399999999274)
+('episode', 274, 'reward_cum', -19387.383999999274)
+4
+('episode', 275, 'reward_cum', -19489.999999999265)
+('episode', 276, 'reward_cum', -18508.293333332695)
+('episode', 277, 'reward_cum', -19548.987999999266)
+('episode', 278, 'reward_cum', -19399.145999999277)
+('episode', 279, 'reward_cum', -17686.994666665938)
+
+target_params_replaced
+
+('episode', 280, 'reward_cum', -19397.4253333326)
+('episode', 281, 'reward_cum', -19518.492666665934)
+('episode', 282, 'reward_cum', -19398.679999999273)
+4
+('episode', 283, 'reward_cum', -19388.52399999926)
+('episode', 284, 'reward_cum', -17699.399999999267)
+69.5
+69.5
+('episode', 285, 'reward_cum', -18524.9093333326)
+('episode', 286, 'reward_cum', -19599.195999999265)
+('episode', 287, 'reward_cum', -18909.549999999275)
+69.5
+69.5
+('episode', 288, 'reward_cum', -19548.452666665933)
+('episode', 289, 'reward_cum', -19608.598666665926)
+
+target_params_replaced
+
+('episode', 290, 'reward_cum', -19448.882666665937)
+('episode', 291, 'reward_cum', -15927.621999999268)
+('episode', 292, 'reward_cum', -19357.12399999928)
+('episode', 293, 'reward_cum', -18588.559999999266)
+('episode', 294, 'reward_cum', -19300.131999999274)
+('episode', 295, 'reward_cum', -19618.55999999926)
+('episode', 296, 'reward_cum', -19500.08933333261)
+4
+('episode', 297, 'reward_cum', -18667.119999999337)
+('episode', 298, 'reward_cum', -19569.999999999265)
+4
+('episode', 299, 'reward_cum', -18469.99999999935)
+
+target_params_replaced
+
+('episode', 300, 'reward_cum', -19248.98999999926)
+4
+('episode', 301, 'reward_cum', -17068.953333332738)
+('episode', 302, 'reward_cum', -19418.659999999276)
+('episode', 303, 'reward_cum', -14837.352666666275)
+69.5
+('episode', 304, 'reward_cum', -19559.34666666593)
+('episode', 305, 'reward_cum', -18949.15999999927)
+('episode', 306, 'reward_cum', -19508.575999999266)
+('episode', 307, 'reward_cum', -19488.367999999267)
+('episode', 308, 'reward_cum', -19357.758666665937)
+('episode', 309, 'reward_cum', -18049.263999999268)
+
+target_params_replaced
+
+('episode', 310, 'reward_cum', -19589.15999999926)
+('episode', 311, 'reward_cum', -19639.43466666593)
+('episode', 312, 'reward_cum', -19488.071999999265)
+('episode', 313, 'reward_cum', -18798.7053333326)
+('episode', 314, 'reward_cum', -19459.399999999267)
+('episode', 315, 'reward_cum', -19349.182666665947)
+('episode', 316, 'reward_cum', -19436.74599999927)
+('episode', 317, 'reward_cum', -19536.674666665935)
+('episode', 318, 'reward_cum', -19417.48799999927)
+69.5
+69.5
+69.5
+69.5
+69.5
+('episode', 319, 'reward_cum', -19387.358666665943)
+
+target_params_replaced
+
+('episode', 320, 'reward_cum', -19559.505333332607)
+('episode', 321, 'reward_cum', -19257.839999999287)
+('episode', 322, 'reward_cum', -18768.782666665924)
+('episode', 323, 'reward_cum', -17978.330666666025)
+('episode', 324, 'reward_cum', -19589.50599999926)
+('episode', 325, 'reward_cum', -17519.918666666035)
+('episode', 326, 'reward_cum', -19537.94666666594)

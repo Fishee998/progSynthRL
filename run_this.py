@@ -8,17 +8,18 @@ target_reward = 80
 def run_maze():
     step = 0
     buf = StringIO.StringIO()
-    for episode in range(300):
+    for episode in range(3000):
         # initial observation
         observation, info_ = env.reset()
         actIndex = astEncoder.setAction1s(info_)
         reward_cum = 0
 
-        for t in range(300):
+        for t in range(2000):
             # fresh env
             # env.render()
 
             # RL choose action based on observation
+            # print('episode:', episode,'t:', t);
             action = RL.choose_action(observation, episode, actIndex, info_.candidate)
 
             # RL take action and get next observation and reward
