@@ -8,10 +8,14 @@ python版本2.7
 1 安装Swig 
 
 3 用swig包装c文件使之可以被python调用
+
+修改MAKEFILE中   -I的值 -I的值可以通过以下命令获得 
+
+    $(pkg-config --cflags --libs python2）
   
      make 
    
-4 运行
+4   运行
 
      python run_this.py 
   
