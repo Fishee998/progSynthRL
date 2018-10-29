@@ -95,32 +95,6 @@ class Maze(object):
             if newfitnessValue > 80:
                 print newfitnessValue
             # reward = newfitnessValue - oldfitnessValue
-            '''
-            if oldfitnessValue > 20:
-                if newfitnessValue > 29:
-                    reward = 1
-            if oldfitnessValue > 30:
-                if newfitnessValue > 40:
-                    reward = 1
-            if oldfitnessValue > 40:
-                if newfitnessValue > 50:
-                    reward = 2
-            if oldfitnessValue > 50:
-                if newfitnessValue > 60:
-                    reward = 2
-            if newfitnessValue > 30:
-                reward = 1
-            if newfitnessValue > 40:
-                reward = 2
-            if newfitnessValue > 50:
-                reward = 3
-            if newfitnessValue > 59:
-                reward = 4
-            if newfitnessValue > 70:
-                reward = 10
-            if newfitnessValue > 75:
-                reward = 10
-            '''
             if self.fitness == oldfitnessValue:
                 self.badaction = self.badaction + 1
                 # print(self.badaction)
@@ -136,13 +110,6 @@ class Maze(object):
             if newfitnessValue > 69:
                 print(newfitnessValue)
                 reward = 0.1 * (self.fitness - oldfitnessValue)
-                # if oldfitnessValue < 40:
-                #   if newfitnessValue > 50:
-                # print(newfitnessValue)
-                #     reward = reward + 0.1 * (newfitnessValue - oldfitnessValue)
-                # if oldfitnessValue < 50:
-                #   if newfitnessValue > 60:
-                #      reward = reward + 0.1 * (newfitnessValue - oldfitnessValue)
 
         done = bool(self.fitness > 78.4)
         if done:

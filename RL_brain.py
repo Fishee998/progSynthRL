@@ -144,33 +144,35 @@ class DeepQNetwork:
 
     # action1 action2 legal
     def action2set(self, action2s):
-        actionLen = example.action2Len(action2s)
+        # actionLen = example.getLength(action2s)
         action2Seleced = []
-        for index in range(actionLen):
+        index = 0
+        while example.get_action2(action2s, index) != 100:
             action2Seleced.append(example.get_action2(action2s, index))
+            index += 1
         return action2Seleced
 
     def getAction1(self, act1Set, action1_value):
-        '''
         action1Set = np.nonzero(act1Set)[0]
         action1_prob = []
         for index in action1Set:
             action1_prob.append(action1_value[0][index])
         action1_index = np.argmax(action1_prob)
         action1 = action1Set[action1_index]
-        '''
+
         # no restrict
-        action1 = np.argmax(action1_value[0])
+        # action1 = np.argmax(action1_value[0])
         return action1
 
     def getAction1_random(self, act1Set):
-        act1Set1 = np.nonzero(act1Set)
-        action1 = choice(act1Set1[0])
-        return action1
+        action1s = np.nonzero(act1Set)
+        action1 = random.choice(action1s[0])
 
-    def getAction2(self, candidate, action1, action2_value):
-        '''
-        action2 = example.getLegalAction2(candidate, action1)
+        real_action = act1Set[action1]
+        return action1, real_action
+
+    def getAction2(self, candidate, action1_real, action2_value):
+        action2 = example.getLegalAction2(candidate, action1_real)
         action2set = self.action2set(action2)
         action2_prob = []
         for index in list(set(action2set)):
@@ -178,12 +180,12 @@ class DeepQNetwork:
         action2_index = np.argmax(action2_prob)
         
         action2 = action2set[action2_index]
-        ''' 
-        action2  = np.argmax(action2_value[0])
+
+        #action2  = np.argmax(action2_value[0])
         return action2
 
-    def getAction2_random(self, candidate, action1):
-        action2_ = example.getLegalAction2(candidate, action1)
+    def getAction2_random(self, candidate, action1_real):
+        action2_ = example.getLegalAction2(candidate, action1_real)
         action2set = self.action2set(action2_)
         action2 = choice(action2set)
         return action2
@@ -204,16 +206,16 @@ class DeepQNetwork:
             # forward feed the observation and get q value for every actions
             actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
             actions_value2 = self.sess.run(self.q_eval2, feed_dict={self.s: observation})
-            action1 = self.getAction1(act1Set, actions_value1)
-            action2 = self.getAction2(candidate, action1, actions_value2)
-            action = self.getAction(action1, action2)
+            action1, action1_real = self.getAction1(act1Set, actions_value1)
+            action2 = self.getAction2(candidate, action1_real, actions_value2)
         else:
-            #action1 = random.randint(0, 48)
-            action2 = random.randint(0, 49)
-            action1 = self.getAction1_random(act1Set)
-            #action2 = self.getAction2_random(candidate, action1)
-            action = self.getAction(action1, action2)
-        return action
+            # action1 = random.randint(0, 48)
+            # action2 = random.randint(0, 49)
+            action1, action1_real = self.getAction1_random(act1Set)
+            action2 = self.getAction2_random(candidate, action1_real)
+        action = self.getAction(action1, action2)
+        action_real = self.getAction(action1_real, action2)
+        return action, action_real
 
     def learn(self):
         # check to replace target parameters
@@ -290,12 +292,7 @@ class DeepQNetwork:
         self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max else self.epsilon_max
         self.learn_step_counter += 1
 
-    def plot_cost(self):
-        import matplotlib.pyplot as plt
-        plt.plot(np.arange(len(self.cost_his)), self.cost_his)
-        plt.ylabel('Cost')
-        plt.xlabel('training steps')
-        plt.show()
+
 
 
 

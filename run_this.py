@@ -20,11 +20,11 @@ def run_maze():
 
             # RL choose action based on observation
             # print('episode:', episode,'t:', t);
-            action = RL.choose_action(observation, episode, actIndex, info_.candidate)
+            action, real_action = RL.choose_action(observation, episode, actIndex, info_.candidate)
 
             # RL take action and get next observation and reward
 
-            observation_, reward, done, info_ = env.step(action)
+            observation_, reward, done, info_ = env.step(real_action)
             # print("step ok")
             if done and example.get_fitness(info_.candidate) > 78.4:
                 reward = target_reward
@@ -45,7 +45,7 @@ def run_maze():
 
             actIndex = astEncoder.setAction1s(info_)
 
-            RL.store_transition(observation, action[0], action[0], reward, observation_)
+            RL.store_transition(observation, action[0], action[1], reward, observation_)
 
             reward_cum += reward
 
