@@ -132,6 +132,10 @@ def getCheckedBySpin(org):
     return _example.getCheckedBySpin(org)
 getCheckedBySpin = _example.getCheckedBySpin
 
+def getroot(prog):
+    return _example.getroot(prog)
+getroot = _example.getroot
+
 def spin_(candidate):
     return _example.spin_(candidate)
 spin_ = _example.spin_
@@ -195,6 +199,10 @@ initProg = _example.initProg
 def mutation_(candidate0, nodeNum, actType, requirements, numofrequirements, coef):
     return _example.mutation_(candidate0, nodeNum, actType, requirements, numofrequirements, coef)
 mutation_ = _example.mutation_
+
+def printprog(root, blank, prog):
+    return _example.printprog(root, blank, prog)
+printprog = _example.printprog
 # This file is compatible with both classic and new-style classes.
 
 cvar = _example.cvar

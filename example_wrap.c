@@ -3068,6 +3068,10 @@ int getCheckedBySpin(program* org)
 {
     return org->checkedBySpin;
 }
+treenode* getroot(program* prog)
+{
+    return prog->root;
+}
 
 
 #include <limits.h>
@@ -3492,6 +3496,28 @@ SWIGINTERN PyObject *_wrap_getCheckedBySpin(PyObject *SWIGUNUSEDPARM(self), PyOb
   arg1 = (program *)(argp1);
   result = (int)getCheckedBySpin(arg1);
   resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_getroot(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  program *arg1 = (program *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  treenode *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:getroot",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_program, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "getroot" "', argument " "1"" of type '" "program *""'"); 
+  }
+  arg1 = (program *)(argp1);
+  result = (treenode *)getroot(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_treenode, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -4032,6 +4058,45 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_printprog(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  treenode *arg1 = (treenode *) 0 ;
+  int arg2 ;
+  program *arg3 = (program *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:printprog",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_treenode, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "printprog" "', argument " "1"" of type '" "treenode *""'"); 
+  }
+  arg1 = (treenode *)(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "printprog" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = (int)(val2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_program, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "printprog" "', argument " "3"" of type '" "program *""'"); 
+  }
+  arg3 = (program *)(argp3);
+  printprog(arg1,arg2,arg3);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
 	 { (char *)"get_program", _wrap_get_program, METH_VARARGS, NULL},
@@ -4043,6 +4108,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"get_action2", _wrap_get_action2, METH_VARARGS, NULL},
 	 { (char *)"getPropertyfit", _wrap_getPropertyfit, METH_VARARGS, NULL},
 	 { (char *)"getCheckedBySpin", _wrap_getCheckedBySpin, METH_VARARGS, NULL},
+	 { (char *)"getroot", _wrap_getroot, METH_VARARGS, NULL},
 	 { (char *)"spin_", _wrap_spin_, METH_VARARGS, NULL},
 	 { (char *)"getLegalAction2", _wrap_getLegalAction2, METH_VARARGS, NULL},
 	 { (char *)"mutation1", _wrap_mutation1, METH_VARARGS, NULL},
@@ -4059,6 +4125,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"setAll", _wrap_setAll, METH_VARARGS, NULL},
 	 { (char *)"initProg", _wrap_initProg, METH_VARARGS, NULL},
 	 { (char *)"mutation_", _wrap_mutation_, METH_VARARGS, NULL},
+	 { (char *)"printprog", _wrap_printprog, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 

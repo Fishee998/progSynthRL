@@ -19,10 +19,10 @@ permalink: https://perma.cc/C9ZM-652R
 import numpy as np
 import time
 import sys
-if sys.version_info.major == 2:
-    import Tkinter as tk
-else:
-    import tkinter as tk
+#if sys.version_info.major == 2:
+ #   import Tkinter as tk
+#else:
+ #   import tkinter as tk
 
 import astEncoder
 import prog
@@ -33,17 +33,17 @@ from gym import spaces, logger
 from gym.utils import seeding
 import numpy as np
 
-class Maze(tk.Tk, object):
+class Maze():
 
 
     actionSet = astEncoder.setActSet()
 
     def __init__(self):
-        super(Maze, self).__init__()
+  #      super(Maze, self).__init__()
         # self.action_space = ['u', 'd', 'l', 'r']
         # self.n_actions = len(self.action_space)
         self.n_features = 2
-        self.title('maze')
+   #     self.title('maze')
         # self.geometry('{0}x{1}'.format(MAZE_H * UNIT, MAZE_H * UNIT))
 
         # actionTuple[0] = nodeNum  actionTuple[1] = actionType

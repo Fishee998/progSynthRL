@@ -190,7 +190,7 @@ int compareTreenode(treenode* t1,treenode* t2);
 //treenode* wrongcase_1();
 //treenode* wrongcase_2();
 
-void newprintprog(treenode* root,program* prog, char* s);
+char* newprintprog(treenode* root,program* prog, char* s);
 void orgTorml(organism* org, FILE* f);
 
 //trace.h
@@ -252,16 +252,15 @@ int setCondNum(cond* c,program* prog, int number);
 int setTreenodeNum(treenode* root, program* prog, int number);
 //void newprintprog(treenode* root,program* prog, char *s);
 void newprintcond(cond* c,program* prog);
-void newprintexp(exp_* e,program* prog, int node, char* s);
+char* newprintexp(exp_* e,program* prog, int node, char* s);
 //void newprintexp(exp_* e,program* prog, int node);
-void newprintexp_(exp_* e,program* prog, char* s);
+char* newprintexp_(exp_* e,program* prog, char* s);
 //void newprintexp_(exp_* e,program* prog);
 void expNode(exp_* e,program* prog);
-void condNode(cond* c,program* prog, int node, char* s);
-void treeNode_(treenode* root,program* prog, int node, char* s);
+char* condNode(cond* c,program* prog, int node, char* s);
+char* treeNode_(treenode* root,program* prog, int node, char* s);
 int compareNode(treenode* root,int type,int maxdepth);
 char* iToStr(int number);
-//treenode* findNode(treenode* root, program* prog, int number, treenode* result);
 treenode* findNode(treenode* root, program* prog, int number);
 program* mutation1(program* parent, int nodeNum, int actionType);
 void printAst(program* prog);

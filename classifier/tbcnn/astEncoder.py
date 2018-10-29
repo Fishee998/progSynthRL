@@ -47,13 +47,15 @@ def getAstDict():
     # get dictionary of AST
     with open("./data/ast.txt", "r") as f:
         samples_before = f.read()
-        samples = samples_before.split("\n")[:-1]
+        samples = samples_before.split("\n")
         ast = []
         for sample in samples:
             if sample == '':
                 print("error")
             nodeDict = {}
             nodeNumber = sample.split("node")[0]
+            if sample == samples[0]:
+                nodeDict['number'] = int(nodeNumber[-1])
             nodeDict['number'] = int(nodeNumber)
             node = sample.split("node:")[1].split(";")[0]
             nodeDict['name'] = node

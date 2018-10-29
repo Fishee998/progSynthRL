@@ -35,7 +35,7 @@ class DeepQNetwork:
             replace_target_iter=300,
             memory_size=500,
             batch_size=1,
-            e_greedy_increment=0.0025,
+            e_greedy_increment=0.01,
             output_graph=False,
     ):
         self.n_actions1 = n_actions1
@@ -214,13 +214,9 @@ class DeepQNetwork:
         # action1_value = tf.Variable(action1_value)
         # action1_value = tf.gather(action1_value, index)
         # action1_index = tf.argmax(action1_value)
-        action1_index = tf.argmax(tf.gather(tf.Variable(action1_value[0]),index))
+        action1 = np.argmax(action1_value[0])
         # print(action1_value)
         # print(index)
-        with tf.Session() as sess:
-            sess.run(tf.global_variables_initializer())
-            action1_index = sess.run(action1_index)
-        action1 = action1Set[action1_index]
         return action1
 
     def getAction1_random(self, act1Set):
@@ -229,6 +225,7 @@ class DeepQNetwork:
         return action1
 
     def getAction2(self, candidate, action1, action2_value):
+        '''
         action2 = example.getLegalAction2(candidate, action1)
         action2set_ = self.action2set(action2)
         action2_ = []
@@ -239,17 +236,14 @@ class DeepQNetwork:
             action2_[a] = 1
         action2Set = np.nonzero(action2_)[0]
         index = tf.Variable(action2Set)
+        '''
         # action1_value = tf.Variable(action1_value)
         # action1_value = action1_value[0]
         # action1_value = tf.Variable(action1_value)
         # action1_value = tf.gather(action1_value, index)
         # action1_index = tf.argmax(action1_value)
-        action2_index = tf.argmax(tf.gather(tf.Variable(action2_value[0]), index))
+        action2 = np.argmax(action2_value[0])
         # print(index)
-        with tf.Session() as sess:
-            sess.run(tf.global_variables_initializer())
-            action2_index = sess.run(action2_index)
-        action2 = action2Set[action2_index]
         return action2
 
     def getAction2_random(self, candidate, action1):

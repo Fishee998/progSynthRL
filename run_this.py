@@ -11,7 +11,7 @@ def run_maze():
     step = 0
     buf = StringIO.StringIO()
 
-    tfrecord_wrt = RL.make_tfrecord()
+    #tfrecord_wrt = RL.make_tfrecord()
     for episode in range(300):
         # initial observation
         observation, info_ = env.reset()
@@ -84,7 +84,7 @@ def run_maze():
 if __name__ == "__main__":
     # maze game
     env = Maze()
-    with open('/Users/zhuang/workspace/ast-node-encoding/data/vectors.pkl', 'rb') as fh:
+    with open('../vectors.pkl', 'rb') as fh:
         embeddings, embed_lookup = pickle.load(fh)
         num_feats = len(embeddings[0])
     RL = DeepQNetwork(
@@ -98,6 +98,4 @@ if __name__ == "__main__":
                       memory_size=2000,
                       # output_graph=True
                       )
-    env.after(100, run_maze)
-    env.mainloop()
-    RL.plot_cost()
+    run_maze();
