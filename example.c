@@ -4469,23 +4469,16 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
             {
                 case 42:
                     newnode = createTreenode(3,0,NULL,NULL,NULL,NULL);
-                    if (getStatement(mnode,0)->type != 1)
-                    {
+
                         newnode->treenode1 = mnode;
                         commandtypeVarindex[0] = 2;
                         assignRandom = 0;
                         newnode->treenode2 = genprog_(newprog->maxdepth,newprog, commandtypeVarindex, assignRandom, NULL, 0);
-                    }
-                    else
-                    {
-                        newprog->illegal = 1;
-                        return newprog;
-                    }
+
                     break;
                 case 43:
                     newnode = createTreenode(3,0,NULL,NULL,NULL,NULL);
-                    if(getStatement(mnode,0)->type != 1)
-                    {
+
                         if (mnode->depth == 3)
                         {
                             newnode->treenode1 = mnode;
@@ -4500,17 +4493,11 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                             newprog->illegal = 1;
                             return newprog;
                         }
-                    }
-                    else
-                    {
-                        newprog->illegal = 1;
-                        return newprog;
-                    }
+
                     break;
                 case 44:
                     newnode = createTreenode(3,0,NULL,NULL,NULL,NULL);
-                    if(getStatement(mnode,0)->type != 1)
-                    {
+
                         if (mnode->depth == 3)
                         {
                             newnode->treenode1 = mnode;
@@ -4525,32 +4512,20 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                             newprog->illegal = 1;
                             return newprog;
                         }
-                    }
-                    else
-                    {
-                        newprog->illegal = 1;
-                        return newprog;
-                    }
+
                     break;
                 case 45:
                     newnode = createTreenode(3,0,NULL,NULL,NULL,NULL);
-                    if(getStatement(mnode,0)->type != 5)
-                    {
+
                         newnode->treenode2 = mnode;
                         commandtypeVarindex[0] = 2;
                         assignRandom = 0;
                         newnode->treenode1 = genprog_(newprog->maxdepth,newprog, commandtypeVarindex, assignRandom, NULL, 0);
-                    }
-                    else
-                    {
-                        newprog->illegal = 1;
-                        return newprog;
-                    }
+
                     break;
                 case 46:
                     newnode = createTreenode(3,0,NULL,NULL,NULL,NULL);
-                    if(getStatement(mnode,0)->type != 5)
-                    {
+
                         if (mnode->depth == 3)
                         {
                             newnode->treenode2 = mnode;
@@ -4565,17 +4540,11 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                             newprog->illegal = 1;
                             return newprog;
                         }
-                    }
-                    else
-                    {
-                        newprog->illegal = 1;
-                        return newprog;
-                    }
+
                     break;
                 case 47:
                     newnode = createTreenode(3,0,NULL,NULL,NULL,NULL);
-                    if(getStatement(mnode,0)->type != 5)
-                    {
+
                         if (mnode->depth == 3)
                         {
                             newnode->treenode2 = mnode;
@@ -4590,12 +4559,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                             newprog->illegal = 1;
                             return newprog;
                         }
-                    }
-                    else
-                    {
-                        newprog->illegal = 1;
-                        return newprog;
-                    }
+
                     break;
             }
         }
