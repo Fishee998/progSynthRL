@@ -17,7 +17,13 @@ python版本2.7
    
 4   运行
 
-     python run_this.py 
+tensorflow/conv版本
+
+     python run_this.py
+    
+torch版本
+
+    python My_DQN.py
   
 tips： 
 
