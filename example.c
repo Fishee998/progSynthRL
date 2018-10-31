@@ -4247,8 +4247,8 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
         newprog->illegal = 1;
         return newprog;
     }
-    else
-        printprog(chnode, 0, newprog);
+    //else
+    //    printprog(chnode, 0, newprog);
     /*
     int* action2 = (int*)malloc(sizeof(int)*50);
     action2 = getLegalAction2(newprog, nodeNum);
@@ -4470,17 +4470,17 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
             switch (actionNum)
             {
                 case 42:
-                printf("case 42");
+
                     newnode = createTreenode(3,0,NULL,NULL,NULL,NULL);
-                    printf("case 42");
+
                         newnode->treenode1 = mnode;
-                        printf("case 42");
+
                         commandtypeVarindex[0] = 2;
-                        printf("case 42");
+
                         assignRandom = 0;
-                        printf("case 42");
+
                         newnode->treenode2 = genprog_(newprog->maxdepth,newprog, commandtypeVarindex, assignRandom, NULL, 0);
-                        printf("case 42");
+
 
                     break;
                 case 43:
@@ -4618,7 +4618,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
                             x1 = mnode_;
                             mnode_ = mnode_->treenode1;
                             free(x1);
-                            printf("%d\n", mnode_->treenode1->type);
+                            //printf("%d\n", mnode_->treenode1->type);
                         }
                         freeAll(NULL, NULL, mnode_->treenode2, NULL, NULL, 3);
                         treenode* new2 = mnode_->treenode1;
@@ -4686,7 +4686,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
         }
     }
 
-        printf("%d", newprog->illegal);
+   //     printf("%d", newprog->illegal);
 
     newprog->root = new1;
     return newprog;

@@ -98,7 +98,9 @@ class Maze(object):
             if self.fitness == oldfitnessValue:
                 self.badaction = self.badaction + 1
                 # print(self.badaction)
+
             reward = 0
+            '''
             if newfitnessValue > 30:
                 reward = 0.02 * (self.fitness - oldfitnessValue)
             if newfitnessValue > 40:
@@ -107,6 +109,7 @@ class Maze(object):
                 reward = 0.02 * (self.fitness - oldfitnessValue)
             if newfitnessValue > 60:
                 reward = 0.02 * (self.fitness - oldfitnessValue)
+            '''
             if newfitnessValue > 69:
                 print(newfitnessValue)
                 reward = 0.1 * (self.fitness - oldfitnessValue)
@@ -114,7 +117,7 @@ class Maze(object):
         done = bool(self.fitness > 78.4)
         if done:
             reward = 5
-            print(self.badaction)
+            print("self.badaction",self.badaction)
         if not done:
             reward = reward - 0.05
         return np.array(self.state), reward, done, self

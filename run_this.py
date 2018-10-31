@@ -14,7 +14,7 @@ def run_maze():
         actIndex = astEncoder.setAction1s(info_)
         reward_cum = 0
 
-        for t in range(2000):
+        for t in range(500):
             # fresh env
             # env.render()
 
@@ -50,7 +50,7 @@ def run_maze():
             reward_cum += reward
 
 
-            if (step > 200) and (step % 100 == 0):
+            if (step > 200) and (step % 5 == 0):
                 RL.learn()
 
             # swap observation

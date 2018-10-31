@@ -30,10 +30,10 @@ class DeepQNetwork:
             learning_rate=0.01,
             reward_decay=0.9,
             e_greedy=0.9,
-            replace_target_iter=300,
+            replace_target_iter=10,
             memory_size=500,
-            batch_size=32,
-            e_greedy_increment=0.1,
+            batch_size=128,
+            e_greedy_increment=0.0001,
             output_graph=False,
     ):
         self.n_actions1 = n_actions1
