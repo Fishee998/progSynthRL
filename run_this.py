@@ -6,26 +6,66 @@ import StringIO
 
 target_reward = 80
 def run_maze():
-    step = 0
     buf = StringIO.StringIO()
+    # observation, info_ = env.reset()
+    info_ = env.reset()
     for episode in range(3000):
+        step = 0
         # initial observation
-        observation, info_ = env.reset()
+        # observation, info_ = env.reset()
+        # 100 candidate in actIndex
         actIndex = astEncoder.setAction1s(info_)
         reward_cum = 0
 
-        for t in range(500):
+        for t in range(200):
             # fresh env
             # env.render()
 
             # RL choose action based on observation
             # print('episode:', episode,'t:', t);
-            action, real_action = RL.choose_action(observation, episode, actIndex, info_.candidate)
+            # action, real_action = RL.choose_action(observation, episode, actIndex, info_.candidate)
 
+            # action_, real_action_ = RL.choose_action(info_.state_, episode, actIndex, info_.candidate_)
             # RL take action and get next observation and reward
+            for index in range(100):
+                # observation_, reward, done, info_ = env.step(real_action_[index],index)
+                observation = info_.state_[index]
+                action, real_action = RL.choose_action(observation, episode, actIndex[index], info_.candidate_[index])
+                reward, done, info_ = env.step(real_action, index)
+                observation_ = info_.state_[index]
+                if done:
+                    reward = target_reward
+                    print(
+                        "i_ep" + str(episode) + " step:" + str(t) + " fitness" + str(
+                            example.get_fitness(info_.candidate_[index])))
+                    spin_reward = example.spin_(info_.candidate_[index])
+                    if spin_reward == 20:
+                        buf.write("correct program at i_ep %d: step:%d \n" % (episode, t))
+                        fo = open("./correctProg.txt", "a+")
+                        fo.write(buf.getvalue())
+                        fo.close()
+                    if spin_reward == 5:
+                        print("liveness")
+                    if spin_reward == 10:
+                        print("safety")
+                    reward = reward + spin_reward
 
-            observation_, reward, done, info_ = env.step(real_action)
-            # print("step ok")
+                RL.store_transition(observation, action[0], action[1], reward, observation_)
+
+                reward_cum += reward
+
+                if (step > 200) and (step % 50 == 0):
+                    RL.learn()
+
+                if done:
+                    break
+
+                step += 1
+
+
+            actIndex = astEncoder.setAction1s(info_)
+
+            '''
             if done and example.get_fitness(info_.candidate) > 78.4:
                 reward = target_reward
                 print(
@@ -42,6 +82,7 @@ def run_maze():
                 if spin_reward == 10:
                     print("safety")
                 reward = reward + spin_reward
+           
 
             actIndex = astEncoder.setAction1s(info_)
 
@@ -50,7 +91,7 @@ def run_maze():
             reward_cum += reward
 
 
-            if (step > 200) and (step % 5 == 0):
+            if (step > 20) and (step % 5 == 0):
                 RL.learn()
 
             # swap observation
@@ -60,10 +101,11 @@ def run_maze():
             if done:
                 break
             step += 1
+            '''
         print("episode", episode, "reward_cum", reward_cum)
     # end of game
     print('game over')
-    env.destroy()
+    # env.destroy()
 
 
 if __name__ == "__main__":
@@ -75,8 +117,8 @@ if __name__ == "__main__":
                       learning_rate=0.01,
                       reward_decay=0.9,
                       e_greedy=0.9,
-                      replace_target_iter=200,
-                      memory_size=2000,
+                      replace_target_iter=10,
+                      memory_size=500,
                       # output_graph=True
                       )
     run_maze()

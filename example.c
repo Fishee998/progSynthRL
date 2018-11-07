@@ -4247,9 +4247,10 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
         newprog->illegal = 1;
         return newprog;
     }
-    //else
-    //    printprog(chnode, 0, newprog);
     /*
+    else
+        printprog(chnode, 0, newprog);
+
     int* action2 = (int*)malloc(sizeof(int)*50);
     action2 = getLegalAction2(newprog, nodeNum);
     for (int i=0; i<sizeof(action2); i++) {
@@ -4790,14 +4791,13 @@ action* setAction(int layer, int actionType)
     return result;
 }
 
-program* initProg(Expr** requirements ,int numofrequirements,double* coef)
+program** initProg(Expr** requirements ,int numofrequirements,double* coef)
 {
-    int numofcandidate = 1;
+    int numofcandidate = 100;
     action* act = (action*)malloc(sizeof(action));
     program** candidate = genInitTemplate(numofcandidate);
     for(int i = 0;i < numofcandidate;i++)
     {
-        
         organism* org = genOrganism(candidate[i]);
         double candidatefit = calculateFitness(org,requirements,numofrequirements,coef);
         candidate[i]->fitness = candidatefit;
@@ -4806,10 +4806,9 @@ program* initProg(Expr** requirements ,int numofrequirements,double* coef)
             candidate[i]->propertyfit[j] = org->progs[0]->propertyfit[j];
         candidate[i]->checkedBySpin = 0;
         freeAll(org,NULL,NULL,NULL,NULL,1);
-        
     }
-    printAst(candidate[0]);
-    return candidate[0];
+    // printAst(candidate[0]);
+    return candidate;
 }
 
 program* mutation_(program* candidate0, int nodeNum, int actType, Expr** requirements ,int numofrequirements,double* coef)

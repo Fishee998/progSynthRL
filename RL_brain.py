@@ -200,6 +200,16 @@ class DeepQNetwork:
     def choose_action(self, observation, episode, act1Set, candidate):
         # to have batch dimension when feed into tf placeholder
         observation = observation[np.newaxis, :]
+        if np.random.uniform() < self.epsilon:
+            actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
+            actions_value2 = self.sess.run(self.q_eval2, feed_dict={self.s: observation})
+            action1, action1_real = self.getAction1(act1Set, actions_value1)
+            action2 = self.getAction2(candidate, action1_real, actions_value2)
+        else:
+            action1, action1_real = self.getAction1_random(act1Set)
+            action2 = self.getAction2_random(candidate, action1_real)
+        '''
+        #observation = observation[np.newaxis, :]
         # self.epsilon = 0.8 * (0.993) ** episode
 
         if np.random.uniform() < self.epsilon:
@@ -213,6 +223,7 @@ class DeepQNetwork:
             # action2 = random.randint(0, 49)
             action1, action1_real = self.getAction1_random(act1Set)
             action2 = self.getAction2_random(candidate, action1_real)
+        '''
         action = self.getAction(action1, action2)
         action_real = self.getAction(action1_real, action2)
         return action, action_real

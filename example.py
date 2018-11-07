@@ -156,6 +156,10 @@ def getroot(prog):
     return _example.getroot(prog)
 getroot = _example.getroot
 
+def getCandidate(candidate, i):
+    return _example.getCandidate(candidate, i)
+getCandidate = _example.getCandidate
+
 def spin_(candidate):
     return _example.spin_(candidate)
 spin_ = _example.spin_

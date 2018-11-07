@@ -245,7 +245,19 @@ def get_action1(action_layer234, ast, actionSet):
     return nodeNum, nodth
 
 def setAction1s(info_):
+    act1_index = []
     treenode = ["assign", "if", "while"]
+    for candidate_num in range(100):
+        astActNodes = info_.astActNodes_[candidate_num]
+        for index in astActNodes:
+            a = int(index)
+            if a != 0 and info_.ast_[candidate_num][a]['name'] not in treenode:
+                astActNodes[astActNodes.index(index)] = 0
+            else:
+                if a != 0 and info_.ast_[candidate_num][a]['name'] in treenode:
+                    astActNodes[astActNodes.index(index)] = a
+        act1_index.append(astActNodes)
+    '''
     for index in info_.astActNodes:
         a = int(index)
         if a != 0 and info_.ast[a]['name'] not in treenode:
@@ -255,6 +267,9 @@ def setAction1s(info_):
                 info_.astActNodes[info_.astActNodes.index(index)] = a
     # info_.actIndex = actIndex
     act1_index = info_.astActNodes
+    
+    act1_index.append(astActNodes)
+    '''
     return act1_index
 
 

@@ -10,8 +10,9 @@ def some():
 
 def initProg():
     requirements, coef, actionSet = some()
-    candidate = example.initProg(requirements, numofrequirements, coef)
-    return candidate
+    # 100 candidates
+    candidates = example.initProg(requirements, numofrequirements, coef)
+    return candidates
 
 def actionLegal():
     # state and treenodeNum
@@ -28,10 +29,9 @@ def mutation(candidate, nodeNum, actionType):
     requirements, coef, actionSet = some()
     '''
     root = example.getroot(candidate)
-    example.printprog(root,0,candidate)
-    print(nodeNum)
-
-    print(actionType)
+    example.printprog(root, 0, candidate)
+    print("action1: ", nodeNum)
+    print("action2: ", actionType)
     '''
     candidate1 = example.mutation_(candidate, nodeNum, actionType, requirements, numofrequirements, coef)
     return candidate1

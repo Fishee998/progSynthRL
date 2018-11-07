@@ -276,7 +276,7 @@ extern char *get_time();
 long setConrandom(int a, int b, int c, int d, int e, int f, int g);
 action* setAction(int layer, int actionType);
 program* mutation_(program* candidate0, int nodeNum, int actType,Expr** requirements ,int numofrequirements,double* coef);
-program* initProg(Expr** requirements ,int numofrequirements,double* coef);
+program** initProg(Expr** requirements ,int numofrequirements,double* coef);
 void outputLog_(char* str);
 int mutationCond_(cond* root,program* prog,int type, int action);
 //int* getLegalAction2(program* parent, int nodeNum, int* i_act)

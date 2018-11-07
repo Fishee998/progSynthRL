@@ -1,21 +1,3 @@
-"""
-Reinforcement learning maze example.
-
-Red rectangle:          explorer.
-Black rectangles:       hells       [reward = -1].
-Yellow bin circle:      paradise    [reward = +1].
-All other states:       ground      [reward = 0].
-
-This script is the environment part of this example.
-The RL is in RL_brain.py.
-
-View more on my tutorial page: https://morvanzhou.github.io/tutorials/
-"""
-"""
-Classic cart-pole system implemented by Rich Sutton et al.
-Copied from http://incompleteideas.net/sutton/book/code/pole.c
-permalink: https://perma.cc/C9ZM-652R
-"""
 import numpy as np
 import time
 import sys
@@ -66,39 +48,37 @@ class Maze(object):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
-    def step(self, action):
+    def step(self, action, index):
         assert self.action_space.contains(action), "%r (%s) invalid"%(action, type(action))
-        self.fitness = example.get_fitness(self.candidate)
-        self.candidate = prog.mutation(self.candidate, action[0], action[1])
-        illegal = example.illegal(self.candidate)
+        self.fitness_ = []
+        candidate = self.candidate_[index]
+        fitness = example.get_fitness(candidate)
+        print("fitness value:", fitness)
+        candidate_ = prog.mutation(candidate, action[0], action[1])
+        self.candidate_[index] = candidate_
+        illegal = example.illegal(candidate_)
         if illegal == 1:
             reward = -10
             # self.numIll =self.numIll + 1
         else:
-            oldfitnessValue = self.fitness
+            oldfitnessValue = fitness
             ast = astEncoder.getAstDict()
             state_, astActNodes = astEncoder.astEncoder(ast)
             # print(state_)
+            '''
             if state_ == self.state:
                 # self.numlegalButwrong = self.numlegalButwrong + 1
                 reward = -5
-            self.ast = ast
+            '''
+            self.ast_[index] = ast
             # self.state = self.np_random.uniform(low=-0.05, high=0.05, size=(4,))
-            self.state = tuple(state_)
+            self.state_[index] = np.array(tuple(state_))
             self.steps_beyond_done = None
             # self.candidate = newCandidate
-            self.astActNodes = astActNodes
+            self.astActNodes_[index] = astActNodes
             # self.numlega = self.numlega + 1
-            newfitnessValue = example.get_fitness(self.candidate)
-            self.fitness = newfitnessValue
-            # print(newfitnessValue)
-            if newfitnessValue > 80:
-                print newfitnessValue
-            # reward = newfitnessValue - oldfitnessValue
-            if self.fitness == oldfitnessValue:
-                self.badaction = self.badaction + 1
-                # print(self.badaction)
-
+            newfitnessValue = example.get_fitness(candidate)
+            self.fitness_.append(newfitnessValue)
             reward = 0
             '''
             if newfitnessValue > 30:
@@ -117,15 +97,35 @@ class Maze(object):
         done = bool(self.fitness > 78.4)
         if done:
             reward = 5
-            print("self.badaction",self.badaction)
+            print("self.badaction", self.badaction)
         if not done:
             reward = reward - 0.05
-        return np.array(self.state), reward, done, self
+
+        return reward, done, self
+
+        # return np.array(self.state), reward, done, self
 
     def reset(self):
         self.state = spaces.Box(low=0, high=20, shape=(300,),dtype=int)
         # self.state = self.np_random.uniform(low=0, high=20, size=(3,))
-        candidate = prog.initProg()
+        # candidate = prog.initProg()
+        # 100 candidates
+        self.candidate_ = []
+        self.ast_ = []
+        self.state_ = []
+        self.astActNodes_ = []
+        candidates = prog.initProg()
+        for index in range(100):
+            candidate = example.getCandidate(candidates, index)
+            self.candidate_.append(candidate)
+            example.printAst(candidate)
+            ast = astEncoder.getAstDict()
+            self.ast_.append(ast)
+            state, astActNodes = astEncoder.astEncoder(ast)
+            self.state_.append(np.array(state))
+            self.astActNodes_.append(astActNodes)
+
+        '''    
         ast = astEncoder.getAstDict()
         state, astActNodes = astEncoder.astEncoder(ast)
         self.ast = ast
@@ -134,9 +134,8 @@ class Maze(object):
         self.steps_beyond_done = None
         self.candidate = candidate
         self.astActNodes = astActNodes
-        # return self.state, self
+        
+        
         return np.array(self.state), self
-
-
-
-
+        '''
+        return self

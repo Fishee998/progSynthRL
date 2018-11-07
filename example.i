@@ -53,6 +53,10 @@ treenode* getroot(program* prog)
 {
     return prog->root;
 }
+program* getCandidate(program** candidate, int i)
+{
+    return candidate[i];
+}
 %}
 
 extern int spin_(program* candidate);
@@ -70,7 +74,8 @@ extern organism* genOrganism(program* templat);
 extern double calculateFitness(organism* prog,Expr** exp,int numexp,double* coef);
 extern void freeAll(organism* org,program* prog,treenode* t,cond* c,exp_* e,int type);
 extern void setAll(program* prog);
-extern program* initProg(Expr** requirements ,int numofrequirements,double* coef);
+extern program** initProg(Expr** requirements ,int numofrequirements,double* coef);
 extern program* mutation_(program* candidate0, int nodeNum, int actType,Expr** requirements ,int numofrequirements,double* coef);
 extern void printprog(treenode* root,int blank,program* prog);
 extern int getLength(int* action2);
+extern void printAst(program* prog);
