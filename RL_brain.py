@@ -33,7 +33,7 @@ class DeepQNetwork:
             replace_target_iter=10,
             memory_size=100,
             batch_size=32,
-            e_greedy_increment=0.0001,
+            e_greedy_increment=0.00018,
             output_graph=False,
     ):
         self.n_actions1 = n_actions1
@@ -265,7 +265,7 @@ class DeepQNetwork:
         # check to replace target parameters
         if self.learn_step_counter % self.replace_target_iter == 0:
             self.sess.run(self.replace_target_op)
-            print('\ntarget_params_replaced\n')
+            # print('\ntarget_params_replaced\n')
 
         # sample batch memory from all memory
         if self.memory_counter > self.memory_size:
