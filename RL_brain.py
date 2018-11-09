@@ -33,7 +33,7 @@ class DeepQNetwork:
             replace_target_iter=10,
             memory_size=100,
             batch_size=32,
-            e_greedy_increment=0.0001,
+            e_greedy_increment=0.00018,
             output_graph=False,
     ):
         self.n_actions1 = n_actions1
@@ -348,7 +348,11 @@ class DeepQNetwork:
         self.cost_his.append(self.cost)
 
         # increasing epsilon
+<<<<<<< HEAD
         self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 20 == 0 else self.epsilon
+=======
+        self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 100 == 0 else self.epsilon
+>>>>>>> 6408cf407bfce38ac45bc8ed62c244d09881d590
         self.learn_step_counter += 1
 
 

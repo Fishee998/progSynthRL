@@ -6,9 +6,9 @@ import StringIO
 import time
 import os
 
-#os.environ['LD_LIBRARY_PATH'] = '/usr/local/cuda-9.0/lib64'
-#os.environ['CUDA_HOME'] = '/usr/local/cuda-9.0'
-#os.environ["CUDA_VISIBLE_DEVICES"]= '0'
+os.environ['LD_LIBRARY_PATH'] = '/usr/local/cuda-9.0/lib64'
+os.environ['CUDA_HOME'] = '/usr/local/cuda-9.0'
+os.environ["CUDA_VISIBLE_DEVICES"]= '0'
 
 target_reward = 80
 def run_maze():
