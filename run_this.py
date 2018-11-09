@@ -15,7 +15,7 @@ def run_maze():
     buf = StringIO.StringIO()
     # observation, info_ = env.reset()
     info_ = env.reset()
-    for episode in range(3000):
+    for episode in range(200):
         step = 0
         # initial observation
         # observation, info_ = env.reset()
@@ -23,7 +23,7 @@ def run_maze():
         actIndex = astEncoder.setAction1s(info_)
         reward_cum = 0
         start = time.time()
-        for t in range(200):
+        for t in range(10):
 
             # 100 candidates
             for index in range(100):

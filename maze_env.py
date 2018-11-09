@@ -61,25 +61,43 @@ class Maze(object):
             self.fitness_.append(newfitnessValue)
             reward = 0
 
-            if newfitnessValue > 30:
-                reward = 0.001 * (self.fitness - oldfitnessValue)
-            if newfitnessValue > 40:
-                reward = 0.002 * (self.fitness - oldfitnessValue)
-            if newfitnessValue > 50:
-                reward = 0.003 * (self.fitness - oldfitnessValue)
-            if newfitnessValue > 60:
-                reward = 0.004 * (self.fitness - oldfitnessValue)
-
-        if newfitnessValue > 69:
-            #    print(newfitnessValue)
-            reward = 0.1 * (self.fitness - oldfitnessValue)
+            if newfitnessValue > oldfitnessValue:
+                if newfitnessValue > 69:
+                    reward = 0.005 * (newfitnessValue - oldfitnessValue)
+                else:
+                    if newfitnessValue > 60:
+                        reward = 0.004 * (newfitnessValue - oldfitnessValue)
+                    else:
+                        if newfitnessValue > 50:
+                            reward = 0.003 * (newfitnessValue - oldfitnessValue)
+                        else:
+                            if newfitnessValue > 40:
+                                reward = 0.002 * (newfitnessValue - oldfitnessValue)
+                            else:
+                                if newfitnessValue > 30:
+                                    reward = 0.001 * (newfitnessValue - oldfitnessValue)
+            else:
+                if newfitnessValue < 30:
+                    reward = 0.004 * (newfitnessValue - oldfitnessValue)
+                else:
+                    if newfitnessValue < 40:
+                        reward = 0.003 * (newfitnessValue - oldfitnessValue)
+                    else:
+                        if newfitnessValue < 50:
+                            reward = 0.002 * (newfitnessValue - oldfitnessValue)
+                        else:
+                            if newfitnessValue < 60:
+                                reward = 0.001 * (newfitnessValue - oldfitnessValue)
+                            else:
+                                if newfitnessValue < 69:
+                                    reward = 0.0001 * (newfitnessValue - oldfitnessValue)
 
         done = bool(self.fitness > 78.4)
         if done:
             reward = 1
             print("done")
         if not done:
-            reward = reward - 0.05
+            reward = reward - 0.01
 
         return reward, done, self
 
