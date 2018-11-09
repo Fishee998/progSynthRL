@@ -31,8 +31,8 @@ class DeepQNetwork:
             reward_decay=0.9,
             e_greedy=0.9,
             replace_target_iter=10,
-            memory_size=500,
-            batch_size=128,
+            memory_size=100,
+            batch_size=32,
             e_greedy_increment=0.0001,
             output_graph=False,
     ):
@@ -53,6 +53,9 @@ class DeepQNetwork:
 
         # initialize zero memory [s, a, r, s_]
         self.memory = np.zeros((self.memory_size, n_features * 2 + 3))
+        self.memory_candidate = []
+        self.memory_action1 = []
+
 
         # consist of [target_net, evaluate_net]
         self._build_net()
@@ -142,6 +145,32 @@ class DeepQNetwork:
 
         self.memory_counter += 1
 
+    def store_action1(self, act1_index_store):
+        if not hasattr(self, 'action1_counter'):
+            self.action1_counter = 0
+
+        if self.action1_counter < self.memory_size:
+            self.memory_action1.append(act1_index_store)
+        else:
+            # replace the old memory with new memory
+            index = self.action1_counter % self.memory_size
+            self.memory_action1[index] = act1_index_store
+
+        self.action1_counter += 1
+
+    def store_candidate(self, candidate):
+        if not hasattr(self, 'candidate_counter'):
+            self.candidate_counter = 0
+
+        if self.candidate_counter < self.memory_size:
+            self.memory_candidate.append(candidate)
+        else:
+            # replace the old memory with new memory
+            index = self.candidate_counter % self.memory_size
+            self.memory_candidate[index] = candidate
+
+        self.candidate_counter += 1
+
     # action1 action2 legal
     def action2set(self, action2s):
         # actionLen = example.getLength(action2s)
@@ -164,6 +193,17 @@ class DeepQNetwork:
         # no restrict
         # action1 = np.argmax(action1_value[0])
 
+    def getAction1_(self, act1Set, action1_value):
+        action1Set = np.nonzero(act1Set)[0]
+        action1_prob = []
+        for index in action1Set:
+            action1_prob.append(action1_value[index])
+        prob_max = np.max(action1_prob, axis=0)
+        action1 = np.argmax(action1_prob)
+        action1 = action1Set[action1]
+        real_action = act1Set[action1]
+        return real_action, prob_max
+
     def getAction1_random(self, act1Set):
         action1s = np.nonzero(act1Set)
         action1 = random.choice(action1s[0])
@@ -183,6 +223,15 @@ class DeepQNetwork:
 
         #action2  = np.argmax(action2_value[0])
         return action2
+
+    def getAction2_(self, candidate, action1_real, action2_value):
+        action2 = example.getLegalAction2(candidate, action1_real)
+        action2set = self.action2set(action2)
+        action2_prob = []
+        for index in list(set(action2set)):
+            action2_prob.append(action2_value[0][index])
+        prob_action2 = np.max(action2_prob)
+        return prob_action2
 
     def getAction2_random(self, candidate, action1_real):
         action2_ = example.getLegalAction2(candidate, action1_real)
@@ -208,22 +257,6 @@ class DeepQNetwork:
         else:
             action1, action1_real = self.getAction1_random(act1Set)
             action2 = self.getAction2_random(candidate, action1_real)
-        '''
-        #observation = observation[np.newaxis, :]
-        # self.epsilon = 0.8 * (0.993) ** episode
-
-        if np.random.uniform() < self.epsilon:
-            # forward feed the observation and get q value for every actions
-            actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
-            actions_value2 = self.sess.run(self.q_eval2, feed_dict={self.s: observation})
-            action1, action1_real = self.getAction1(act1Set, actions_value1)
-            action2 = self.getAction2(candidate, action1_real, actions_value2)
-        else:
-            # action1 = random.randint(0, 48)
-            # action2 = random.randint(0, 49)
-            action1, action1_real = self.getAction1_random(act1Set)
-            action2 = self.getAction2_random(candidate, action1_real)
-        '''
         action = self.getAction(action1, action2)
         action_real = self.getAction(action1_real, action2)
         return action, action_real
@@ -240,6 +273,9 @@ class DeepQNetwork:
         else:
             sample_index = np.random.choice(self.memory_counter, size=self.batch_size)
         batch_memory = self.memory[sample_index, :]
+        act1set = [self.memory_action1[i] for i in sample_index]
+        candidate = [self.memory_candidate[i] for i in sample_index]
+
 
         q_next1, q_eval1 = self.sess.run(
             [self.q_next1, self.q_eval1],
@@ -260,11 +296,23 @@ class DeepQNetwork:
         q_target2 = q_eval2.copy()
 
         batch_index = np.arange(self.batch_size, dtype=np.int32)
-        eval_act_index = batch_memory[:, self.n_features].astype(int)
-        reward = batch_memory[:, self.n_features + 1]
+        eval_act_index1 = batch_memory[:, self.n_features].astype(int)
+        eval_act_index2 = batch_memory[:, self.n_features + 1].astype(int)
+        reward = batch_memory[:, self.n_features + 2]
 
-        q_target1[batch_index, eval_act_index] = reward + self.gamma * np.max(q_next1, axis=1)
-        q_target2[batch_index, eval_act_index] = reward + self.gamma * np.max(q_next2, axis=1)
+        # effective action1
+        action1_real_ = range(len(batch_index))
+        q_next1_ = range(len(batch_index))
+        for t in batch_index:
+            action1_real_[t], q_next1_[t] = self.getAction1_(act1set[t], q_next1[t])
+
+        # effective action2
+        q_next2_ = range(len(batch_index))
+        for t in batch_index:
+            q_next2_[t] = self.getAction2_(candidate[t], action1_real_[t], q_next2)
+
+        q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.array(q_next1_)
+        q_target2[batch_index, eval_act_index2] = reward + self.gamma * np.array(q_next2_)
 
         """
         For example in this batch I have 2 samples and 3 actions:
@@ -300,7 +348,7 @@ class DeepQNetwork:
         self.cost_his.append(self.cost)
 
         # increasing epsilon
-        self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max else self.epsilon_max
+        self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 100 == 0 else self.epsilon_max
         self.learn_step_counter += 1
 
 

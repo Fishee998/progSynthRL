@@ -3,6 +3,12 @@ from RL_brain import DeepQNetwork
 import astEncoder
 import example
 import StringIO
+import time
+import os
+
+#os.environ['LD_LIBRARY_PATH'] = '/usr/local/cuda-9.0/lib64'
+#os.environ['CUDA_HOME'] = '/usr/local/cuda-9.0'
+#os.environ["CUDA_VISIBLE_DEVICES"]= '0'
 
 target_reward = 80
 def run_maze():
@@ -16,93 +22,58 @@ def run_maze():
         # 100 candidate in actIndex
         actIndex = astEncoder.setAction1s(info_)
         reward_cum = 0
-
+        start = time.time()
         for t in range(200):
-            # fresh env
-            # env.render()
 
-            # RL choose action based on observation
-            # print('episode:', episode,'t:', t);
-            # action, real_action = RL.choose_action(observation, episode, actIndex, info_.candidate)
-
-            # action_, real_action_ = RL.choose_action(info_.state_, episode, actIndex, info_.candidate_)
-            # RL take action and get next observation and reward
+            # 100 candidates
             for index in range(100):
-                # observation_, reward, done, info_ = env.step(real_action_[index],index)
+
                 observation = info_.state_[index]
+
+                # RL choose action based on observation
                 action, real_action = RL.choose_action(observation, episode, actIndex[index], info_.candidate_[index])
+
+                # RL take action and get next observation and reward
                 reward, done, info_ = env.step(real_action, index)
                 observation_ = info_.state_[index]
                 if done:
                     reward = target_reward
-                    print(
-                        "i_ep" + str(episode) + " step:" + str(t) + " fitness" + str(
-                            example.get_fitness(info_.candidate_[index])))
+                    fitness = example.get_fitness(info_.candidate_[index])
+                    print("i_ep: ", episode, " step:", t, " fitness: ", fitness)
                     spin_reward = example.spin_(info_.candidate_[index])
+                    print("Spin: ", "score: ", spin_reward)
                     if spin_reward == 20:
                         buf.write("correct program at i_ep %d: step:%d \n" % (episode, t))
                         fo = open("./correctProg.txt", "a+")
                         fo.write(buf.getvalue())
                         fo.close()
                     if spin_reward == 5:
-                        print("liveness")
+                        print("Spin: liveness")
                     if spin_reward == 10:
-                        print("safety")
+                        print("Spin: safety")
                     reward = reward + spin_reward
 
+                act1_index_store = astEncoder.setAction1s_store(info_, index)
+
                 RL.store_transition(observation, action[0], action[1], reward, observation_)
+                RL.store_action1(act1_index_store)
+                RL.store_candidate(info_.candidate_[index])
 
                 reward_cum += reward
 
-                if (step > 200) and (step % 50 == 0):
+                if (step > 100) and (step % 2 == 0):
                     RL.learn()
 
-                if done:
+                if reward == 100:
+                    print("congratulations. Correct program synthesised. ")
                     break
 
                 step += 1
 
-
             actIndex = astEncoder.setAction1s(info_)
 
-            '''
-            if done and example.get_fitness(info_.candidate) > 78.4:
-                reward = target_reward
-                print(
-                "i_ep" + str(episode) + " step:" + str(t) + " fitness" + str(example.get_fitness(info_.candidate)))
-                spin_reward = example.spin_(info_.candidate)
-                # buf2.write("program at i_ep %d: step:%d  fitnessValue:%d\n" % (i_episode, t, example.get_fitness(info_.candidate)))
-                if spin_reward == 20:
-                    buf.write("correct program at i_ep %d: step:%d \n" % (episode, t))
-                    fo = open("./correctProg.txt", "a+")
-                    fo.write(buf.getvalue())
-                    fo.close()
-                if spin_reward == 5:
-                    print("liveness")
-                if spin_reward == 10:
-                    print("safety")
-                reward = reward + spin_reward
-           
-
-            actIndex = astEncoder.setAction1s(info_)
-
-            RL.store_transition(observation, action[0], action[1], reward, observation_)
-
-            reward_cum += reward
-
-
-            if (step > 20) and (step % 5 == 0):
-                RL.learn()
-
-            # swap observation
-            observation = observation_
-
-            # break while loop when end of this episode
-            if done:
-                break
-            step += 1
-            '''
-        print("episode", episode, "reward_cum", reward_cum)
+        end = time.time()
+        print("episode: ", episode, "reward_cum: ", reward_cum, "time: ", end - start)
     # end of game
     print('game over')
     # env.destroy()
@@ -118,7 +89,7 @@ if __name__ == "__main__":
                       reward_decay=0.9,
                       e_greedy=0.9,
                       replace_target_iter=10,
-                      memory_size=500,
+                      memory_size=100,
                       # output_graph=True
                       )
     run_maze()

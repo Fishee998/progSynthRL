@@ -273,6 +273,23 @@ def setAction1s(info_):
     return act1_index
 
 
+def setAction1s_store(info_, i):
+
+    treenode = ["assign", "if", "while"]
+    astActNodes = info_.astActNodes_[i]
+    ast = info_.ast_[i]
+    for index in astActNodes:
+        a = int(index)
+        if a != 0 and ast[a]['name'] not in treenode:
+            astActNodes[astActNodes.index(index)] = 0
+        else:
+            if a != 0 and ast[a]['name'] in treenode:
+                astActNodes[astActNodes.index(index)] = a
+    # info_.actIndex = actIndex
+    act1_index = astActNodes
+
+    return act1_index
+
 def getAction2(nodth):
     if nodth < 15 and nodth > 4:
         actionType = random.randint(0, 76799)
