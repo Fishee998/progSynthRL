@@ -3022,56 +3022,25 @@ static swig_module_info swig_module = {swig_types, 10, 0, 0, 0, 0};
 #define SWIG_as_voidptrptr(a) ((void)SWIG_as_voidptr(*a),(void**)(a)) 
 
 
-#include "example.h"
+  static int *new_intp() { 
+    return (int *)calloc(1,sizeof(int));
+  }
+  
+  static int *copy_intp(int value) { 
+    return (int *)memcpy((int *)calloc(1,sizeof(int)),&value,sizeof(int));
+  }
 
+  static void delete_intp(int *obj) { 
+    if (obj) free((char*)obj);
+  }
 
-/* array[i] */
-program* get_program(program** candidate,int number)
-{
-    return candidate[number];
-}
+  static void intp_assign(int *obj, int value) {
+    *obj = value;
+  }
 
-program* neicun()
-{
-    program* newcandidate = (program*)malloc(sizeof(program));
-    return newcandidate;
-}
-
-program* set_fitness(program* org, double fitnessValue)
-{
-    org->fitness = fitnessValue;
-    return org;
-}
-
-double get_fitness(program* org)
-{
-    return org->fitness;
-}
-
-int illegal(program* org)
-{
-    return org->illegal;
-}
-int action2Len(int* action2)
-{
-    return sizeof(action2);
-}
-int get_action2(int* action2, int index)
-{
-    return action2[index];
-}
-double getPropertyfit(program* org)
-{
-    return org->propertyfit[0];
-}
-int getCheckedBySpin(program* org)
-{
-    return org->checkedBySpin;
-}
-treenode* getroot(program* prog)
-{
-    return prog->root;
-}
+  static int intp_value(int *obj) {
+    return *obj;
+  }
 
 
 #include <limits.h>
@@ -3225,14 +3194,70 @@ SWIG_AsVal_int (PyObject * obj, int *val)
 }
 
 
-  #define SWIG_From_double   PyFloat_FromDouble 
-
-
 SWIGINTERNINLINE PyObject*
   SWIG_From_int  (int value)
 {
   return PyInt_FromLong((long) value);
 }
+
+
+#include "example.h"
+
+
+/* array[i] */
+program* get_program(program** candidate,int number)
+{
+    return candidate[number];
+}
+
+program* neicun()
+{
+    program* newcandidate = (program*)malloc(sizeof(program));
+    return newcandidate;
+}
+
+program* set_fitness(program* org, double fitnessValue)
+{
+    org->fitness = fitnessValue;
+    return org;
+}
+
+double get_fitness(program* org)
+{
+    return org->fitness;
+}
+
+int illegal(program* org)
+{
+    return org->illegal;
+}
+int action2Len(int* action2)
+{
+    return sizeof(action2);
+}
+int get_action2(int* action2, int index)
+{
+    return action2[index];
+}
+double getPropertyfit(program* org)
+{
+    return org->propertyfit[0];
+}
+int getCheckedBySpin(program* org)
+{
+    return org->checkedBySpin;
+}
+treenode* getroot(program* prog)
+{
+    return prog->root;
+}
+program* getCandidate(program** candidate, int i)
+{
+    return candidate[i];
+}
+
+
+  #define SWIG_From_double   PyFloat_FromDouble 
 
 
 SWIGINTERN swig_type_info*
@@ -3286,6 +3311,114 @@ SWIG_FromCharPtr(const char *cptr)
 #ifdef __cplusplus
 extern "C" {
 #endif
+SWIGINTERN PyObject *_wrap_new_intp(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_intp")) SWIG_fail;
+  result = (int *)new_intp();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_copy_intp(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:copy_intp",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "copy_intp" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = (int)(val1);
+  result = (int *)copy_intp(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_intp(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int *arg1 = (int *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_intp",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_intp" "', argument " "1"" of type '" "int *""'"); 
+  }
+  arg1 = (int *)(argp1);
+  delete_intp(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_intp_assign(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int *arg1 = (int *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:intp_assign",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "intp_assign" "', argument " "1"" of type '" "int *""'"); 
+  }
+  arg1 = (int *)(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "intp_assign" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = (int)(val2);
+  intp_assign(arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_intp_value(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int *arg1 = (int *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:intp_value",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "intp_value" "', argument " "1"" of type '" "int *""'"); 
+  }
+  arg1 = (int *)(argp1);
+  result = (int)intp_value(arg1);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_get_program(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   program **arg1 = (program **) 0 ;
@@ -3518,6 +3651,37 @@ SWIGINTERN PyObject *_wrap_getroot(PyObject *SWIGUNUSEDPARM(self), PyObject *arg
   arg1 = (program *)(argp1);
   result = (treenode *)getroot(arg1);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_treenode, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_getCandidate(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  program **arg1 = (program **) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  program *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:getCandidate",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_p_program, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "getCandidate" "', argument " "1"" of type '" "program **""'"); 
+  }
+  arg1 = (program **)(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "getCandidate" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = (int)(val2);
+  result = (program *)getCandidate(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_program, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -4097,8 +4261,35 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_getLength(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int *arg1 = (int *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:getLength",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "getLength" "', argument " "1"" of type '" "int *""'"); 
+  }
+  arg1 = (int *)(argp1);
+  result = (int)getLength(arg1);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
+	 { (char *)"new_intp", _wrap_new_intp, METH_VARARGS, NULL},
+	 { (char *)"copy_intp", _wrap_copy_intp, METH_VARARGS, NULL},
+	 { (char *)"delete_intp", _wrap_delete_intp, METH_VARARGS, NULL},
+	 { (char *)"intp_assign", _wrap_intp_assign, METH_VARARGS, NULL},
+	 { (char *)"intp_value", _wrap_intp_value, METH_VARARGS, NULL},
 	 { (char *)"get_program", _wrap_get_program, METH_VARARGS, NULL},
 	 { (char *)"neicun", _wrap_neicun, METH_VARARGS, NULL},
 	 { (char *)"set_fitness", _wrap_set_fitness, METH_VARARGS, NULL},
@@ -4109,6 +4300,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"getPropertyfit", _wrap_getPropertyfit, METH_VARARGS, NULL},
 	 { (char *)"getCheckedBySpin", _wrap_getCheckedBySpin, METH_VARARGS, NULL},
 	 { (char *)"getroot", _wrap_getroot, METH_VARARGS, NULL},
+	 { (char *)"getCandidate", _wrap_getCandidate, METH_VARARGS, NULL},
 	 { (char *)"spin_", _wrap_spin_, METH_VARARGS, NULL},
 	 { (char *)"getLegalAction2", _wrap_getLegalAction2, METH_VARARGS, NULL},
 	 { (char *)"mutation1", _wrap_mutation1, METH_VARARGS, NULL},
@@ -4126,6 +4318,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"initProg", _wrap_initProg, METH_VARARGS, NULL},
 	 { (char *)"mutation_", _wrap_mutation_, METH_VARARGS, NULL},
 	 { (char *)"printprog", _wrap_printprog, METH_VARARGS, NULL},
+	 { (char *)"getLength", _wrap_getLength, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 

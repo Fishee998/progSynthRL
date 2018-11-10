@@ -47,7 +47,7 @@ class Maze():
         # self.geometry('{0}x{1}'.format(MAZE_H * UNIT, MAZE_H * UNIT))
 
         # actionTuple[0] = nodeNum  actionTuple[1] = actionType
-        self.action_space = spaces.Tuple((spaces.Discrete(35), spaces.Discrete(49)))
+        self.action_space = spaces.Tuple((spaces.Discrete(49), spaces.Discrete(50)))
         #self.observation_space = spaces.Box(low=0.0, high=20.0, shape=(300,))
         #self.action_space = spaces.Discrete(85)
         self.observation_space = spaces.Box(low=0.0, high=20.0, shape=(300,), dtype = np.int)
@@ -72,6 +72,7 @@ class Maze():
         state = self.state
         newfitnessValue = oldfitnessValue = example.get_fitness(self.candidate)
         newCandidate = prog.mutation(self.candidate, action[0], action[1])
+        self.candidate = newCandidate
         illegal = example.illegal(newCandidate)
         if illegal == 1:
             reward = -10
@@ -82,75 +83,54 @@ class Maze():
             # nodes, children = sampling.gen_samples1(ast, embeddings, embed_lookup)
             # nodes = [nodes]
             # children = [children]
-            if state_ == self.state:
-                # self.numlegalButwrong = self.numlegalButwrong + 1
-                reward = -5
             self.ast = ast
             # self.state = self.np_random.uniform(low=-0.05, high=0.05, size=(4,))
             self.state = tuple(state_)
             self.steps_beyond_done = None
             self.candidate = newCandidate
             self.astActNodes = astActNodes
+            newfitnessValue = example.get_fitness(newCandidate)
             self.fitness = newfitnessValue
             # self.numlega = self.numlega + 1
-            newfitnessValue = example.get_fitness(newCandidate)
-            # print(newfitnessValue)
-            '''
-            if oldfitnessValue > 20:
-                if newfitnessValue > 29:
-                    reward = 1
-            if oldfitnessValue > 30:
-                if newfitnessValue > 40:
-                    reward = 1
-            if oldfitnessValue > 40:
-                if newfitnessValue > 50:
-                    reward = 2
-            if oldfitnessValue > 50:
-                if newfitnessValue > 60:
-                    reward = 2
-            if newfitnessValue > 30:
-                reward = 1
-            if newfitnessValue > 40:
-                reward = 2
-            if newfitnessValue > 50:
-                reward = 3
-            if newfitnessValue > 59:
-                reward = 4
-            if newfitnessValue > 70:
-                reward = 10
-            if newfitnessValue > 75:
-                reward = 10
-            '''
-            if newfitnessValue == oldfitnessValue:
-                self.badaction = self.badaction +1
-                # print(self.badaction)
             reward = 0
-            if newfitnessValue > 30:
-                reward = 0.02 * (newfitnessValue - oldfitnessValue)
-            if newfitnessValue > 40:
-                reward = 0.02 * (newfitnessValue - oldfitnessValue)
-            if newfitnessValue > 50:
-                reward = 0.02 * (newfitnessValue - oldfitnessValue)
-            if newfitnessValue > 60:
-                reward = 0.02 * (newfitnessValue - oldfitnessValue)
 
-            #if oldfitnessValue < 40:
-             #   if newfitnessValue > 50:
-                   # print(newfitnessValue)
-              #     reward = reward + 0.1 * (newfitnessValue - oldfitnessValue)
-            #if oldfitnessValue < 50:
-             #   if newfitnessValue > 60:
-              #      reward = reward + 0.1 * (newfitnessValue - oldfitnessValue)
-            if newfitnessValue > 69:
-                print(newfitnessValue)
-                # reward = 10
-                reward = 0.1 * (newfitnessValue - oldfitnessValue)
+            if newfitnessValue > oldfitnessValue:
+                if newfitnessValue > 69:
+                    reward = 0.009 * (newfitnessValue - oldfitnessValue)
+                else:
+                    if newfitnessValue > 60:
+                        reward = 0.007 * (newfitnessValue - oldfitnessValue)
+                    else:
+                        if newfitnessValue > 50:
+                            reward = 0.005 * (newfitnessValue - oldfitnessValue)
+                        else:
+                            if newfitnessValue > 40:
+                                reward = 0.003 * (newfitnessValue - oldfitnessValue)
+                            else:
+                                if newfitnessValue > 30:
+                                    reward = 0.001 * (newfitnessValue - oldfitnessValue)
+            else:
+                if newfitnessValue < 30:
+                    reward = 0.009 * (newfitnessValue - oldfitnessValue)
+                else:
+                    if newfitnessValue < 40:
+                        reward = 0.007 * (newfitnessValue - oldfitnessValue)
+                    else:
+                        if newfitnessValue < 50:
+                            reward = 0.005 * (newfitnessValue - oldfitnessValue)
+                        else:
+                            if newfitnessValue < 60:
+                                reward = 0.003 * (newfitnessValue - oldfitnessValue)
+                            else:
+                                if newfitnessValue < 69:
+                                    reward = 0.001 * (newfitnessValue - oldfitnessValue)
+
 
         done = bool(newfitnessValue  > 78.4)
         if done:
             print(self.badaction)
-            reward = 5
-        if not done :
+            reward = 1
+        if not done:
             reward = reward - 0.05
         return np.array(self.state), reward, done, self
 

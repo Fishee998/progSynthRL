@@ -28,6 +28,8 @@ def getchildNode(ast, childInFirst):
         #childrenInSecond.append(childrenInSecond_)
         for childInSecond in childrenInSecond_:
             x = ast[int(childInSecond)]['name']
+            if x == '':
+                print("null error")
             second_.append(NODE_MAP[x] + 1)
         second_action_.append(0)
         for ind in range(ast[int(childInFirst)]['numOfChildren']):
@@ -51,9 +53,11 @@ def getAstDict():
         ast = []
         for sample in samples:
             if sample == '':
-                print("error")
+                print "error"
             nodeDict = {}
             nodeNumber = sample.split("node")[0]
+            if sample == samples[0]:
+                nodeDict['number'] = int(nodeNumber[-1])
             nodeDict['number'] = int(nodeNumber)
             node = sample.split("node:")[1].split(";")[0]
             nodeDict['name'] = node
@@ -210,6 +214,8 @@ def astEncoder(ast):
     action_layer3 = reduce(operator.add, action_layer3)
     action_layer234 = action_layer1 + action_layer2 + action_layer3
     state = first + second + third + fourth + fifth
+    if len(state) > 300:
+        print("state error")
     return state, action_layer234
 
 def setActSet():
@@ -239,16 +245,32 @@ def get_action1(action_layer234, ast, actionSet):
     return nodeNum, nodth
 
 def setAction1s(info_):
+    #act1_index = []
     treenode = ["assign", "if", "while"]
-    actIndex = []
-    for index in range(50):
-        actIndex.append(0)
+    #for candidate_num in range(100):
+    astActNodes = info_.astActNodes
+    for index in astActNodes:
+        a = int(index)
+        if a != 0 and info_.ast[a]['name'] not in treenode:
+            astActNodes[astActNodes.index(index)] = 0
+        else:
+            if a != 0 and info_.ast[a]['name'] in treenode:
+                astActNodes[astActNodes.index(index)] = a
+    act1_index = astActNodes
+    '''
     for index in info_.astActNodes:
         a = int(index)
-        if a != 0 and info_.ast[a]['name'] in treenode:
-            actIndex[a] = 1
+        if a != 0 and info_.ast[a]['name'] not in treenode:
+            info_.astActNodes[info_.astActNodes.index(index)] = 0
+        else:
+            if a != 0 and info_.ast[a]['name'] in treenode:
+                info_.astActNodes[info_.astActNodes.index(index)] = a
     # info_.actIndex = actIndex
-    return actIndex
+    act1_index = info_.astActNodes
+    
+    act1_index.append(astActNodes)
+    '''
+    return act1_index
 
 
 def getAction2(nodth):

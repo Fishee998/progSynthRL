@@ -17,6 +17,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import math
+import random
 
 np.random.seed(1)
 tf.set_random_seed(1)
@@ -34,7 +35,7 @@ class DeepQNetwork:
             e_greedy=0.9,
             replace_target_iter=300,
             memory_size=500,
-            batch_size=1,
+            batch_size=32,
             e_greedy_increment=0.01,
             output_graph=False,
     ):
@@ -123,7 +124,7 @@ class DeepQNetwork:
 
             # first layer. collections is used later when assign to target net
             with tf.variable_scope('l1'):
-                self.conv1 = conv1 = self.conv_layer(1, 100, self.nodes, self.children, self.n_features)
+                conv1 = self.conv_layer(1, 100, self.nodes, self.children, self.n_features)
                 pooling = self.pooling_layer(conv1)
                 # w1 = tf.get_variable('w1', [self.n_features, n_l1], initializer=w_initializer, collections=c_names)
                 # b1 = tf.get_variable('b1', [1, n_l1], initializer=b_initializer, collections=c_names)
@@ -197,84 +198,14 @@ class DeepQNetwork:
         # self.tfrecord_wrt.write(exmp_serial)
         # self.tfrecord_wrt.close()
         # return tfrecord_wrt
-
-    # action1 action2 legal
-    def action2set(self, action2s):
-        actionLen = example.action2Len(action2s)
-        action2Seleced = []
-        for index in range(actionLen):
-            action2Seleced.append(example.get_action2(action2s, index))
-        return action2Seleced
-
-    def getAction1(self, act1Set, action1_value):
-        action1Set = np.nonzero(act1Set)[0]
-        index = tf.Variable(action1Set)
-        #action1_value = tf.Variable(action1_value)
-        # action1_value = action1_value[0]
-        # action1_value = tf.Variable(action1_value)
-        # action1_value = tf.gather(action1_value, index)
-        # action1_index = tf.argmax(action1_value)
-        action1 = np.argmax(action1_value[0])
-        # print(action1_value)
-        # print(index)
-        return action1
-
-    def getAction1_random(self, act1Set):
-        act1Set1 = np.nonzero(act1Set)
-        action1 = choice(act1Set1[0])
-        return action1
-
-    def getAction2(self, candidate, action1, action2_value):
-        '''
-        action2 = example.getLegalAction2(candidate, action1)
-        action2set_ = self.action2set(action2)
-        action2_ = []
-        for index2 in range(50):
-            action2_.append(0)
-        for index in range(len(action2set_)):
-            a = action2set_[index]
-            action2_[a] = 1
-        action2Set = np.nonzero(action2_)[0]
-        index = tf.Variable(action2Set)
-        '''
-        # action1_value = tf.Variable(action1_value)
-        # action1_value = action1_value[0]
-        # action1_value = tf.Variable(action1_value)
-        # action1_value = tf.gather(action1_value, index)
-        # action1_index = tf.argmax(action1_value)
-        action2 = np.argmax(action2_value[0])
-        # print(index)
-        return action2
-
-    def getAction2_random(self, candidate, action1):
-        action2_ = example.getLegalAction2(candidate, action1)
-        action2set = self.action2set(action2_)
-        action2 = choice(action2set)
-        return action2
-
-    def getAction(self, action1, action2):
-        action = []
-        action.append(action1)
-        action.append(action2)
-        action = tuple(action)
-        return action
-
+    '''
     def get_observation(self, nodes, children):
-        #print(len(nodes[0]))
-        #print(len(children[0]))
+
         tree_tensor = self.sess.run(self.conv1,
                                     feed_dict={self.nodes: nodes, self.children: children})
-        # observation = tree_tensor.flatten()
-        #print(flatten(tree_tensor)[0].flatten())
-        print(len(flatten(tree_tensor)[0].flatten()))
-       #if len(flatten(tree_tensor)[0].flatten()) < 2800:
-         #   print("error")
-        #print(len(tree_tensor))
-        #if len(observation) < 1680:
-        #    print(len(nodes[0]))
-        #    print(len(children[0]))
 
-        return 1
+        print(len(flatten(tree_tensor)[0].flatten()))
+    '''
 
     def reshapeChildNodes(self, nodes, children):
         childre = []
@@ -290,33 +221,91 @@ class DeepQNetwork:
         nodes = [nodes]
         return nodes, children1
 
+        # action1 action2 legal
+
+    def action2set(self, action2s):
+        # actionLen = example.getLength(action2s)
+        action2Seleced = []
+        index = 0
+        while example.get_action2(action2s, index) != 100:
+            action2Seleced.append(example.get_action2(action2s, index))
+            index += 1
+        return action2Seleced
+
+    def getAction1(self, act1Set, action1_value):
+        action1Set = np.nonzero(act1Set)[0]
+        action1_prob = []
+        for index in action1Set:
+            action1_prob.append(action1_value[0][index])
+        action1 = np.argmax(action1_prob)
+        action1 = action1Set[action1]
+        real_action = act1Set[action1]
+        return action1, real_action
+        # no restrict
+        # action1 = np.argmax(action1_value[0])
+
+    def getAction1_random(self, act1Set):
+        action1s = np.nonzero(act1Set)
+        action1 = random.choice(action1s[0])
+
+        real_action = act1Set[action1]
+        return action1, real_action
+
+    def getAction2(self, candidate, action1_real, action2_value):
+        action2 = example.getLegalAction2(candidate, action1_real)
+        action2set = self.action2set(action2)
+        action2_prob = []
+        for index in list(set(action2set)):
+            action2_prob.append(action2_value[0][index])
+        action2_index = np.argmax(action2_prob)
+
+        action2 = action2set[action2_index]
+
+        # action2  = np.argmax(action2_value[0])
+        return action2
+
+    def getAction2_random(self, candidate, action1_real):
+        action2_ = example.getLegalAction2(candidate, action1_real)
+        action2set = self.action2set(action2_)
+        action2 = choice(action2set)
+        return action2
+
+    def getAction(self, action1, action2):
+        action = []
+        action.append(action1)
+        action.append(action2)
+        action = tuple(action)
+        return action
+
     def choose_action(self, nodes, children1, act1Set, candidate):
         # to have batch dimension when feed into tf placeholder
         # observation = observation[np.newaxis, :]
         # self.epsilon = 0.8 * (0.993) ** episode
 
         # nodes, children1 = self.reshapeChildNodes(nodes, children1)
+        # to have batch dimension when feed into tf placeholder
 
         if np.random.uniform() < self.epsilon:
-            # forward feed the observation and get q value for every actions
             actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.nodes: nodes, self.children: children1})
             actions_value2 = self.sess.run(self.q_eval2, feed_dict={self.nodes: nodes, self.children: children1})
-            action1 = self.getAction1(act1Set, actions_value1)
-            action2 = self.getAction2(candidate, action1, actions_value2)
-            action = self.getAction(action1, action2)
+            action1 = np.argmax(actions_value1)
+            action2 = np.argmax(actions_value2)
+            # action1, action1_real = self.getAction1(act1Set, actions_value1)
+            # action2 = self.getAction2(candidate, action1_real, actions_value2)
         else:
-            action1 = self.getAction1_random(act1Set)
-            action2 = self.getAction2_random(candidate, action1)
-            action = self.getAction(action1, action2)
-            # tree_tensor = self.sess.run(self.tree_tensor, feed_dict={self.nodes: nodes, self.children: children})
-
-        return action
+            action1 = np.random.randint(0, 48)
+            action2 = np.random.randint(0, 49)
+            # action1, action1_real = self.getAction1_random(act1Set)
+            # action2 = self.getAction2_random(candidate, action1_real)
+        action_real = action = self.getAction(action1, action2)
+        # action_real = self.getAction(action1_real, action2)
+        return action, action_real
 
     def learn(self):
         # check to replace target parameters
         if self.learn_step_counter % self.replace_target_iter == 0:
             self.sess.run(self.replace_target_op)
-            print('\ntarget_params_replaced\n')
+            # print('\ntarget_params_replaced\n')
 
         # sample batch memory from all memory
         if self.memory_counter > self.memory_size:
@@ -358,6 +347,25 @@ class DeepQNetwork:
                    # newest params
                 })
 
+            '''
+            q_next1 = self.sess.run(
+                [self.q_next1],
+                feed_dict={
+                    self.nodes_: nodes_,
+                    self.children_: children_,
+
+                    # newest params
+                })
+
+            q_eval1 = self.sess.run(
+                [self.q_eval1],
+                feed_dict={
+                    self.nodes: nodes,  # fixed params
+                    self.children: children,
+                    # newest params
+                })
+            '''
+
             q_next2, q_eval2 = self.sess.run(
                 [self.q_next2, self.q_eval2],
                 feed_dict={
@@ -369,10 +377,14 @@ class DeepQNetwork:
                 })
 
             # change q_target w.r.t q_eval's action
-            q_target1 = q_eval1.copy()
-            q_target2 = q_eval2.copy()
+            #q_target1 = q_eval1.copy()
+            #q_target2 = q_eval2.copy()
+
+            q_target1 = q_eval1[:]
+            q_target2 = q_eval2[:]
 
             batch_index = np.arange(self.batch_size, dtype=np.int32)
+            batch_index = np.arange(1, dtype=np.int32)
             eval_act_index1 = batch_memory[:][0]['acRe'][0]
             eval_act_index2 = batch_memory[:][0]['acRe'][1]
             reward = batch_memory[:][0]['acRe'][-1]

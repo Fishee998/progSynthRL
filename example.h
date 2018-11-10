@@ -266,7 +266,7 @@ treenode* findNode(treenode* root, program* prog, int number);
 program* mutation1(program* parent, int nodeNum, int actionType);
 void printAst(program* prog);
 //extern program** initProgram(int numofcandidate);
-
+int getLength(int* action2);
 extern double My_variable;
 //extern int numprog;
 extern double genseq;
@@ -279,6 +279,7 @@ program* mutation_(program* candidate0, int nodeNum, int actType,Expr** requirem
 program* initProg(Expr** requirements ,int numofrequirements,double* coef);
 void outputLog_(char* str);
 int mutationCond_(cond* root,program* prog,int type, int action);
+//int* getLegalAction2(program* parent, int nodeNum, int* i_act)
 int* getLegalAction2(program* parent, int nodeNum);
 int spin_(program* candidate);
 #endif

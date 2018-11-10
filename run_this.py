@@ -21,18 +21,24 @@ def run_maze():
         # state, astActNodes = astEncoder.astEncoder(ast)
         nodes, children = sampling.gen_samples1(ast, embeddings, embed_lookup)
         nodes, children = RL.reshapeChildNodes(nodes, children)
+        children[0][0] = children[0][0][2:]
+        while len(children[0][0]) < 5:
+            children[0][0].append(0)
         # observation = RL.get_observation(nodes, children)
         for t in range(300):
             # fresh env
             # env.render()
 
             # RL choose action based on observation
-            action = RL.choose_action(nodes, children, actIndex, info_.candidate)
+            action, action_real = RL.choose_action(nodes, children, actIndex, info_.candidate)
 
             # RL take action and get next observation and reward
-            observation_, reward, done, info_ = env.step(action)
+            observation_, reward, done, info_ = env.step(action_real)
             nodes_, children_ = sampling.gen_samples1(info_.ast, embeddings, embed_lookup)
             nodes_, children_ = RL.reshapeChildNodes(nodes_, children_)
+            children_[0][0] = children_[0][0][2:]
+            while len(children_[0][0]) < 5:
+                children_[0][0].append(0)
             # observation_ = RL.get_observation(nodes, children)
             #if len(observation_) < 1680:
             #    print("error")
@@ -40,8 +46,7 @@ def run_maze():
 
             if done and example.get_fitness(info_.candidate) > 78.4:
                 reward = target_reward
-                print(
-                "i_ep" + str(episode) + " step:" + str(t) + " fitness" + str(example.get_fitness(info_.candidate)))
+                print("i_ep", episode, " step:", t, " fitness", example.get_fitness(info_.candidate))
                 spin_reward = example.spin_(info_.candidate)
                 # buf2.write("program at i_ep %d: step:%d  fitnessValue:%d\n" % (i_episode, t, example.get_fitness(info_.candidate)))
                 if spin_reward == 20:
@@ -62,7 +67,7 @@ def run_maze():
             reward_cum += reward
 
 
-            if (step > 200) and (step % 100 == 0):
+            if (step > 200) and (step % 1 == 0):
                 RL.learn()
 
             # swap observation
@@ -72,7 +77,7 @@ def run_maze():
             # print(observation)
 
             # break while loop when end of this episode
-            if done:
+            if reward == 100:
                 break
             step += 1
         print("episode", episode, "reward_cum", reward_cum)
@@ -84,7 +89,7 @@ def run_maze():
 if __name__ == "__main__":
     # maze game
     env = Maze()
-    with open('../vectors.pkl', 'rb') as fh:
+    with open('./vectors.pkl', 'rb') as fh:
         embeddings, embed_lookup = pickle.load(fh)
         num_feats = len(embeddings[0])
     RL = DeepQNetwork(
@@ -94,8 +99,8 @@ if __name__ == "__main__":
                       learning_rate=0.01,
                       reward_decay=0.9,
                       e_greedy=0.9,
-                      replace_target_iter=200,
-                      memory_size=2000,
+                      replace_target_iter=2,
+                      memory_size=100,
                       # output_graph=True
                       )
-    run_maze();
+    run_maze()

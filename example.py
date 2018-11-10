@@ -96,6 +96,26 @@ except __builtin__.Exception:
     _newclass = 0
 
 
+def new_intp():
+    return _example.new_intp()
+new_intp = _example.new_intp
+
+def copy_intp(value):
+    return _example.copy_intp(value)
+copy_intp = _example.copy_intp
+
+def delete_intp(obj):
+    return _example.delete_intp(obj)
+delete_intp = _example.delete_intp
+
+def intp_assign(obj, value):
+    return _example.intp_assign(obj, value)
+intp_assign = _example.intp_assign
+
+def intp_value(obj):
+    return _example.intp_value(obj)
+intp_value = _example.intp_value
+
 def get_program(candidate, number):
     return _example.get_program(candidate, number)
 get_program = _example.get_program
@@ -135,6 +155,10 @@ getCheckedBySpin = _example.getCheckedBySpin
 def getroot(prog):
     return _example.getroot(prog)
 getroot = _example.getroot
+
+def getCandidate(candidate, i):
+    return _example.getCandidate(candidate, i)
+getCandidate = _example.getCandidate
 
 def spin_(candidate):
     return _example.spin_(candidate)
@@ -203,6 +227,10 @@ mutation_ = _example.mutation_
 def printprog(root, blank, prog):
     return _example.printprog(root, blank, prog)
 printprog = _example.printprog
+
+def getLength(action2):
+    return _example.getLength(action2)
+getLength = _example.getLength
 # This file is compatible with both classic and new-style classes.
 
 cvar = _example.cvar
