@@ -4,7 +4,7 @@ import example
 from gym import spaces
 from gym.utils import seeding
 import numpy as np
-
+candidate_num = 1
 class Maze(object):
 
     actionSet = astEncoder.setActSet()
@@ -57,40 +57,40 @@ class Maze(object):
             # self.candidate = newCandidate
             self.astActNodes_[index] = astActNodes
             # self.numlega = self.numlega + 1
-            newfitnessValue = example.get_fitness(candidate)
+            newfitnessValue = example.get_fitness(candidate_)
             self.fitness_.append(newfitnessValue)
             reward = 0
 
             if newfitnessValue > oldfitnessValue:
                 if newfitnessValue > 69:
-                    reward = 0.005 * (newfitnessValue - oldfitnessValue)
+                    reward = 0.009 * (newfitnessValue - oldfitnessValue)
                 else:
                     if newfitnessValue > 60:
-                        reward = 0.004 * (newfitnessValue - oldfitnessValue)
+                        reward = 0.008 * (newfitnessValue - oldfitnessValue)
                     else:
                         if newfitnessValue > 50:
-                            reward = 0.003 * (newfitnessValue - oldfitnessValue)
+                            reward = 0.007 * (newfitnessValue - oldfitnessValue)
                         else:
                             if newfitnessValue > 40:
-                                reward = 0.002 * (newfitnessValue - oldfitnessValue)
+                                reward = 0.006 * (newfitnessValue - oldfitnessValue)
                             else:
                                 if newfitnessValue > 30:
-                                    reward = 0.001 * (newfitnessValue - oldfitnessValue)
+                                    reward = 0.005 * (newfitnessValue - oldfitnessValue)
             else:
                 if newfitnessValue < 30:
-                    reward = 0.004 * (newfitnessValue - oldfitnessValue)
+                    reward = 0.009 * (newfitnessValue - oldfitnessValue)
                 else:
                     if newfitnessValue < 40:
-                        reward = 0.003 * (newfitnessValue - oldfitnessValue)
+                        reward = 0.008 * (newfitnessValue - oldfitnessValue)
                     else:
                         if newfitnessValue < 50:
-                            reward = 0.002 * (newfitnessValue - oldfitnessValue)
+                            reward = 0.007 * (newfitnessValue - oldfitnessValue)
                         else:
                             if newfitnessValue < 60:
-                                reward = 0.001 * (newfitnessValue - oldfitnessValue)
+                                reward = 0.006 * (newfitnessValue - oldfitnessValue)
                             else:
                                 if newfitnessValue < 69:
-                                    reward = 0.0001 * (newfitnessValue - oldfitnessValue)
+                                    reward = 0.004 * (newfitnessValue - oldfitnessValue)
 
         done = bool(self.fitness > 78.4)
         if done:
@@ -109,7 +109,7 @@ class Maze(object):
         self.state_ = []
         self.astActNodes_ = []
         candidates = prog.initProg()
-        for index in range(100):
+        for index in range(candidate_num):
             candidate = example.getCandidate(candidates, index)
             self.candidate_.append(candidate)
             example.printAst(candidate)

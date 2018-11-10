@@ -7,7 +7,7 @@ import sys
 sys.setrecursionlimit(768149)
 # condition: eq neq and or
 condition = [10, 15, 18, 19]
-
+candidates = 1
 
 def number(s):
     return s['number']
@@ -229,7 +229,6 @@ def get_action1(action_layer234, ast, actionSet):
     # Return a random integer N such that a <= N <= b.
     treenode = ["assign", "if", "while"]
     actions = action_layer234
-    # 0-29 30-768029 768030-768149
     if len(actionSet) == 0:
         print("error")
     node_chse = random.randint(0, (len(actionSet)-1))
@@ -238,7 +237,6 @@ def get_action1(action_layer234, ast, actionSet):
     nodeNum_ = int(nodeNum)
 
     if nodeNum_ == 0 or ast[nodeNum_]['name'] not in treenode:
-        #reward = -100
         actionSet.remove(nodth)
         nodeNum, nodth = get_action1(action_layer234, ast, actionSet)
 
@@ -247,7 +245,7 @@ def get_action1(action_layer234, ast, actionSet):
 def setAction1s(info_):
     act1_index = []
     treenode = ["assign", "if", "while"]
-    for candidate_num in range(100):
+    for candidate_num in range(candidates):
         astActNodes = info_.astActNodes_[candidate_num]
         for index in astActNodes:
             a = int(index)

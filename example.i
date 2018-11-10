@@ -59,6 +59,7 @@ program* getCandidate(program** candidate, int i)
 }
 %}
 
+extern program* copyProgram(program* prog);
 extern int spin_(program* candidate);
 extern int* getLegalAction2(program* parent, int nodeNum);
 extern program* mutation1(program* parent, int nodeNum, int actionType);

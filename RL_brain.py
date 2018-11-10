@@ -32,7 +32,7 @@ class DeepQNetwork:
             e_greedy=0.9,
             replace_target_iter=10,
             memory_size=100,
-            batch_size=32,
+            batch_size=4,
             e_greedy_increment=0.00018,
             output_graph=False,
     ):
@@ -53,8 +53,8 @@ class DeepQNetwork:
 
         # initialize zero memory [s, a, r, s_]
         self.memory = np.zeros((self.memory_size, n_features * 2 + 3))
-        self.memory_candidate = []
-        self.memory_action1 = []
+        self.memory_candidate = range(memory_size)
+        self.memory_action1 = range(memory_size)
 
 
         # consist of [target_net, evaluate_net]
@@ -146,31 +146,39 @@ class DeepQNetwork:
         self.memory_counter += 1
 
     def store_action1(self, act1_index_store):
-        if not hasattr(self, 'action1_counter'):
-            self.action1_counter = 0
+        # if not hasattr(self, 'action1_counter'):
+            # self.action1_counter = 0
 
-        if self.action1_counter < self.memory_size:
-            self.memory_action1.append(act1_index_store)
-        else:
-            # replace the old memory with new memory
-            index = self.action1_counter % self.memory_size
-            self.memory_action1[index] = act1_index_store
+        # replace the old memory with new memory
+        index = (self.memory_counter - 1) % self.memory_size
+        self.memory_action1[index] = act1_index_store
 
-        self.action1_counter += 1
+        # self.action1_counter += 1
 
     def store_candidate(self, candidate):
-        if not hasattr(self, 'candidate_counter'):
-            self.candidate_counter = 0
+        # if not hasattr(self, 'candidate_counter'):
+            # self.candidate_counter = 0
 
-        if self.candidate_counter < self.memory_size:
-            self.memory_candidate.append(candidate)
-        else:
-            # replace the old memory with new memory
-            index = self.candidate_counter % self.memory_size
-            self.memory_candidate[index] = candidate
+        root = example.getroot(candidate)
+        example.printprog(root, 0, candidate)
 
-        self.candidate_counter += 1
+        index = (self.memory_counter - 1) % self.memory_size
+        self.memory_candidate[index] = example.copyProgram(candidate)
 
+        root = example.getroot(self.memory_candidate[index])
+        example.printprog(root, 0, self.memory_candidate[index])
+
+        if index > 1:
+            root = example.getroot(self.memory_candidate[index - 1])
+            example.printprog(root, 0, self.memory_candidate[index -1])
+        '''
+        if self.memory_counter - 1 > 10:
+            for i in range(len(self.memory_candidate)):
+                root = example.getroot(self.memory_candidate[i])
+                example.printprog(root, 0, self.memory_candidate[i])
+
+        # self.candidate_counter += 1
+        '''
     # action1 action2 legal
     def action2set(self, action2s):
         # actionLen = example.getLength(action2s)
@@ -269,13 +277,25 @@ class DeepQNetwork:
 
         # sample batch memory from all memory
         if self.memory_counter > self.memory_size:
-            sample_index = np.random.choice(self.memory_size, size=self.batch_size)
+            sample_index = np.random.choice(self.memory_size, size=self.batch_size, replace=False)
         else:
-            sample_index = np.random.choice(self.memory_counter, size=self.batch_size)
+            sample_index = np.random.choice(self.memory_counter, size=self.batch_size, replace=False)
         batch_memory = self.memory[sample_index, :]
         act1set = [self.memory_action1[i] for i in sample_index]
+
+        for i in range(len(self.memory_candidate)):
+            root = example.getroot(self.memory_candidate[i])
+            example.printprog(root, 0, self.memory_candidate[i])
+
+
+        for i in sample_index:
+            root = example.getroot(self.memory_candidate[i])
+            example.printprog(root, 0, self.memory_candidate[i])
         candidate = [self.memory_candidate[i] for i in sample_index]
 
+        for i in range(len(candidate)):
+            root = example.getroot(candidate[i])
+            example.printprog(root, 0, candidate[i])
 
         q_next1, q_eval1 = self.sess.run(
             [self.q_next1, self.q_eval1],
@@ -308,7 +328,10 @@ class DeepQNetwork:
 
         # effective action2
         q_next2_ = range(len(batch_index))
+
         for t in batch_index:
+            root = example.getroot(candidate[t])
+            example.printprog(root, 0, candidate[t])
             q_next2_[t] = self.getAction2_(candidate[t], action1_real_[t], q_next2)
 
         q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.array(q_next1_)
@@ -348,12 +371,17 @@ class DeepQNetwork:
         self.cost_his.append(self.cost)
 
         # increasing epsilon
-<<<<<<< HEAD
-        self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 20 == 0 else self.epsilon
-=======
-        self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 100 == 0 else self.epsilon
->>>>>>> 6408cf407bfce38ac45bc8ed62c244d09881d590
+
+        #self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 50 == 0 else self.epsilon
+
+        if self.epsilon < self.epsilon_max:
+            self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 10 == 0 else self.epsilon
+        # self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 100 == 0 else self.epsilon
         self.learn_step_counter += 1
+
+        if self.learn_step_counter % 50 == 0:
+            print("epsilon", self.epsilon)
+            print("learn_step_counter", self.learn_step_counter)
 
 
 

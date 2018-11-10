@@ -10,6 +10,7 @@ os.environ['LD_LIBRARY_PATH'] = '/usr/local/cuda-9.0/lib64'
 os.environ['CUDA_HOME'] = '/usr/local/cuda-9.0'
 os.environ["CUDA_VISIBLE_DEVICES"]= '0'
 
+candidate_num = 1
 target_reward = 80
 def run_maze():
     buf = StringIO.StringIO()
@@ -23,11 +24,10 @@ def run_maze():
         actIndex = astEncoder.setAction1s(info_)
         reward_cum = 0
         start = time.time()
-        for t in range(10):
+        for t in range(1000):
 
             # 100 candidates
-            for index in range(100):
-
+            for index in range(candidate_num):
                 observation = info_.state_[index]
 
                 # RL choose action based on observation
@@ -61,7 +61,7 @@ def run_maze():
 
                 reward_cum += reward
 
-                if (step > 100) and (step % 2 == 0):
+                if (step > 101) and (step % 2 == 0):
                     RL.learn()
 
                 if reward == 100:
@@ -89,7 +89,7 @@ if __name__ == "__main__":
                       reward_decay=0.9,
                       e_greedy=0.9,
                       replace_target_iter=10,
-                      memory_size=100,
+                      memory_size=10,
                       # output_graph=True
                       )
     run_maze()
