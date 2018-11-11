@@ -25,19 +25,19 @@ class DeepQNetwork:
     def __init__(
             self,
             n_actions1,
-            n_actions2,
+            #n_actions2,
             n_features,
             learning_rate=0.01,
             reward_decay=0.9,
             e_greedy=0.9,
             replace_target_iter=10,
             memory_size=100,
-            batch_size=4,
+            batch_size=64,
             e_greedy_increment=0.00018,
             output_graph=False,
     ):
         self.n_actions1 = n_actions1
-        self.n_actions2 = n_actions2
+        # self.n_actions2 = n_actions2
         self.n_features = n_features
         self.lr = learning_rate
         self.gamma = reward_decay
@@ -48,11 +48,12 @@ class DeepQNetwork:
         self.epsilon_increment = e_greedy_increment
         self.epsilon = 0 if e_greedy_increment is not None else self.epsilon_max
 
+
         # total learning step
         self.learn_step_counter = 0
 
         # initialize zero memory [s, a, r, s_]
-        self.memory = np.zeros((self.memory_size, n_features * 2 + 3))
+        self.memory = np.zeros((self.memory_size, n_features * 2 + 2))
         self.memory_candidate = range(memory_size)
         self.memory_action1 = range(memory_size)
 
@@ -77,7 +78,7 @@ class DeepQNetwork:
         # ------------------ build evaluate_net ------------------
         self.s = tf.placeholder(tf.float32, [None, self.n_features], name='s')  # input
         self.q_target1 = tf.placeholder(tf.float32, [None, self.n_actions1], name='Q_target')
-        self.q_target2 = tf.placeholder(tf.float32, [None, self.n_actions2], name='Q_target')  # for calculating loss
+        # self.q_target2 = tf.placeholder(tf.float32, [None, self.n_actions2], name='Q_target')  # for calculating loss
         with tf.variable_scope('eval_net'):
             # c_names(collections_names) are the collections to store variables
             c_names, n_l1, w_initializer, b_initializer = \
@@ -96,16 +97,18 @@ class DeepQNetwork:
                 b2 = tf.get_variable('b2', [1, self.n_actions1], initializer=b_initializer, collections=c_names)
                 self.q_eval1 = tf.matmul(l1, w2) + b2
 
+            '''
             # second layer. collections is used later when assign to target net
             with tf.variable_scope('l2_2'):
                 w2_2 = tf.get_variable('w2', [n_l1, self.n_actions2], initializer=w_initializer, collections=c_names)
                 b2_2 = tf.get_variable('b2', [1, self.n_actions2], initializer=b_initializer, collections=c_names)
                 self.q_eval2 = tf.matmul(l1, w2_2) + b2_2
+            '''
 
         with tf.variable_scope('loss'):
-            self.loss1 = tf.reduce_mean(tf.squared_difference(self.q_target1, self.q_eval1))
-            self.loss2 = tf.reduce_mean(tf.squared_difference(self.q_target2, self.q_eval2))
-            self.loss = self.loss1 + self.loss2
+            self.loss = tf.reduce_mean(tf.squared_difference(self.q_target1, self.q_eval1))
+            # self.loss2 = tf.reduce_mean(tf.squared_difference(self.q_target2, self.q_eval2))
+            # self.loss = self.loss1 + self.loss2
 
         with tf.variable_scope('train'):
             self._train_op = tf.train.RMSPropOptimizer(self.lr).minimize(self.loss)
@@ -128,16 +131,32 @@ class DeepQNetwork:
                 b2_1 = tf.get_variable('b2', [1, self.n_actions1], initializer=b_initializer, collections=c_names)
                 self.q_next1 = tf.matmul(l1, w2_1) + b2_1
 
+            '''
             with tf.variable_scope('l2_2'):
                 w2_2 = tf.get_variable('w2', [n_l1, self.n_actions2], initializer=w_initializer, collections=c_names)
                 b2_2 = tf.get_variable('b2', [1, self.n_actions2], initializer=b_initializer, collections=c_names)
                 self.q_next2 = tf.matmul(l1, w2_2) + b2_2
+            '''
 
+    '''       
     def store_transition(self, s, a1, a2, r, s_):
         if not hasattr(self, 'memory_counter'):
             self.memory_counter = 0
 
         transition = np.hstack((s, [a1, a2, r], s_))
+
+        # replace the old memory with new memory
+        index = self.memory_counter % self.memory_size
+        self.memory[index, :] = transition
+
+        self.memory_counter += 1
+    '''
+
+    def store_transition(self, s, a1, r, s_):
+        if not hasattr(self, 'memory_counter'):
+            self.memory_counter = 0
+
+        transition = np.hstack((s, [a1, r], s_))
 
         # replace the old memory with new memory
         index = self.memory_counter % self.memory_size
@@ -158,7 +177,6 @@ class DeepQNetwork:
     def store_candidate(self, candidate):
         # if not hasattr(self, 'candidate_counter'):
             # self.candidate_counter = 0
-
 
         index = (self.memory_counter - 1) % self.memory_size
         self.memory_candidate[index] = example.copyProgram(candidate)
@@ -241,25 +259,29 @@ class DeepQNetwork:
     def choose_action(self, observation, episode, act1Set, candidate):
         # to have batch dimension when feed into tf placeholder
         observation = observation[np.newaxis, :]
+        action1, action1_real = self.getAction1_random(act1Set)
         if np.random.uniform() < self.epsilon:
+            #actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
             actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
-            actions_value2 = self.sess.run(self.q_eval2, feed_dict={self.s: observation})
-            action1 = np.argmax(actions_value1)
-            action2 = np.argmax(actions_value2)
+            action2 = np.argmax(actions_value1)
+            # action2 = np.argmax(actions_value2)
             '''
             action1, action1_real = self.getAction1(act1Set, actions_value1)
             action2 = self.getAction2(candidate, action1_real, actions_value2)
             '''
         else:
-            action1 = np.random.randint(0, 48)
             action2 = np.random.randint(0, 49)
+            # action2 = np.random.randint(0, 49)
             '''
             action1, action1_real = self.getAction1_random(act1Set)
             action2 = self.getAction2_random(candidate, action1_real)
             '''
-        action_real = action = self.getAction(action1, action2)
+        # action_real = action = self.getAction(action1, action2)
 
-        #action_real = self.getAction(action1_real, action2)
+        # action1 = action / 50
+        # action2 = action % 50
+        action = self.getAction(action1, action2)
+        action_real = self.getAction(action1_real, action2)
         return action, action_real
 
     def learn(self):
@@ -274,7 +296,7 @@ class DeepQNetwork:
         else:
             sample_index = np.random.choice(self.memory_counter, size=self.batch_size, replace=False)
         batch_memory = self.memory[sample_index, :]
-        act1set = [self.memory_action1[i] for i in sample_index]
+        #act1set = [self.memory_action1[i] for i in sample_index]
 
 
         q_next1, q_eval1 = self.sess.run(
@@ -284,28 +306,29 @@ class DeepQNetwork:
                 self.s: batch_memory[:, :self.n_features],  # newest params
             })
 
+        '''
         q_next2, q_eval2 = self.sess.run(
             [self.q_next2, self.q_eval2],
             feed_dict={
                 self.s_: batch_memory[:, -self.n_features:],  # fixed params
                 self.s: batch_memory[:, :self.n_features],  # newest params
             })
-
+        '''
         # change q_target w.r.t q_eval's action
         q_target1 = q_eval1.copy()
-        q_target2 = q_eval2.copy()
+        # q_target2 = q_eval2.copy()
 
         batch_index = np.arange(self.batch_size, dtype=np.int32)
         eval_act_index1 = batch_memory[:, self.n_features].astype(int)
-        eval_act_index2 = batch_memory[:, self.n_features + 1].astype(int)
-        reward = batch_memory[:, self.n_features + 2]
+        # eval_act_index2 = batch_memory[:, self.n_features + 1].astype(int)
+        reward = batch_memory[:, self.n_features + 1]
 
 
         # effective action1
-        action1_real_ = range(len(batch_index))
-        q_next1_ = range(len(batch_index))
-        for t in batch_index:
-            action1_real_[t], q_next1_[t] = self.getAction1_(act1set[t], q_next1[t])
+        #action1_real_ = range(len(batch_index))
+        #q_next1_ = range(len(batch_index))
+        #for t in batch_index:
+        #    action1_real_[t], q_next1_[t] = self.getAction1_(act1set[t], q_next1[t])
 
         '''
         # effective action2
@@ -315,8 +338,9 @@ class DeepQNetwork:
             q_next2_[t] = self.getAction2_(candidate[t], action1_real_[t], q_next2)
         '''
 
-        q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.array(q_next1_)
-        q_target2[batch_index, eval_act_index2] = reward + self.gamma * np.argmax(q_next2, axis=1)
+        q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.argmax(q_next1, axis=1)
+        # q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.array(q_next1_)
+        # q_target2[batch_index, eval_act_index2] = reward + self.gamma * np.argmax(q_next2, axis=1)
 
         """
         For example in this batch I have 2 samples and 3 actions:
@@ -347,8 +371,9 @@ class DeepQNetwork:
         # train eval network
         _, self.cost = self.sess.run([self._train_op, self.loss],
                                      feed_dict={self.s: batch_memory[:, :self.n_features],
-                                                self.q_target1: q_target1,
-                                                self.q_target2: q_target2})
+                                                self.q_target1: q_target1
+                                                #self.q_target2: q_target2
+                                                })
         self.cost_his.append(self.cost)
 
         # increasing epsilon
@@ -356,11 +381,13 @@ class DeepQNetwork:
         #self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 50 == 0 else self.epsilon
 
         if self.epsilon < self.epsilon_max:
-            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter % 10 == 0 else self.epsilon
+            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter % 5 == 0 else self.epsilon
+        else:
+            self.epsilon = self.epsilon_max
         # self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 100 == 0 else self.epsilon
         self.learn_step_counter += 1
 
-        if self.learn_step_counter % 50 == 0:
+        if self.learn_step_counter % 500 == 0:
             print("epsilon", self.epsilon)
             print("learn_step_counter", self.learn_step_counter)
 

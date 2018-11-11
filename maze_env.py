@@ -11,8 +11,9 @@ class Maze(object):
 
     def __init__(self):
         self.n_features = 2
-        self.action_space = spaces.Tuple((spaces.Discrete(49), spaces.Discrete(50)))
-        self.observation_space = spaces.Box(low=0.0, high=20.0, shape=(300,), dtype=np.int)
+        # self.action_space = spaces.Tuple((spaces.Discrete(49), spaces.Discrete(50)))
+        self.action_space = spaces.Discrete(50)
+        self.observation_space = spaces.Box(low=0.0, high=49.0, shape=(301,), dtype=np.int)
         self.seed()
         self.viewer = None
         self.state = None
@@ -22,14 +23,15 @@ class Maze(object):
         self.numlega = 0
         self.badaction = 0
         self.fitness = 0
+        self.illegal_action = 0
+        self.legal_action = 0
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
     def step(self, action, index):
-
-        assert self.action_space.contains(action), "%r (%s) invalid" % (action, type(action))
+        assert self.action_space.contains(action[1]), "%r (%s) invalid" % (action, type(action))
         self.fitness_ = []
         candidate = self.candidate_[index]
         fitness = example.get_fitness(candidate)
@@ -38,9 +40,11 @@ class Maze(object):
         self.candidate_[index] = candidate_
         illegal = example.illegal(candidate_)
         if illegal == 1:
+            self.illegal_action += 1
             reward = -10
             # self.numIll =self.numIll + 1
         else:
+            self.legal_action += 1
             oldfitnessValue = fitness
             ast = astEncoder.getAstDict()
             state_, astActNodes = astEncoder.astEncoder(ast)
@@ -63,19 +67,19 @@ class Maze(object):
 
             if newfitnessValue > oldfitnessValue:
                 if newfitnessValue > 69:
-                    reward = 0.009 * (newfitnessValue - oldfitnessValue)
+                    reward = 0.09 * (newfitnessValue - oldfitnessValue)
                 else:
                     if newfitnessValue > 60:
-                        reward = 0.008 * (newfitnessValue - oldfitnessValue)
+                        reward = 0.08 * (newfitnessValue - oldfitnessValue)
                     else:
                         if newfitnessValue > 50:
-                            reward = 0.007 * (newfitnessValue - oldfitnessValue)
+                            reward = 0.07 * (newfitnessValue - oldfitnessValue)
                         else:
                             if newfitnessValue > 40:
-                                reward = 0.006 * (newfitnessValue - oldfitnessValue)
+                                reward = 0.06 * (newfitnessValue - oldfitnessValue)
                             else:
                                 if newfitnessValue > 30:
-                                    reward = 0.005 * (newfitnessValue - oldfitnessValue)
+                                    reward = 0.05 * (newfitnessValue - oldfitnessValue)
             else:
                 if newfitnessValue < 30:
                     reward = 0.009 * (newfitnessValue - oldfitnessValue)
@@ -98,7 +102,7 @@ class Maze(object):
             reward = 1
             print("done")
         if not done:
-            reward = reward - 0.01
+            reward = reward - 1
         print("reward", reward)
         return reward, done, self
 
