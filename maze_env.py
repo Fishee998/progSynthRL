@@ -4,7 +4,7 @@ import example
 from gym import spaces
 from gym.utils import seeding
 import numpy as np
-candidate_num = 1
+candidate_num = 100
 class Maze(object):
 
     actionSet = astEncoder.setActSet()
@@ -92,13 +92,14 @@ class Maze(object):
                                 if newfitnessValue < 69:
                                     reward = 0.004 * (newfitnessValue - oldfitnessValue)
 
+
         done = bool(self.fitness > 78.4)
         if done:
             reward = 1
             print("done")
         if not done:
             reward = reward - 0.01
-
+        print("reward", reward)
         return reward, done, self
 
     def reset(self):

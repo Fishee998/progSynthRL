@@ -159,26 +159,10 @@ class DeepQNetwork:
         # if not hasattr(self, 'candidate_counter'):
             # self.candidate_counter = 0
 
-        root = example.getroot(candidate)
-        example.printprog(root, 0, candidate)
 
         index = (self.memory_counter - 1) % self.memory_size
         self.memory_candidate[index] = example.copyProgram(candidate)
 
-        root = example.getroot(self.memory_candidate[index])
-        example.printprog(root, 0, self.memory_candidate[index])
-
-        if index > 1:
-            root = example.getroot(self.memory_candidate[index - 1])
-            example.printprog(root, 0, self.memory_candidate[index -1])
-        '''
-        if self.memory_counter - 1 > 10:
-            for i in range(len(self.memory_candidate)):
-                root = example.getroot(self.memory_candidate[i])
-                example.printprog(root, 0, self.memory_candidate[i])
-
-        # self.candidate_counter += 1
-        '''
     # action1 action2 legal
     def action2set(self, action2s):
         # actionLen = example.getLength(action2s)
@@ -260,13 +244,22 @@ class DeepQNetwork:
         if np.random.uniform() < self.epsilon:
             actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
             actions_value2 = self.sess.run(self.q_eval2, feed_dict={self.s: observation})
+            action1 = np.argmax(actions_value1)
+            action2 = np.argmax(actions_value2)
+            '''
             action1, action1_real = self.getAction1(act1Set, actions_value1)
             action2 = self.getAction2(candidate, action1_real, actions_value2)
+            '''
         else:
+            action1 = np.random.randint(0, 48)
+            action2 = np.random.randint(0, 49)
+            '''
             action1, action1_real = self.getAction1_random(act1Set)
             action2 = self.getAction2_random(candidate, action1_real)
-        action = self.getAction(action1, action2)
-        action_real = self.getAction(action1_real, action2)
+            '''
+        action_real = action = self.getAction(action1, action2)
+
+        #action_real = self.getAction(action1_real, action2)
         return action, action_real
 
     def learn(self):
@@ -283,19 +276,6 @@ class DeepQNetwork:
         batch_memory = self.memory[sample_index, :]
         act1set = [self.memory_action1[i] for i in sample_index]
 
-        for i in range(len(self.memory_candidate)):
-            root = example.getroot(self.memory_candidate[i])
-            example.printprog(root, 0, self.memory_candidate[i])
-
-
-        for i in sample_index:
-            root = example.getroot(self.memory_candidate[i])
-            example.printprog(root, 0, self.memory_candidate[i])
-        candidate = [self.memory_candidate[i] for i in sample_index]
-
-        for i in range(len(candidate)):
-            root = example.getroot(candidate[i])
-            example.printprog(root, 0, candidate[i])
 
         q_next1, q_eval1 = self.sess.run(
             [self.q_next1, self.q_eval1],
@@ -320,22 +300,23 @@ class DeepQNetwork:
         eval_act_index2 = batch_memory[:, self.n_features + 1].astype(int)
         reward = batch_memory[:, self.n_features + 2]
 
+
         # effective action1
         action1_real_ = range(len(batch_index))
         q_next1_ = range(len(batch_index))
         for t in batch_index:
             action1_real_[t], q_next1_[t] = self.getAction1_(act1set[t], q_next1[t])
 
+        '''
         # effective action2
         q_next2_ = range(len(batch_index))
 
         for t in batch_index:
-            root = example.getroot(candidate[t])
-            example.printprog(root, 0, candidate[t])
             q_next2_[t] = self.getAction2_(candidate[t], action1_real_[t], q_next2)
+        '''
 
         q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.array(q_next1_)
-        q_target2[batch_index, eval_act_index2] = reward + self.gamma * np.array(q_next2_)
+        q_target2[batch_index, eval_act_index2] = reward + self.gamma * np.argmax(q_next2, axis=1)
 
         """
         For example in this batch I have 2 samples and 3 actions:
@@ -375,7 +356,7 @@ class DeepQNetwork:
         #self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 50 == 0 else self.epsilon
 
         if self.epsilon < self.epsilon_max:
-            self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 10 == 0 else self.epsilon
+            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter % 10 == 0 else self.epsilon
         # self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 100 == 0 else self.epsilon
         self.learn_step_counter += 1
 

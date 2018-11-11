@@ -657,19 +657,15 @@ int* getLegalAction2(program* parent, int nodeNum)
     int* action = (int*)malloc(sizeof(int)*50);
     //memset(action, 0, sizeof(action));
     memset(action, 0, sizeof(int)*50);
-     printf("chnode0");
     program* newprog = copyProgram(parent);
-     printf("chnode3");
     // treenode* chnode = (treenode*)malloc(sizeof(treenode));
     treenode* chnode = NULL;
     chnode = findNode(newprog->root, newprog, nodeNum);
-    printf("chnode");
     if (chnode == NULL)
     {
         newprog->illegal = 1;
         printf("legalAction2 action1 error");
     }
-    printf("chnode2");
     //Replacement Mutation type
     treenode* mnode = chnode;
     int i_act = 0;
@@ -4799,7 +4795,7 @@ action* setAction(int layer, int actionType)
 
 program** initProg(Expr** requirements ,int numofrequirements,double* coef)
 {
-    int numofcandidate = 1;
+    int numofcandidate = 100;
     action* act = (action*)malloc(sizeof(action));
     program** candidate = genInitTemplate(numofcandidate);
     for(int i = 0;i < numofcandidate;i++)

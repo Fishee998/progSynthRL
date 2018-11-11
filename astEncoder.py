@@ -7,7 +7,7 @@ import sys
 sys.setrecursionlimit(768149)
 # condition: eq neq and or
 condition = [10, 15, 18, 19]
-candidates = 1
+candidates = 100
 
 def number(s):
     return s['number']
