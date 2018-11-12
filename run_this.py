@@ -20,6 +20,8 @@ def run_maze():
 
     illegal_action = 0
     legal_action = 0
+    action1 = 0
+    action1_real = 0
     for episode in range(200):
         step = 0
         info_ = env.reset()
@@ -31,53 +33,57 @@ def run_maze():
         start = time.time()
         illegal_action = info_.illegal_action
         legal_action = info_.legal_action
+        bad_action1 = 0
         for t in range(10):
 
             # 100 candidates
             for index in range(candidate_num):
                 observation = info_.state_[index]
-                observation = np.append(observation, 0)
+                observation = np.append(observation, action1)
+
                 # RL choose action based on observation
                 action, real_action = RL.choose_action(observation, episode, actIndex[index], info_.candidate_[index])
-                print("real_action", real_action)
-                print("action", action)
-                observation[-1] = action[0]
 
-                # RL take action and get next observation and reward
-                reward, done, info_ = env.step(real_action, index)
-                observation_ = info_.state_[index]
-                observation_ = np.append(observation_, 0)
-                if done:
-                    reward = target_reward
-                    fitness = example.get_fitness(info_.candidate_[index])
-                    print("i_ep: ", episode, " step:", t, " fitness: ", fitness)
-                    spin_reward = example.spin_(info_.candidate_[index])
-                    print("Spin: ", "score: ", spin_reward)
-                    if spin_reward == 20:
-                        buf.write("correct program at i_ep %d: step:%d \n" % (episode, t))
-                        fo = open("./correctProg.txt", "a+")
-                        fo.write(buf.getvalue())
-                        fo.close()
-                    if spin_reward == 5:
-                        print("Spin: liveness")
-                    if spin_reward == 10:
-                        print("Spin: safety")
-                    reward = reward + spin_reward
+                if action < 35:
+                    action1 = action
+                    if real_action == 0:
+                        bad_action1 += 1
+                        reward = -1
+                    else:
+                        action1_real = real_action
+                        reward = 0
+                    observation_ = observation
+                    observation_[-1] = action1
+                else:
+                    action2 = action
+                    real_action = RL.getAction(action1_real, action2)
+                    # RL take action and get next observation and reward
+                    action_ = RL.getAction(action1, action2)
+                    reward, done, info_ = env.step(real_action, action_, index)
+                    observation_ = info_.state_[index]
+                    observation_ = np.append(observation_, action1)
+                    # observation_[-1] = action1
 
-                act1_index_store = astEncoder.setAction1s_store(info_, index)
-                action1s = np.nonzero(act1_index_store)[0]
+                    if done:
+                        reward = target_reward
+                        fitness = example.get_fitness(info_.candidate_[index])
+                        print("i_ep: ", episode, " step:", t, " fitness: ", fitness)
+                        spin_reward = example.spin_(info_.candidate_[index])
+                        print("Spin: ", "score: ", spin_reward)
+                        if spin_reward == 20:
+                            buf.write("correct program at i_ep %d: step:%d \n" % (episode, t))
+                            fo = open("./correctProg.txt", "a+")
+                            fo.write(buf.getvalue())
+                            fo.close()
+                        if spin_reward == 5:
+                            print("Spin: liveness")
+                        if spin_reward == 10:
+                            print("Spin: safety")
+                        reward = reward + spin_reward
 
-                action2 = []
-                for ind in action1s:
-                    action2.append(
-                        RL.action2set(example.getLegalAction2(info_.candidate_[index], act1_index_store[ind])))
-                action2 = list(set(flatten(flatten(action2))))
-                for ind in action1s:
-                    observation_[-1] = ind
-                    RL.store_transition(observation, action[1], reward, observation_)
-                    step += 1
-                    # RL.store_action1(act1_index_store)
-                    RL.store_action2(action2)
+                RL.store_transition(observation, action, reward, observation_)
+
+                step += 1
 
                 reward_cum += reward
 
@@ -92,9 +98,10 @@ def run_maze():
 
         end = time.time()
 
-        print("illegal action", info_.illegal_action - illegal_action, "legal action", info_.legal_action - legal_action)
+        print("illegal action", info_.illegal_action - illegal_action, "legal action", info_.legal_action - legal_action,
+              "bad action1", bad_action1)
         print("episode: ", episode, "reward_cum: ", reward_cum, "time: ", end - start)
-        print("legal action reward_cum", - (abs(reward_cum) - 10 * (info_.illegal_action - illegal_action)) )
+        print("legal action reward_cum",  (reward_cum + (info_.illegal_action - illegal_action) + bad_action1))
     # end of game
     print('game over')
     # env.destroy()
