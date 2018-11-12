@@ -12,7 +12,7 @@ class Maze(object):
     def __init__(self):
         self.n_features = 2
         # self.action_space = spaces.Tuple((spaces.Discrete(49), spaces.Discrete(50)))
-        self.action_space = spaces.Discrete(50)
+        self.action_space = spaces.Discrete(99)
         self.observation_space = spaces.Box(low=0.0, high=49.0, shape=(301,), dtype=np.int)
         self.seed()
         self.viewer = None
@@ -101,8 +101,10 @@ class Maze(object):
         if done:
             reward = 1
             print("done")
+        '''
         if not done:
             reward = reward - 1
+        '''
         print("reward", reward)
         return reward, done, self
 

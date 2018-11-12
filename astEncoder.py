@@ -270,9 +270,7 @@ def setAction1s(info_):
     '''
     return act1_index
 
-
 def setAction1s_store(info_, i):
-
     treenode = ["assign", "if", "while"]
     astActNodes = info_.astActNodes_[i]
     ast = info_.ast_[i]

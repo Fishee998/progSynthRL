@@ -56,7 +56,7 @@ class DeepQNetwork:
         self.memory = np.zeros((self.memory_size, n_features * 2 + 2))
         self.memory_candidate = range(memory_size)
         self.memory_action1 = range(memory_size)
-
+        self.memory_action2 = range(memory_size)
 
         # consist of [target_net, evaluate_net]
         self._build_net()
@@ -82,7 +82,7 @@ class DeepQNetwork:
         with tf.variable_scope('eval_net'):
             # c_names(collections_names) are the collections to store variables
             c_names, n_l1, w_initializer, b_initializer = \
-                ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], 10, \
+                ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], 30, \
                 tf.random_normal_initializer(0., 0.3), tf.constant_initializer(0.1)  # config of layers
 
             # first layer. collections is used later when assign to target net
@@ -181,6 +181,10 @@ class DeepQNetwork:
         index = (self.memory_counter - 1) % self.memory_size
         self.memory_candidate[index] = example.copyProgram(candidate)
 
+    def store_action2(self, action2):
+        index = (self.memory_counter - 1) % self.memory_size
+        self.memory_action2[index] = action2
+
     # action1 action2 legal
     def action2set(self, action2s):
         # actionLen = example.getLength(action2s)
@@ -243,6 +247,13 @@ class DeepQNetwork:
         prob_action2 = np.max(action2_prob)
         return prob_action2
 
+    def getAction2_next(self, action2set, action2_value):
+        action2_prob = []
+        for index in list(set(action2set)):
+            action2_prob.append(action2_value[0][index])
+        prob_action2 = np.max(action2_prob)
+        return prob_action2
+
     def getAction2_random(self, candidate, action1_real):
         action2_ = example.getLegalAction2(candidate, action1_real)
         action2set = self.action2set(action2_)
@@ -296,8 +307,9 @@ class DeepQNetwork:
         else:
             sample_index = np.random.choice(self.memory_counter, size=self.batch_size, replace=False)
         batch_memory = self.memory[sample_index, :]
-        #act1set = [self.memory_action1[i] for i in sample_index]
-
+        act1set = [self.memory_action1[i] for i in sample_index]
+        # candidate = [self.memory_candidate[i] for i in sample_index]
+        action2_next = [self.memory_action2[i] for i in sample_index]
 
         q_next1, q_eval1 = self.sess.run(
             [self.q_next1, self.q_eval1],
@@ -322,24 +334,26 @@ class DeepQNetwork:
         eval_act_index1 = batch_memory[:, self.n_features].astype(int)
         # eval_act_index2 = batch_memory[:, self.n_features + 1].astype(int)
         reward = batch_memory[:, self.n_features + 1]
-
-
-        # effective action1
-        #action1_real_ = range(len(batch_index))
-        #q_next1_ = range(len(batch_index))
-        #for t in batch_index:
-        #    action1_real_[t], q_next1_[t] = self.getAction1_(act1set[t], q_next1[t])
+        q_next1_ = range(len(batch_index))
 
         '''
+        #effective action1
+        action1_real_ = range(len(batch_index))
+        q_next1_ = range(len(batch_index))
+        for t in batch_index:
+            action1_real_[t] = self.getAction1_(act1set[t])
+
         # effective action2
         q_next2_ = range(len(batch_index))
-
-        for t in batch_index:
-            q_next2_[t] = self.getAction2_(candidate[t], action1_real_[t], q_next2)
         '''
 
+        for t in batch_index:
+            q_next1_[t] = self.getAction2_next(action2_next[t], q_next1)
+
+
+
         q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.argmax(q_next1, axis=1)
-        # q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.array(q_next1_)
+        q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.array(q_next1_)
         # q_target2[batch_index, eval_act_index2] = reward + self.gamma * np.argmax(q_next2, axis=1)
 
         """
@@ -381,7 +395,7 @@ class DeepQNetwork:
         #self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 50 == 0 else self.epsilon
 
         if self.epsilon < self.epsilon_max:
-            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter % 5 == 0 else self.epsilon
+            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter % 1 == 0 else self.epsilon
         else:
             self.epsilon = self.epsilon_max
         # self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 100 == 0 else self.epsilon
