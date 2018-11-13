@@ -33,7 +33,7 @@ class DeepQNetwork:
             replace_target_iter=10,
             memory_size=100,
             batch_size=64,
-            e_greedy_increment=0.00018,
+            e_greedy_increment=0.0001,
             output_graph=False,
     ):
         self.n_actions1 = n_actions1
@@ -82,7 +82,7 @@ class DeepQNetwork:
         with tf.variable_scope('eval_net'):
             # c_names(collections_names) are the collections to store variables
             c_names, n_l1, w_initializer, b_initializer = \
-                ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], 30, \
+                ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], 256, \
                 tf.random_normal_initializer(0., 0.3), tf.constant_initializer(0.1)  # config of layers
 
             # first layer. collections is used later when assign to target net
@@ -196,16 +196,25 @@ class DeepQNetwork:
         return action2Seleced
 
     def getAction1(self, act1Set, action1_value):
+        action1s = np.nonzero(act1Set)[0]
+        action2 = np.array(range(35, 85))
+        actions = np.append(action1s, action2)
+        action1_prob = []
+        for index in actions:
+            action1_prob.append(action1_value[0][index])
+        action1 = np.argmax(action1_prob)
+        action = actions[action1]
+        return action
+        # no restrict
+        # action1 = np.argmax(action1_value[0])
+
+    def getLegalAction(self, act1Set, action1_value):
         action1Set = np.nonzero(act1Set)[0]
         action1_prob = []
         for index in action1Set:
             action1_prob.append(action1_value[0][index])
-        action1 = np.argmax(action1_prob)
-        action1 = action1Set[action1]
-        real_action = act1Set[action1]
-        return action1, real_action
-        # no restrict
-        # action1 = np.argmax(action1_value[0])
+        action = np.argmax(action1_prob)
+        return action
 
     def getAction1_(self, act1Set, action1_value):
         action1Set = np.nonzero(act1Set)[0]
@@ -224,6 +233,15 @@ class DeepQNetwork:
 
         real_action = act1Set[action1]
         return action1, real_action
+
+    def getAction_random(self, act1Set):
+        action1s = np.nonzero(act1Set)
+        action2 = np.array(range(35, 85))
+        actions = np.append(action1s, action2)
+        action = random.choice(actions)
+
+        #real_action = act1Set[action1]
+        return action
 
     def getAction2(self, candidate, action1_real, action2_value):
         action2 = example.getLegalAction2(candidate, action1_real)
@@ -274,24 +292,28 @@ class DeepQNetwork:
         if np.random.uniform() < self.epsilon:
             #actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
             actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
-            action = np.argmax(actions_value1)
+            # print(actions_value1)
+            #action = np.argmax(actions_value1)
             # action2 = np.argmax(actions_value2)
+
+            action = self.getAction1(act1Set, actions_value1)
             '''
-            action1, action1_real = self.getAction1(act1Set, actions_value1)
             action2 = self.getAction2(candidate, action1_real, actions_value2)
             '''
         else:
-            action = np.random.randint(0, 84)
+            #action = np.random.randint(0, 84)
             # action2 = np.random.randint(0, 49)
+
+            action = self.getAction_random(act1Set)
             '''
-            action1, action1_real = self.getAction1_random(act1Set)
             action2 = self.getAction2_random(candidate, action1_real)
             '''
+        action_store = action
         if action < 35:
             action = action
             action_real = act1Set[action]
         else:
-            action = 84 - action
+            action = action - 35
             action_real = 0
         # action_real = action = self.getAction(action1, action2)
 
@@ -299,7 +321,7 @@ class DeepQNetwork:
         # action2 = action % 50
         # action = self.getAction(action1, action2)
         # action_real = self.getAction(action1_real, action2)
-        return action, action_real
+        return action, action_real, action_store
 
     def learn(self):
         # check to replace target parameters
@@ -357,6 +379,7 @@ class DeepQNetwork:
             q_next1_[t] = self.getAction2_next(action2_next[t], q_next1)
         '''
 
+
         q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.argmax(q_next1, axis=1)
         # q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.array(q_next1_)
         # q_target2[batch_index, eval_act_index2] = reward + self.gamma * np.argmax(q_next2, axis=1)
@@ -400,7 +423,7 @@ class DeepQNetwork:
         #self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 50 == 0 else self.epsilon
 
         if self.epsilon < self.epsilon_max:
-            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter % 1 == 0 else self.epsilon
+            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter % 10 == 0 else self.epsilon
         else:
             self.epsilon = self.epsilon_max
         # self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 100 == 0 else self.epsilon

@@ -41,7 +41,7 @@ class Maze(object):
         illegal = example.illegal(candidate_)
         if illegal == 1:
             self.illegal_action += 1
-            reward = -1
+            reward = -5
             # self.numIll =self.numIll + 1
         else:
             self.legal_action += 1
@@ -63,39 +63,47 @@ class Maze(object):
             # self.numlega = self.numlega + 1
             newfitnessValue = example.get_fitness(candidate_)
             self.fitness_.append(newfitnessValue)
-            reward = 0
 
             if newfitnessValue > oldfitnessValue:
+                # reward = 1
+
                 if newfitnessValue > 69:
-                    reward = 0.09 * (newfitnessValue - oldfitnessValue)
+                    reward = 1
                 else:
                     if newfitnessValue > 60:
-                        reward = 0.08 * (newfitnessValue - oldfitnessValue)
+                        reward = 0.8
                     else:
                         if newfitnessValue > 50:
-                            reward = 0.07 * (newfitnessValue - oldfitnessValue)
+                            reward = 0.6
                         else:
                             if newfitnessValue > 40:
-                                reward = 0.06 * (newfitnessValue - oldfitnessValue)
+                                reward = 0.4
                             else:
                                 if newfitnessValue > 30:
-                                    reward = 0.05 * (newfitnessValue - oldfitnessValue)
+                                    reward = 0.2
+                                else:
+                                    if newfitnessValue > 20:
+                                        reward = 0.1
+                                    else:
+                                        reward = 0.05
+
             else:
                 if newfitnessValue < 30:
-                    reward = 0.009 * (newfitnessValue - oldfitnessValue)
+                    reward = -1
                 else:
                     if newfitnessValue < 40:
-                        reward = 0.008 * (newfitnessValue - oldfitnessValue)
+                        reward = -0.8
                     else:
                         if newfitnessValue < 50:
-                            reward = 0.007 * (newfitnessValue - oldfitnessValue)
+                            reward = -0.6
                         else:
                             if newfitnessValue < 60:
-                                reward = 0.006 * (newfitnessValue - oldfitnessValue)
+                                reward = -0.4
                             else:
                                 if newfitnessValue < 69:
-                                    reward = 0.004 * (newfitnessValue - oldfitnessValue)
-
+                                    reward = -0.2
+                                else:
+                                    reward = -0.05
 
         done = bool(self.fitness > 78.4)
         if done:

@@ -4655,7 +4655,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
             case 49:
                 if(mnode->parent != NULL && mnode->fixed != 1 && mnode->parent->type == 3 )
                 {
-                    //    printf("49action\n");
+                    // printf("49action\n");
                     treenode* new2 = mnode->parent->treenode1;
                     if (mnode->parent->treenode1 == mnode)
                     {
