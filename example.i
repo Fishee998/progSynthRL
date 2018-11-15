@@ -57,8 +57,20 @@ program* getCandidate(program** candidate, int i)
 {
     return candidate[i];
 }
+int state_i(int* vector, int i)
+{
+    return vector[i];
+}
+int judgeNULL(treenode* l)
+{
+    if(l == NULL)
+        return 1;
+    else
+        return 0;
+}
 %}
-
+treenode* findNode(treenode* root,program* prog, int num);
+extern int* genVector(program* prog);
 extern program* copyProgram(program* prog);
 extern int spin_(program* candidate);
 extern int* getLegalAction2(program* parent, int nodeNum);
@@ -79,4 +91,3 @@ extern program** initProg(Expr** requirements ,int numofrequirements,double* coe
 extern program* mutation_(program* candidate0, int nodeNum, int actType,Expr** requirements ,int numofrequirements,double* coef);
 extern void printprog(treenode* root,int blank,program* prog);
 extern int getLength(int* action2);
-extern void printAst(program* prog);

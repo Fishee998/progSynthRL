@@ -183,6 +183,10 @@ program* genProgram(program* templat,int progid);
 organism* genOrganism(program* template);
 program** genInitTemplate(int num);
 
+//treenode number only
+int* genVector(program* prog);
+int setTreenodeNum(treenode* root, program* prog, int number);
+
 void freeAll(organism* org,program* prog,treenode* t,cond* c,exp_* e,int type);
 int compareTreenode(treenode* t1,treenode* t2);
 //treenode* example_d();

@@ -12,8 +12,8 @@ class Maze(object):
     def __init__(self):
         self.n_features = 2
         # self.action_space = spaces.Tuple((spaces.Discrete(49), spaces.Discrete(50)))
-        self.action_space = spaces.Discrete(85)
-        self.observation_space = spaces.Box(low=0.0, high=35.0, shape=(301,), dtype=np.int)
+        self.action_space = spaces.Discrete(92)
+        self.observation_space = spaces.Box(low= -1.0, high=6501.0, shape=(43,), dtype=np.int)
         self.seed()
         self.viewer = None
         self.state = None
@@ -30,81 +30,96 @@ class Maze(object):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
-    def step(self, real_action, action, index):
+    def step(self, action, index):
         assert self.action_space.contains(action[0] + action[1]), "%r (%s) invalid" % (action, type(action))
         self.fitness_ = []
+
         candidate = self.candidate_[index]
+        '''
+        root = example.getroot(self.candidate_[index])
+        example.printprog(root, 0, self.candidate_[index])
+        '''
+        root = example.getroot(self.candidate_[index])
+        if example.judgeNULL(example.findNode(root, candidate, action[0])) == 1:
+            print("null chnoe")
         fitness = example.get_fitness(candidate)
         # print("fitness value:", fitness)
-        candidate_ = prog.mutation(candidate, real_action[0], real_action[1])
+        state_0 = []
+        vector = example.genVector(candidate)
+        for ind in range(42):
+            state_0.append(example.state_i(vector, ind))
+
+
+        candidate_ = prog.mutation(candidate, action[0], action[1])
+        # print("action", action)
         self.candidate_[index] = candidate_
+        '''
+        root = example.getroot(self.candidate_[index])
+        example.printprog(root, 0, self.candidate_[index])
+        '''
         illegal = example.illegal(candidate_)
         if illegal == 1:
+
+            state_ = []
+            vector = example.genVector(candidate_)
+            for ind in range(42):
+                state_.append(example.state_i(vector, ind))
             self.illegal_action += 1
             reward = -5
             # self.numIll =self.numIll + 1
         else:
             self.legal_action += 1
             oldfitnessValue = fitness
-            ast = astEncoder.getAstDict()
-            state_, astActNodes = astEncoder.astEncoder(ast)
-            # print(state_)
-            '''
-            if state_ == self.state:
-                # self.numlegalButwrong = self.numlegalButwrong + 1
-                reward = -5
-            '''
-            self.ast_[index] = ast
-            # self.state = self.np_random.uniform(low=-0.05, high=0.05, size=(4,))
+            vector = example.genVector(candidate_)
+            state_ = []
+            for ind in range(42):
+                state_.append(example.state_i(vector, ind))
             self.state_[index] = np.array(tuple(state_))
             self.steps_beyond_done = None
-            # self.candidate = newCandidate
-            self.astActNodes_[index] = astActNodes
-            # self.numlega = self.numlega + 1
             newfitnessValue = example.get_fitness(candidate_)
             self.fitness_.append(newfitnessValue)
 
-            if newfitnessValue > oldfitnessValue:
-                # reward = 1
-
-                if newfitnessValue > 69:
-                    reward = 1
-                else:
-                    if newfitnessValue > 60:
-                        reward = 0.8
-                    else:
-                        if newfitnessValue > 50:
-                            reward = 0.6
-                        else:
-                            if newfitnessValue > 40:
-                                reward = 0.4
-                            else:
-                                if newfitnessValue > 30:
-                                    reward = 0.2
-                                else:
-                                    if newfitnessValue > 20:
-                                        reward = 0.1
-                                    else:
-                                        reward = 0.05
-
+            if newfitnessValue > 69:
+                reward = 5
             else:
-                if newfitnessValue < 30:
-                    reward = -1
+                if newfitnessValue > 60:
+                    reward = 3
                 else:
-                    if newfitnessValue < 40:
-                        reward = -0.8
+                    if newfitnessValue > 50:
+                        reward = 1
                     else:
-                        if newfitnessValue < 50:
-                            reward = -0.6
+                        if newfitnessValue > 40:
+                            reward = 0.5
                         else:
-                            if newfitnessValue < 60:
-                                reward = -0.4
+                            if newfitnessValue > 30:
+                                reward = 0.3
                             else:
-                                if newfitnessValue < 69:
-                                    reward = -0.2
+                                if newfitnessValue > 20:
+                                    reward = 0.1
                                 else:
-                                    reward = -0.05
-
+                                    reward = 0.05
+            '''
+            else :
+                if newfitnessValue < oldfitnessValue:
+                    if newfitnessValue < 30:
+                        reward = -1
+                    else:
+                        if newfitnessValue < 40:
+                            reward = -0.8
+                        else:
+                            if newfitnessValue < 50:
+                                reward = -0.6
+                            else:
+                                if newfitnessValue < 60:
+                                    reward = -0.4
+                                else:
+                                    if newfitnessValue < 69:
+                                        reward = -0.2
+                                    else:
+                                        reward = -0.05
+                else:
+                    reward = 0
+            '''
         done = bool(self.fitness > 78.4)
         if done:
             reward = 2
@@ -113,25 +128,25 @@ class Maze(object):
         if not done:
             reward = reward - 1
         '''
+        # if illegal != 1:
         print("action", action, "reward", reward)
         return reward, done, self
 
     def reset(self):
-        self.state = spaces.Box(low=0, high=20, shape=(300,), dtype=int)
+        self.state = spaces.Box(low=-1.0, high=6501.0, shape=(42,), dtype=np.int)
+        # self.state = spaces.Box(low=0, high=20, shape=(300,), dtype=int)
         # 100 candidates
         self.candidate_ = []
-        self.ast_ = []
         self.state_ = []
-        self.astActNodes_ = []
         candidates = prog.initProg()
         for index in range(candidate_num):
             candidate = example.getCandidate(candidates, index)
             self.candidate_.append(candidate)
-            example.printAst(candidate)
-            ast = astEncoder.getAstDict()
-            self.ast_.append(ast)
-            state, astActNodes = astEncoder.astEncoder(ast)
+            vector = example.genVector(candidate)
+            state = []
+            for ind in range(42):
+                state.append(example.state_i(vector, ind))
             self.state_.append(np.array(state))
-            self.astActNodes_.append(astActNodes)
+            # self.astActNodes_.append(astActNodes)
 
         return self

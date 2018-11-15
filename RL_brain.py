@@ -32,7 +32,7 @@ class DeepQNetwork:
             e_greedy=0.9,
             replace_target_iter=10,
             memory_size=100,
-            batch_size=64,
+            batch_size=4,
             e_greedy_increment=0.0001,
             output_graph=False,
     ):
@@ -82,14 +82,14 @@ class DeepQNetwork:
         with tf.variable_scope('eval_net'):
             # c_names(collections_names) are the collections to store variables
             c_names, n_l1, w_initializer, b_initializer = \
-                ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], 256, \
+                ['eval_net_params', tf.GraphKeys.GLOBAL_VARIABLES], 64, \
                 tf.random_normal_initializer(0., 0.3), tf.constant_initializer(0.1)  # config of layers
 
             # first layer. collections is used later when assign to target net
             with tf.variable_scope('l1'):
-                w1 = tf.get_variable('w1', [self.n_features, n_l1], initializer=w_initializer, collections=c_names)
-                b1 = tf.get_variable('b1', [1, n_l1], initializer=b_initializer, collections=c_names)
-                l1 = tf.nn.relu(tf.matmul(self.s, w1) + b1)
+                self.w1 = w1 = tf.get_variable('w1', [self.n_features, n_l1], initializer=w_initializer, collections=c_names)
+                self.b1 = b1 = tf.get_variable('b1', [1, n_l1], initializer=b_initializer, collections=c_names)
+                self.l1 = l1 = tf.nn.sigmoid(tf.matmul(self.s, w1) + b1)
 
             # second layer. collections is used later when assign to target net
             with tf.variable_scope('l2_1'):
@@ -111,7 +111,8 @@ class DeepQNetwork:
             # self.loss = self.loss1 + self.loss2
 
         with tf.variable_scope('train'):
-            self._train_op = tf.train.RMSPropOptimizer(self.lr).minimize(self.loss)
+            self._train_op = tf.train.AdamOptimizer(self.lr).minimize(self.loss)
+            # self._train_op = tf.train.RMSPropOptimizer(self.lr).minimize(self.loss)
 
         # ------------------ build target_net ------------------
         self.s_ = tf.placeholder(tf.float32, [None, self.n_features], name='s_')    # input
@@ -123,7 +124,7 @@ class DeepQNetwork:
             with tf.variable_scope('l1'):
                 w1 = tf.get_variable('w1', [self.n_features, n_l1], initializer=w_initializer, collections=c_names)
                 b1 = tf.get_variable('b1', [1, n_l1], initializer=b_initializer, collections=c_names)
-                l1 = tf.nn.relu(tf.matmul(self.s_, w1) + b1)
+                l1 = tf.nn.sigmoid(tf.matmul(self.s_, w1) + b1)
 
             # second layer. collections is used later when assign to target net
             with tf.variable_scope('l2_1'):
@@ -197,7 +198,7 @@ class DeepQNetwork:
 
     def getAction1(self, act1Set, action1_value):
         action1s = np.nonzero(act1Set)[0]
-        action2 = np.array(range(35, 85))
+        action2 = np.array(range(42, 92))
         actions = np.append(action1s, action2)
         action1_prob = []
         for index in actions:
@@ -235,8 +236,9 @@ class DeepQNetwork:
         return action1, real_action
 
     def getAction_random(self, act1Set):
+        # print("act1Set", act1Set)
         action1s = np.nonzero(act1Set)
-        action2 = np.array(range(35, 85))
+        action2 = np.array(range(42, 92))
         actions = np.append(action1s, action2)
         action = random.choice(actions)
 
@@ -285,43 +287,37 @@ class DeepQNetwork:
         action = tuple(action)
         return action
 
-    def choose_action(self, observation, episode, act1Set, candidate):
+    def choose_action(self, observation, candidate):
         # to have batch dimension when feed into tf placeholder
         observation = observation[np.newaxis, :]
         # action1, action1_real = self.getAction1_random(act1Set)
         if np.random.uniform() < self.epsilon:
-            #actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
             actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
-            # print(actions_value1)
-            #action = np.argmax(actions_value1)
-            # action2 = np.argmax(actions_value2)
-
-            action = self.getAction1(act1Set, actions_value1)
+            action = self.getAction1(observation[0][:-1], actions_value1)
             '''
             action2 = self.getAction2(candidate, action1_real, actions_value2)
             '''
         else:
-            #action = np.random.randint(0, 84)
-            # action2 = np.random.randint(0, 49)
-
-            action = self.getAction_random(act1Set)
+            action = self.getAction_random(observation[0][:-1])
             '''
             action2 = self.getAction2_random(candidate, action1_real)
             '''
         action_store = action
-        if action < 35:
+        if action < 42:
+            action = action + 1
             action = action
-            action_real = act1Set[action]
+            action_value = observation[0][action]
         else:
-            action = action - 35
-            action_real = 0
+            action_store = action
+            action = action - 42
+            action_value = 0
         # action_real = action = self.getAction(action1, action2)
 
         # action1 = action / 50
         # action2 = action % 50
         # action = self.getAction(action1, action2)
         # action_real = self.getAction(action1_real, action2)
-        return action, action_real, action_store
+        return action, action_value, action_store
 
     def learn(self):
         # check to replace target parameters
@@ -417,13 +413,14 @@ class DeepQNetwork:
                                                 #self.q_target2: q_target2
                                                 })
         self.cost_his.append(self.cost)
+        # print("loss",self.cost_his[-1] )
 
         # increasing epsilon
 
         #self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 50 == 0 else self.epsilon
 
         if self.epsilon < self.epsilon_max:
-            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter % 10 == 0 else self.epsilon
+            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter % 1 == 0 else self.epsilon
         else:
             self.epsilon = self.epsilon_max
         # self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 100 == 0 else self.epsilon
