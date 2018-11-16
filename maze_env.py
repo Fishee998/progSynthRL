@@ -33,7 +33,6 @@ class Maze(object):
     def step(self, action, index):
         assert self.action_space.contains(action[0] + action[1]), "%r (%s) invalid" % (action, type(action))
         self.fitness_ = []
-
         candidate = self.candidate_[index]
         '''
         root = example.getroot(self.candidate_[index])
@@ -49,24 +48,20 @@ class Maze(object):
         for ind in range(42):
             state_0.append(example.state_i(vector, ind))
 
-
         candidate_ = prog.mutation(candidate, action[0], action[1])
-        # print("action", action)
+
         self.candidate_[index] = candidate_
-        '''
-        root = example.getroot(self.candidate_[index])
-        example.printprog(root, 0, self.candidate_[index])
-        '''
+
         illegal = example.illegal(candidate_)
         if illegal == 1:
-
+            '''
             state_ = []
             vector = example.genVector(candidate_)
             for ind in range(42):
                 state_.append(example.state_i(vector, ind))
+            '''
             self.illegal_action += 1
             reward = -5
-            # self.numIll =self.numIll + 1
         else:
             self.legal_action += 1
             oldfitnessValue = fitness
@@ -142,6 +137,7 @@ class Maze(object):
         for index in range(candidate_num):
             candidate = example.getCandidate(candidates, index)
             self.candidate_.append(candidate)
+
             vector = example.genVector(candidate)
             state = []
             for ind in range(42):

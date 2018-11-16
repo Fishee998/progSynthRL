@@ -30,6 +30,7 @@ def run_maze():
         # 100 candidate in actIndex
         # actIndex = astEncoder.setAction1s(info_)
         reward_cum = 0
+        reward_cum_bad = 0
         start = time.time()
         illegal_action = info_.illegal_action
         legal_action = info_.legal_action
@@ -44,7 +45,11 @@ def run_maze():
 
                 # RL choose action based on observation
                 action, action_value, action_store = RL.choose_action(observation, info_.candidate_[index])
-
+                illegal_action1 = np.where(observation[:-1] == 0)[0]
+                for illegal_action1_ in illegal_action1:
+                    observation[-1] = illegal_action1_
+                    reward = -5
+                    RL.store_badtransition(observation, illegal_action1_, reward, observation)
 
                 if action_store < 42:
                     action1 = action
@@ -52,7 +57,6 @@ def run_maze():
                         bad_action1 += 1
                         reward = -1
                     else:
-
                         # action1_real = real_action
                         reward = 0
                     observation_ = observation
@@ -60,7 +64,7 @@ def run_maze():
                 else:
                     if observation[action1 - 1] == 0:
                         bad_action2 += 1
-                        reward = -1
+                        reward = -5
                         observation_ = observation
                     else:
                         action2 = action
@@ -88,15 +92,17 @@ def run_maze():
                         print("Spin: safety")
                     reward = reward + spin_reward
 
-                # if (observation_ - observation).any() == True:
-                    # observation = np.power(observation, 3)
-                    # observation_ = np.power(observation_, 3)
-                RL.store_transition(observation, action_store, reward, observation_)
-                step += 1
 
-                reward_cum += reward
 
-                if (step > 100) and (step % 1 == 0):
+                if reward == -5:
+                    reward_cum_bad += reward
+                    RL.store_badtransition(observation, action_store, reward, observation_)
+                else:
+                    reward_cum += reward
+                    RL.store_transition(observation, action_store, reward, observation_)
+                    step += 1
+
+                if (step > 100) and (step % 5 == 0):
                     RL.learn()
 
                 if reward == 100:
@@ -105,10 +111,8 @@ def run_maze():
 
         end = time.time()
 
-        print("illegal action", info_.illegal_action - illegal_action, "legal action", info_.legal_action - legal_action,
-              "bad action1", bad_action1)
-        print("episode: ", episode, "reward_cum: ", reward_cum, "time: ", end - start)
-        print("legal action reward_cum",  (reward_cum + 5 * (info_.illegal_action - illegal_action) + 1 * bad_action1))
+        print("episode: ", episode, "reward_cum_total: ", reward_cum + reward_cum_bad, "(", reward_cum, "+", reward_cum_bad, ")", "time: ", end - start)
+        # print("legal action reward_cum",  (reward_cum + 5 * (info_.illegal_action - illegal_action) + 1 * bad_action1))
     # end of game
     print('game over')
     # env.destroy()
