@@ -54,8 +54,8 @@ class DeepQNetwork:
 
         # initialize zero memory [s, a, r, s_]
         self.memory = np.zeros((self.memory_size, n_features * 2 + 2))
-        self.memory_bad = np.zeros((self.memory_size, n_features * 2 + 2))
-
+        self.memory_bad1 = np.zeros((self.memory_size, n_features * 2 + 2))
+        self.memory_bad2 = np.zeros((self.memory_size, n_features * 2 + 2))
         self.memory_candidate = range(memory_size)
         self.memory_action1 = range(memory_size)
         self.memory_action2 = range(memory_size)
@@ -167,17 +167,29 @@ class DeepQNetwork:
 
         self.memory_counter += 1
 
-    def store_badtransition(self, s, a1, r, s_):
-        if not hasattr(self, 'memory_counter_bad'):
-            self.memory_counter_bad = 0
+    def store_badtransition1(self, s, a1, r, s_):
+        if not hasattr(self, 'memory_counter_bad1'):
+            self.memory_counter_bad1 = 0
 
         transition = np.hstack((s, [a1, r], s_))
 
         # replace the old memory with new memory
-        index = self.memory_counter_bad % self.memory_size
-        self.memory_bad[index, :] = transition
+        index = self.memory_counter_bad1 % self.memory_size
+        self.memory_bad1[index, :] = transition
 
-        self.memory_counter_bad += 1
+        self.memory_counter_bad1 += 1
+
+    def store_badtransition2(self, s, a1, r, s_):
+        if not hasattr(self, 'memory_counter_bad2'):
+            self.memory_counter_bad2 = 0
+
+        transition = np.hstack((s, [a1, r], s_))
+
+        # replace the old memory with new memory
+        index = self.memory_counter_bad2 % self.memory_size
+        self.memory_bad2[index, :] = transition
+
+        self.memory_counter_bad2 += 1
 
     def store_action1(self, act1_index_store):
         # if not hasattr(self, 'action1_counter'):
@@ -188,7 +200,6 @@ class DeepQNetwork:
         self.memory_action1[index] = act1_index_store
 
         # self.action1_counter += 1
-
     def store_candidate(self, candidate):
         # if not hasattr(self, 'candidate_counter'):
             # self.candidate_counter = 0
@@ -210,10 +221,16 @@ class DeepQNetwork:
             index += 1
         return action2Seleced
 
-    def getAction1(self, act1Set, action1_value):
+    def getAction1(self,candidate, act1Set, action1, action1_value):
         action1s = np.nonzero(act1Set)[0]
-        action2 = np.array(range(42, 92))
-        actions = np.append(action1s, action2)
+
+        if act1Set[action1 - 1] != 0 and act1Set[action1 - 1] != -1:
+            action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
+            actions = np.append(action1s, action2set)
+        else:
+            actions = action1s
+
+        actions = actions.flatten()
         action1_prob = []
         for index in actions:
             action1_prob.append(action1_value[0][index])
@@ -249,11 +266,18 @@ class DeepQNetwork:
         real_action = act1Set[action1]
         return action1, real_action
 
-    def getAction_random(self, act1Set):
+    def getAction_random(self, candidate, act1Set, action1):
         # print("act1Set", act1Set)
         action1s = np.nonzero(act1Set)
-        action2 = np.array(range(42, 92))
-        actions = np.append(action1s, action2)
+        # (act1Set[action1-1])
+        if act1Set[action1-1] != 0 and act1Set[action1 - 1] != -1:
+            # action2 = np.array(range(42, 92))
+            action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
+            actions = np.append(action1s, action2set)
+        else:
+            actions = action1s[0]
+        actions = actions.flatten()
+        # actions = np.append(action1s, action2set)
         action = random.choice(actions)
 
         #real_action = act1Set[action1]
@@ -304,33 +328,27 @@ class DeepQNetwork:
     def choose_action(self, observation, candidate):
         # to have batch dimension when feed into tf placeholder
         observation = observation[np.newaxis, :]
-        # action1, action1_real = self.getAction1_random(act1Set)
+        action_value = observation[0][observation[0][-1]-1]
         if np.random.uniform() < self.epsilon:
             actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
-            action = self.getAction1(observation[0][:-1], actions_value1)
+            action = self.getAction1(candidate, observation[0][:-1], observation[0][-1], actions_value1)
             '''
             action2 = self.getAction2(candidate, action1_real, actions_value2)
             '''
         else:
-            action = self.getAction_random(observation[0][:-1])
+            action = self.getAction_random(candidate, observation[0][:-1], observation[0][-1])
             '''
             action2 = self.getAction2_random(candidate, action1_real)
             '''
+        action = int(action)
         action_store = action
         if action < 42:
             action = action + 1
-            action = action
-            action_value = observation[0][action]
+            action_value = observation[0][action - 1]
         else:
             action_store = action
             action = action - 42
-            action_value = 0
-        # action_real = action = self.getAction(action1, action2)
 
-        # action1 = action / 50
-        # action2 = action % 50
-        # action = self.getAction(action1, action2)
-        # action_real = self.getAction(action1_real, action2)
         return action, action_value, action_store
 
     def learn(self):
@@ -341,14 +359,18 @@ class DeepQNetwork:
 
         # sample batch memory from all memory
         if self.memory_counter > self.memory_size:
-            sample_index = np.random.choice(self.memory_size, size=(self.batch_size - 12), replace=False)
-            sample_index_bad = np.random.choice(self.memory_size, size=12, replace=False)
+            sample_index = np.random.choice(self.memory_size, size=self.batch_size, replace=False)
+            # sample_index_bad1 = np.random.choice(self.memory_size, size=5, replace=False)
+            # sample_index_bad2 = np.random.choice(self.memory_size, size=7, replace=False)
         else:
-            sample_index = np.random.choice(self.memory_counter, size=(self.batch_size-12), replace=False)
-            sample_index_bad = np.random.choice(self.memory_size, size=12, replace=False)
+            sample_index = np.random.choice(self.memory_counter, size=self.batch_size, replace=False)
+            #sample_index_bad1 = np.random.choice(self.memory_size, size=5, replace=False)
+            #sample_index_bad2 = np.random.choice(self.memory_size, size=7, replace=False)
+
         batch_memory = self.memory[sample_index, :]
-        batch_memory_bad = self.memory_bad[sample_index_bad, :]
-        batch_memory = np.concatenate((batch_memory , batch_memory_bad), axis=0)
+        #batch_memory_bad1 = self.memory_bad1[sample_index_bad1, :]
+        #batch_memory_bad2 = self.memory_bad2[sample_index_bad2, :]
+        #batch_memory = np.concatenate((batch_memory, batch_memory_bad1, batch_memory_bad2), axis=0)
         # act1set = [self.memory_action1[i] for i in sample_index]
         # candidate = [self.memory_candidate[i] for i in sample_index]
         # action2_next = [self.memory_action2[i] for i in sample_index]
