@@ -269,6 +269,7 @@ class DeepQNetwork:
     def getAction_random(self, candidate, act1Set, action1):
         # print("act1Set", act1Set)
         action1s = np.nonzero(act1Set)
+        action1 = int(action1)
         # (act1Set[action1-1])
         if act1Set[action1-1] != 0 and act1Set[action1 - 1] != -1:
             # action2 = np.array(range(42, 92))
@@ -328,18 +329,14 @@ class DeepQNetwork:
     def choose_action(self, observation, candidate):
         # to have batch dimension when feed into tf placeholder
         observation = observation[np.newaxis, :]
-        action_value = observation[0][observation[0][-1]-1]
+        action_value = observation[0][int(observation[0][-1]-1)]
         if np.random.uniform() < self.epsilon:
+            w1 = self.sess.run(self.w1, feed_dict={self.s: observation})
+            l1 = self.sess.run(self.l1, feed_dict={self.s: observation})
             actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
-            action = self.getAction1(candidate, observation[0][:-1], observation[0][-1], actions_value1)
-            '''
-            action2 = self.getAction2(candidate, action1_real, actions_value2)
-            '''
+            action = self.getAction1(candidate, observation[0][:-1], int(observation[0][-1]), actions_value1)
         else:
-            action = self.getAction_random(candidate, observation[0][:-1], observation[0][-1])
-            '''
-            action2 = self.getAction2_random(candidate, action1_real)
-            '''
+            action = self.getAction_random(candidate, observation[0][:-1],int(observation[0][-1]))
         action = int(action)
         action_store = action
         if action < 42:
@@ -360,20 +357,10 @@ class DeepQNetwork:
         # sample batch memory from all memory
         if self.memory_counter > self.memory_size:
             sample_index = np.random.choice(self.memory_size, size=self.batch_size, replace=False)
-            # sample_index_bad1 = np.random.choice(self.memory_size, size=5, replace=False)
-            # sample_index_bad2 = np.random.choice(self.memory_size, size=7, replace=False)
         else:
             sample_index = np.random.choice(self.memory_counter, size=self.batch_size, replace=False)
-            #sample_index_bad1 = np.random.choice(self.memory_size, size=5, replace=False)
-            #sample_index_bad2 = np.random.choice(self.memory_size, size=7, replace=False)
 
         batch_memory = self.memory[sample_index, :]
-        #batch_memory_bad1 = self.memory_bad1[sample_index_bad1, :]
-        #batch_memory_bad2 = self.memory_bad2[sample_index_bad2, :]
-        #batch_memory = np.concatenate((batch_memory, batch_memory_bad1, batch_memory_bad2), axis=0)
-        # act1set = [self.memory_action1[i] for i in sample_index]
-        # candidate = [self.memory_candidate[i] for i in sample_index]
-        # action2_next = [self.memory_action2[i] for i in sample_index]
 
         q_next1, q_eval1 = self.sess.run(
             [self.q_next1, self.q_eval1],
@@ -382,69 +369,14 @@ class DeepQNetwork:
                 self.s: batch_memory[:, :self.n_features],  # newest params
             })
 
-        '''
-        q_next2, q_eval2 = self.sess.run(
-            [self.q_next2, self.q_eval2],
-            feed_dict={
-                self.s_: batch_memory[:, -self.n_features:],  # fixed params
-                self.s: batch_memory[:, :self.n_features],  # newest params
-            })
-        '''
         # change q_target w.r.t q_eval's action
         q_target1 = q_eval1.copy()
-        # q_target2 = q_eval2.copy()
 
         batch_index = np.arange(self.batch_size, dtype=np.int32)
         eval_act_index1 = batch_memory[:, self.n_features].astype(int)
-        # eval_act_index2 = batch_memory[:, self.n_features + 1].astype(int)
         reward = batch_memory[:, self.n_features + 1]
-        #q_next1_ = range(len(batch_index))
-
-        '''
-        #effective action1
-        action1_real_ = range(len(batch_index))
-        q_next1_ = range(len(batch_index))
-        for t in batch_index:
-            action1_real_[t] = self.getAction1_(act1set[t])
-
-        # effective action2
-        q_next2_ = range(len(batch_index))
-       
-
-        for t in batch_index:
-            q_next1_[t] = self.getAction2_next(action2_next[t], q_next1)
-        '''
-
 
         q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.argmax(q_next1, axis=1)
-        # q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.array(q_next1_)
-        # q_target2[batch_index, eval_act_index2] = reward + self.gamma * np.argmax(q_next2, axis=1)
-
-        """
-        For example in this batch I have 2 samples and 3 actions:
-        q_eval =
-        [[1, 2, 3],
-         [4, 5, 6]]
-
-        q_target = q_eval =
-        [[1, 2, 3],
-         [4, 5, 6]]
-
-        Then change q_target with the real q_target value w.r.t the q_eval's action.
-        For example in:
-            sample 0, I took action 0, and the max q_target value is -1;
-            sample 1, I took action 2, and the max q_target value is -2:
-        q_target =
-        [[-1, 2, 3],
-         [4, 5, -2]]
-
-        So the (q_target - q_eval) becomes:
-        [[(-1)-(1), 0, 0],
-         [0, 0, (-2)-(6)]]
-
-        We then backpropagate this error w.r.t the corresponding action to network,
-        leave other action as error=0 cause we didn't choose it.
-        """
 
         # train eval network
         _, self.cost = self.sess.run([self._train_op, self.loss],
@@ -463,7 +395,6 @@ class DeepQNetwork:
             self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter % 10 == 0 else self.epsilon
         else:
             self.epsilon = self.epsilon_max
-        # self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 100 == 0 else self.epsilon
         self.learn_step_counter += 1
 
         if self.learn_step_counter % 500 == 0:

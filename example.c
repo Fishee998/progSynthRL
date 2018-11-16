@@ -1505,7 +1505,7 @@ void printprog(treenode* root,int blank,program* prog)
     //printf("parent type :%d",prog->parent->type);
     switch(root->type)
     {
-        case 0: printf("treenode num:%d", root->number);
+        case 0: //printf("treenode num:%d", root->number);
             for(i = 0;i < blank;i++)printf(" ");printf("if(");
             printcond(root->cond1,prog);
             printf(")\n");
@@ -1518,7 +1518,7 @@ void printprog(treenode* root,int blank,program* prog)
             printprog(root->treenode2,blank + 2,prog);
             for(i = 0;i < blank;i++)printf(" ");printf("}\n");
             break;
-        case 1: printf("treenode num:%d", root->number);
+        case 1: //printf("treenode num:%d", root->number);
             for(i = 0;i < blank;i++)printf(" ");printf("while(");
             printcond(root->cond1,prog);
             printf(")\n");
@@ -1526,7 +1526,7 @@ void printprog(treenode* root,int blank,program* prog)
             printprog(root->treenode1,blank + 2,prog);
             for(i = 0;i < blank;i++)printf(" ");printf("}\n");
             break;
-        case 2: printf("treenode num:%d", root->number);
+        case 2: //printf("treenode num:%d", root->number);
         for(i = 0;i < blank;i++)printf(" ");printf("do\n");
             for(i = 0;i < blank;i++)printf(" ");printf("{\n");
             printprog(root->treenode1,blank + 2,prog);
@@ -1534,12 +1534,12 @@ void printprog(treenode* root,int blank,program* prog)
             printcond(root->cond1,prog);
             printf(");\n");
             break;
-        case 3: printf("treenode num:%d", root->number);
+        case 3: //printf("treenode num:%d", root->number);
         printprog(root->treenode1,blank,prog);
             printprog(root->treenode2,blank,prog);
             break;
         case 4:
-        printf("treenode num:%d", root->number);;
+        //printf("treenode num:%d", root->number);;
 	    for(i = 0;i < blank;i++)printf(" ");
             if(root->index <= 2)
                 printf("v[%d] = ",root->index);
@@ -1551,7 +1551,7 @@ void printprog(treenode* root,int blank,program* prog)
 	    printexp(root->exp1,prog);
 	    printf(";\n");
             break;
-        case 5: printf("treenode num:%d", root->number);
+        case 5: //printf("treenode num:%d", root->number);
         for(i = 0;i < blank;i++)printf(" ");
             printf("critical section\n");
     }
@@ -5060,6 +5060,11 @@ int* genVector(program* prog)
 	int i = 0;
 	for(i = 0;i < NUM_TREENODE;i++)
 		vector[i] = 0;
+	// printprog(prog->root, 0, prog);
 	genVectorTreenode(prog->root->treenode1,vector);
+	/*
+	for(int b = 0; b< 42;b++)
+	    printf("%d\n",vector[b] );
+	*/
 	return vector;
 }

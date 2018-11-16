@@ -37,6 +37,7 @@ def run_maze():
             # 100 candidates
             for index in range(candidate_num):
                 observation_ = info_.state_[index]
+
                 observation = np.append(observation_, action1)
 
                 # RL choose action based on observation
