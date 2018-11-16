@@ -32,16 +32,12 @@ def run_maze():
         reward_cum = 0
         reward_cum_bad = 0
         start = time.time()
-        illegal_action = info_.illegal_action
-        legal_action = info_.legal_action
-        bad_action1 = 0
-        bad_action2 = 0
         for t in range(20):
 
             # 100 candidates
             for index in range(candidate_num):
-                observation = info_.state_[index]
-                observation = np.append(observation, action1)
+                observation_ = info_.state_[index]
+                observation = np.append(observation_, action1)
 
                 # RL choose action based on observation
                 if observation[-1] < 1:
