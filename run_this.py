@@ -26,71 +26,41 @@ def run_maze():
         # initial observation
         # observation, info_ = env.reset()
         # 100 candidate in actIndex
-        # actIndex = astEncoder.setAction1s(info_)
         reward_cum = 0
         start = time.time()
         info_ = env.reset()
+        # if episode > 0:
+        #    info_ = env.reset_(info_.maxCandidate)
         for t in range(1000):
 
             # 100 candidates
             for index in range(candidate_num):
                 observation_ = info_.state_[index]
 
-                observation = np.append(observation_, action1)
+                observation = np.append(observation_, action1 * action1 /10000.0000)
+
+                fitness = example.get_fitness(info_.candidate_[index])
+
+                observation = np.append(observation,  pow(fitness / 100.00, 2))
 
                 # RL choose action based on observation
-                if observation[-1] < 1:
-                    print("observation[-1]", observation[-1])
-                action, action_value, action_store = RL.choose_action(observation, info_.candidate_[index])
+                action, action_value, action_store = RL.choose_action(observation, info_.candidate_[index], action1)
                 if action_store < 42:
                     action1 = action
                     observation_ = observation
-                    observation_[-1] = action1
+                    observation_[-2] = action1 * action1 / 10000.0000
                     reward = 0
                 else:
                     action2 = action
                     action_operation = RL.getAction(action1, action2)
                     reward, done, info_ = env.step(action_operation, index)
                     observation_ = info_.state_[index]
-                    observation_ = np.append(observation_, action1)
+                    observation_ = np.append(observation_, action1 * action1 / 10000.0000)
+                    fitness = example.get_fitness(info_.candidate_[index])
+                    observation_ = np.append(observation_, pow(fitness / 100.00, 2))
 
-                '''
-                action1_illegal_inAction2 = 0
-
-                illegal_action1 = np.where(observation[:-1] == 0)[0]
-                for illegal_action1_ in illegal_action1:
-                    observation[-1] = illegal_action1_
-                    reward = -5
-                    RL.store_badtransition1(observation, illegal_action1_, reward, observation)
-
-                if action_store < 42:
-                    action1 = action
-                    if observation[action1 - 1] == 0:
-                        bad_action1 += 1
-                        reward = -1
-                    else:
-                        # action1_real = real_action
-                        reward = 0
-                    observation_ = observation
-                    observation_[-1] = action1
-                else:
-                    if observation[action1 - 1] == 0:
-                        bad_action2 += 1
-                        reward = -5
-                        observation_ = observation
-                        action1_illegal_inAction2 = 1
-                    else:
-                        action2 = action
-                        # real_action = RL.getAction(action1, action2)
-                        # RL take action and get next observation and reward
-                        action_operation = RL.getAction(action1, action2)
-                        reward, done, info_ = env.step(action_operation, index)
-                        observation_ = info_.state_[index]
-                        observation_ = np.append(observation_, action1)
-                '''
-
-                if done:
-                    break
+                    if done:
+                        break
 
                 if example.get_fitness(info_.candidate_[index]) > 78.4:
                     reward = target_reward
@@ -109,16 +79,6 @@ def run_maze():
                         print("Spin: safety")
                     reward = reward + spin_reward
 
-                '''
-                if action1_illegal_inAction2 == 1:
-                    RL.store_badtransition1(observation, action_store, reward, observation_)
-                else:
-                    if reward == -5:
-                        reward_cum_bad += reward
-                        RL.store_badtransition2(observation, action_store, reward, observation_)
-                    else:
-                        reward_cum += reward
-                '''
                 RL.store_transition(observation, action_store, reward, observation_)
                 reward_cum += reward
                 step += 1

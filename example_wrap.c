@@ -3266,6 +3266,13 @@ int judgeNULL(treenode* l)
     else
         return 0;
 }
+int isNUll(program* p)
+{
+    if(p == NULL)
+        return 0;
+    else
+        return 1;
+}
 
 
   #define SWIG_From_double   PyFloat_FromDouble 
@@ -3745,6 +3752,28 @@ SWIGINTERN PyObject *_wrap_judgeNULL(PyObject *SWIGUNUSEDPARM(self), PyObject *a
   }
   arg1 = (treenode *)(argp1);
   result = (int)judgeNULL(arg1);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_isNUll(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  program *arg1 = (program *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:isNUll",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_program, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "isNUll" "', argument " "1"" of type '" "program *""'"); 
+  }
+  arg1 = (program *)(argp1);
+  result = (int)isNUll(arg1);
   resultobj = SWIG_From_int((int)(result));
   return resultobj;
 fail:
@@ -4451,6 +4480,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"getCandidate", _wrap_getCandidate, METH_VARARGS, NULL},
 	 { (char *)"state_i", _wrap_state_i, METH_VARARGS, NULL},
 	 { (char *)"judgeNULL", _wrap_judgeNULL, METH_VARARGS, NULL},
+	 { (char *)"isNUll", _wrap_isNUll, METH_VARARGS, NULL},
 	 { (char *)"findNode", _wrap_findNode, METH_VARARGS, NULL},
 	 { (char *)"genVector", _wrap_genVector, METH_VARARGS, NULL},
 	 { (char *)"copyProgram", _wrap_copyProgram, METH_VARARGS, NULL},

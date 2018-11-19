@@ -68,6 +68,13 @@ int judgeNULL(treenode* l)
     else
         return 0;
 }
+int isNUll(program* p)
+{
+    if(p == NULL)
+        return 0;
+    else
+        return 1;
+}
 %}
 treenode* findNode(treenode* root,program* prog, int num);
 extern int* genVector(program* prog);

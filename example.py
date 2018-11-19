@@ -168,6 +168,10 @@ def judgeNULL(l):
     return _example.judgeNULL(l)
 judgeNULL = _example.judgeNULL
 
+def isNUll(p):
+    return _example.isNUll(p)
+isNUll = _example.isNUll
+
 def findNode(root, prog, num):
     return _example.findNode(root, prog, num)
 findNode = _example.findNode

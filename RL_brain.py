@@ -226,7 +226,8 @@ class DeepQNetwork:
 
         if act1Set[action1 - 1] != 0 and act1Set[action1 - 1] != -1:
             action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
-            actions = np.append(action1s, action2set)
+            actions = action2set
+            # actions = np.append(action1s, action2set)
         else:
             actions = action1s
 
@@ -274,7 +275,8 @@ class DeepQNetwork:
         if act1Set[action1-1] != 0 and act1Set[action1 - 1] != -1:
             # action2 = np.array(range(42, 92))
             action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
-            actions = np.append(action1s, action2set)
+            actions = action2set
+            # actions = np.append(action1s, action2set)
         else:
             actions = action1s[0]
         actions = actions.flatten()
@@ -326,7 +328,7 @@ class DeepQNetwork:
         action = tuple(action)
         return action
 
-    def choose_action(self, observation, candidate):
+    def choose_action(self, observation, candidate, action1):
         # to have batch dimension when feed into tf placeholder
         observation = observation[np.newaxis, :]
         action_value = observation[0][int(observation[0][-1]-1)]
@@ -334,9 +336,9 @@ class DeepQNetwork:
             w1 = self.sess.run(self.w1, feed_dict={self.s: observation})
             l1 = self.sess.run(self.l1, feed_dict={self.s: observation})
             actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
-            action = self.getAction1(candidate, observation[0][:-1], int(observation[0][-1]), actions_value1)
+            action = self.getAction1(candidate, observation[0][:-1], int(action1), actions_value1)
         else:
-            action = self.getAction_random(candidate, observation[0][:-1],int(observation[0][-1]))
+            action = self.getAction_random(candidate, observation[0][:-1], int(action1))
         action = int(action)
         action_store = action
         if action < 42:
@@ -392,7 +394,7 @@ class DeepQNetwork:
         #self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 50 == 0 else self.epsilon
 
         if self.epsilon < self.epsilon_max:
-            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter % 20 == 0 else self.epsilon
+            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter %1 == 0 else self.epsilon
         else:
             self.epsilon = self.epsilon_max
         self.learn_step_counter += 1

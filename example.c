@@ -2827,6 +2827,7 @@ program* copyProgram(program* prog)
     result->numprivatevars = prog->numprivatevars;
     result->numpublicvars = prog->numpublicvars;
     result->checkedBySpin = prog->checkedBySpin;
+    result->fitness = prog->fitness;
     return result;
 }
 
@@ -4859,6 +4860,7 @@ program* mutation_(program* candidate0, int nodeNum, int actType, Expr** require
     freeAll(org,NULL,NULL,NULL,NULL,1);
     return newcandidate;
 }
+
 
 int spin_(program* candidate)
 {
