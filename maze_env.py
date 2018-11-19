@@ -26,7 +26,7 @@ class Maze(object):
         self.fitness = 0
         self.illegal_action = 0
         self.legal_action = 0
-        self.maxCandidate_ = []
+        self.maxCandidate = None
         self.maxFitness = 0
 
     def seed(self, seed=None):
@@ -56,14 +56,13 @@ class Maze(object):
             self.steps_beyond_done = None
             newfitnessValue = example.get_fitness(candidate_)
 
-            '''
             if self.maxFitness < newfitnessValue:
                 self.maxFitness = newfitnessValue
                 if example.isNUll(self.maxCandidate) == 1:
                     example.freeAll(None, self.maxCandidate, None, None, None, 2)
                 maxCandidate = example.copyProgram(candidate_)
-                self.maxCandidate_.append(maxCandidate)
-            '''
+                self.maxCandidate = maxCandidate
+
 
             self.fitness_.append(newfitnessValue)
 
@@ -81,48 +80,49 @@ class Maze(object):
             '''
             if x > 0:
                 if newfitnessValue > 69:
-                    reward = 0.9 * x
+                    reward = 0.009 * x
                 else:
                     if newfitnessValue > 60:
-                        reward = 0.7 * x
+                        reward = 0.007 * x
                     else:
                         if newfitnessValue > 50:
-                            reward = 0.5 * x
+                            reward = 0.005 * x
                         else:
                             if newfitnessValue > 40:
-                                reward = 0.3 * x
+                                reward = 0.003 * x
                             else:
                                 if newfitnessValue > 30:
-                                    reward = 0.1 * x
+                                    reward = 0.001 * x
                                 else:
-                                    reward = 0.05 * x
+                                    reward = 0.0005 * x
             else :
                 if x < 0:
                     if newfitnessValue < 30:
-                        reward = 0.9 * x
+                        reward = 0.009 * x
                     else:
                         if newfitnessValue < 40:
-                            reward = 0.7 * x
+                            reward = 0.007 * x
                         else:
                             if newfitnessValue < 50:
-                                reward = 0.5 * x
+                                reward = 0.005 * x
                             else:
                                 if newfitnessValue < 60:
-                                    reward = 0.3 * x
+                                    reward = 0.003 * x
                                 else:
                                     if newfitnessValue < 69:
-                                        reward = 0.1 * x
+                                        reward = 0.001 * x
                                     else:
-                                        reward = 0.05 * x
+                                        reward = 0.0005 * x
                 else:
                     reward = 0
 
+        '''
         if reward > 0:
             reward = math.log(reward/10.0000)
         else:
             if reward < 0:
                 reward = -math.log(-reward/10.000)
-
+        '''
 
         if newfitnessValue > 78.4:
             print("???")
@@ -137,13 +137,14 @@ class Maze(object):
         '''
 
         # if illegal != 1:
+        '''
         if reward > 0:
             reward = math.log(reward)
         else:
             if reward < 0:
                 reward = -math.log(-reward)
-
-        # print("action", action, "reward", reward)
+        '''
+        print("action", action, "reward", reward, "fitness", newfitnessValue)
         # print(newfitnessValue, "-", oldfitnessValue)
         return reward, done, self
 

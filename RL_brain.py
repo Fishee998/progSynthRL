@@ -223,11 +223,11 @@ class DeepQNetwork:
 
     def getAction1(self,candidate, act1Set, action1, action1_value):
         action1s = np.nonzero(act1Set)[0]
-
-        if act1Set[action1 - 1] != 0 and act1Set[action1 - 1] != -1:
+        # act1Set[action1 - 1] != 0 and
+        if act1Set[action1 - 1] != -1 and act1Set[action1 - 1] != 0:
             action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
-            actions = action2set
-            # actions = np.append(action1s, action2set)
+            # actions = action2set
+            actions = np.append(action1s, action2set)
         else:
             actions = action1s
 
@@ -271,12 +271,12 @@ class DeepQNetwork:
         # print("act1Set", act1Set)
         action1s = np.nonzero(act1Set)
         action1 = int(action1)
-        # (act1Set[action1-1])
+        # (act1Set[action1-1] != 0)
         if act1Set[action1-1] != 0 and act1Set[action1 - 1] != -1:
             # action2 = np.array(range(42, 92))
             action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
-            actions = action2set
-            # actions = np.append(action1s, action2set)
+            # actions = action2set
+            actions = np.append(action1s, action2set)
         else:
             actions = action1s[0]
         actions = actions.flatten()
@@ -336,9 +336,9 @@ class DeepQNetwork:
             w1 = self.sess.run(self.w1, feed_dict={self.s: observation})
             l1 = self.sess.run(self.l1, feed_dict={self.s: observation})
             actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
-            action = self.getAction1(candidate, observation[0][:-1], int(action1), actions_value1)
+            action = self.getAction1(candidate, observation[0][:-2], int(action1), actions_value1)
         else:
-            action = self.getAction_random(candidate, observation[0][:-1], int(action1))
+            action = self.getAction_random(candidate, observation[0][:-2], int(action1))
         action = int(action)
         action_store = action
         if action < 42:
