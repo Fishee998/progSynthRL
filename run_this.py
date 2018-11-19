@@ -12,27 +12,25 @@ os.environ['LD_LIBRARY_PATH'] = '/usr/local/cuda-9.0/lib64'
 os.environ['CUDA_HOME'] = '/usr/local/cuda-9.0'
 os.environ["CUDA_VISIBLE_DEVICES"]= '0'
 
-candidate_num = 100
+candidate_num = 1
 target_reward = 80
 def run_maze():
     buf = StringIO.StringIO()
     illegal_action = 0
     legal_action = 0
     action1 = 1
-    action1_real = 0
     step = 0
     done = False
+    info_ = env.reset()
     for episode in range(2000):
-
-        info_ = env.reset()
         # initial observation
         # observation, info_ = env.reset()
         # 100 candidate in actIndex
         # actIndex = astEncoder.setAction1s(info_)
         reward_cum = 0
-        reward_cum_bad = 0
         start = time.time()
-        for t in range(20):
+        info_ = env.reset()
+        for t in range(1000):
 
             # 100 candidates
             for index in range(candidate_num):
@@ -92,6 +90,9 @@ def run_maze():
                 '''
 
                 if done:
+                    break
+
+                if example.get_fitness(info_.candidate_[index]) > 78.4:
                     reward = target_reward
                     fitness = example.get_fitness(info_.candidate_[index])
                     print("i_ep: ", episode, " step:", t, " fitness: ", fitness)
@@ -145,7 +146,7 @@ if __name__ == "__main__":
                       # env.action_space.spaces[1].n,
                       env.observation_space.shape[0],
                       learning_rate=0.01,
-                      reward_decay=0.9,
+                      reward_decay=0.8,
                       e_greedy=0.9,
                       replace_target_iter=10,
                       memory_size=100,

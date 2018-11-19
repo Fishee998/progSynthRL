@@ -392,7 +392,7 @@ class DeepQNetwork:
         #self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max and self.learn_step_counter % 50 == 0 else self.epsilon
 
         if self.epsilon < self.epsilon_max:
-            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter % 10 == 0 else self.epsilon
+            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter % 20 == 0 else self.epsilon
         else:
             self.epsilon = self.epsilon_max
         self.learn_step_counter += 1

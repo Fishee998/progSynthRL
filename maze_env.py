@@ -5,7 +5,7 @@ from gym import spaces
 from gym.utils import seeding
 import numpy as np
 import math
-candidate_num = 100
+candidate_num = 1
 class Maze(object):
 
     actionSet = astEncoder.setActSet()
@@ -52,6 +52,7 @@ class Maze(object):
         self.candidate_[index] = candidate_
 
         illegal = example.illegal(candidate_)
+        reward = 0
         if illegal == 1:
             '''
             state_ = []
@@ -72,26 +73,27 @@ class Maze(object):
 
             x = newfitnessValue - oldfitnessValue
 
+            if newfitnessValue > 60:
+                reward = 1
+
+            '''
             if x > 0:
                 if newfitnessValue > 69:
                     reward = 0.9 * x
                 else:
                     if newfitnessValue > 60:
-                        reward = 3 * x
+                        reward = 0.7 * x
                     else:
                         if newfitnessValue > 50:
-                            reward = 1 * x
+                            reward = 0.5 * x
                         else:
                             if newfitnessValue > 40:
-                                reward = 0.5 * x
+                                reward = 0.3 * x
                             else:
                                 if newfitnessValue > 30:
-                                    reward = 0.3 * x
+                                    reward = 0.1 * x
                                 else:
-                                    if newfitnessValue > 20:
-                                        reward = 0.1 * x
-                                    else:
-                                        reward = 0.05 * x
+                                    reward = 0.05 * x
             else :
                 if x < 0:
                     if newfitnessValue < 30:
@@ -112,20 +114,27 @@ class Maze(object):
                                         reward = 0.05 * x
                 else:
                     reward = 0
-
+            '''
+        '''
         if reward > 0:
             reward = math.log(reward)
         else:
             if reward < 0:
                 reward = -math.log(-reward)
-
-        done = bool(newfitnessValue > 78.4)
+        '''
+        if newfitnessValue > 60:
+            reward = 1
+        if newfitnessValue > 78.4:
+            print("???")
+        done = bool(newfitnessValue > 70)
         if done:
             reward = 10
             print("done")
+
         '''
         if not done:
-            reward = reward - 1
+            reward = - 1
+        '''
         '''
         # if illegal != 1:
         if reward > 0:
@@ -133,7 +142,8 @@ class Maze(object):
         else:
             if reward < 0:
                 reward = -math.log(-reward)
-        print("action", action, "reward", reward)
+        '''
+        # print("action", action, "reward", reward)
         # print(newfitnessValue, "-", oldfitnessValue)
         return reward, done, self
 
