@@ -5,7 +5,7 @@ from gym import spaces
 from gym.utils import seeding
 import numpy as np
 import math
-candidate_num = 1
+candidate_num = 100
 class Maze(object):
 
     actionSet = astEncoder.setActSet()
@@ -14,7 +14,7 @@ class Maze(object):
         self.n_features = 2
         # self.action_space = spaces.Tuple((spaces.Discrete(49), spaces.Discrete(50)))
         self.action_space = spaces.Discrete(92)
-        self.observation_space = spaces.Box(low= -1.0, high=6501.0, shape=(44,), dtype=np.int)
+        self.observation_space = spaces.Box(low= -1.0, high=6501.0, shape=(85,), dtype=np.int)
         self.seed()
         self.viewer = None
         self.state = None
@@ -68,6 +68,12 @@ class Maze(object):
 
             x = newfitnessValue - oldfitnessValue
 
+            if newfitnessValue > 60:
+                reward = 0.3
+            else:
+                if newfitnessValue > 70:
+                    reward = 0.5
+
             '''
             reward = x * 0.05
             if self.maxFitness < 60:
@@ -77,64 +83,64 @@ class Maze(object):
                 if newfitnessValue > 70:
                     reward = 1 + x * 0.05
 
-            '''
+            
             if x > 0:
-                if newfitnessValue > 69:
-                    reward = 0.009 * x
+                if newfitnessValue > 74:
+                    reward = 0.5 + 0.009 * x
                 else:
-                    if newfitnessValue > 60:
-                        reward = 0.007 * x
+                    if newfitnessValue > 69:
+                        reward = 0.4 + 0.007 * x
                     else:
-                        if newfitnessValue > 50:
-                            reward = 0.005 * x
+                        if newfitnessValue > 40:
+                            reward = 0.05 + 0.005 * x
                         else:
-                            if newfitnessValue > 40:
-                                reward = 0.003 * x
+                            if newfitnessValue > 30:
+                                reward = -0.3 + 0.003 * x
                             else:
-                                if newfitnessValue > 30:
-                                    reward = 0.001 * x
+                                if newfitnessValue > 20:
+                                    reward = -0.3 + 0.001 * x
                                 else:
-                                    reward = 0.0005 * x
+                                    reward = -0.3 + 0.0005 * x
             else :
                 if x < 0:
                     if newfitnessValue < 30:
-                        reward = 0.009 * x
+                        reward = -0.3 + 0.009 * x
                     else:
                         if newfitnessValue < 40:
-                            reward = 0.007 * x
+                            reward = -0.3 + 0.007 * x
                         else:
                             if newfitnessValue < 50:
-                                reward = 0.005 * x
+                                reward = -0.3 + 0.005 * x
                             else:
                                 if newfitnessValue < 60:
                                     reward = 0.003 * x
                                 else:
                                     if newfitnessValue < 69:
-                                        reward = 0.001 * x
+                                        reward = 0.1 + 0.001 * x
                                     else:
-                                        reward = 0.0005 * x
+                                        reward = 0.3 + 0.0005 * x
                 else:
                     reward = 0
 
-        '''
-        if reward > 0:
-            reward = math.log(reward/10.0000)
-        else:
-            if reward < 0:
-                reward = -math.log(-reward/10.000)
-        '''
+        
+            if reward > 0:
+                reward = math.log(reward/10.0000)
+            else:
+                if reward < 0:
+                    reward = -math.log(-reward/10.000)
+            '''
 
         if newfitnessValue > 78.4:
             print("???")
         done = bool(newfitnessValue > 78.4)
         if done:
-            reward = 10
+            reward = 1
             print("done")
 
-        '''
+
         if not done:
             reward = reward - 0.1
-        '''
+
 
         # if illegal != 1:
         '''
@@ -161,7 +167,6 @@ class Maze(object):
             state = self.getstate(candidate)
             self.state_.append(np.array(state))
             # self.astActNodes_.append(astActNodes)
-
         return self
 
     def reset_(self, candidate):
@@ -174,6 +179,13 @@ class Maze(object):
         state = self.getstate(candidate)
         self.state_.append(np.array(state))
         return self
+
+    def reset_1(self, info_, candidate):
+        example.freeAll(None, info_.candidate_[0], None, None, None, 2)
+        info_.candidate_[0] = example.copyProgram(candidate)
+        state = info_.getstate(candidate)
+        info_.state_[0] = np.array(state)
+        return info_
 
     def getstate(self, candidate):
         vector = example.genVector(candidate)

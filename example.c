@@ -2828,6 +2828,7 @@ program* copyProgram(program* prog)
     result->numpublicvars = prog->numpublicvars;
     result->checkedBySpin = prog->checkedBySpin;
     result->fitness = prog->fitness;
+    result->propertyfit[0] = prog->propertyfit[0];
     return result;
 }
 
@@ -4825,7 +4826,7 @@ action* setAction(int layer, int actionType)
 
 program** initProg(Expr** requirements ,int numofrequirements,double* coef)
 {
-    int numofcandidate = 1;
+    int numofcandidate = 100;
     action* act = (action*)malloc(sizeof(action));
     program** candidate = genInitTemplate(numofcandidate);
     for(int i = 0;i < numofcandidate;i++)
@@ -4868,6 +4869,8 @@ int spin_(program* candidate)
     int numofsolution = 0;
     int right = 0;
     int reward = 0;
+    printf("%f\n", candidate->propertyfit[0]);
+    printf("%f\n", candidate->fitness);
     
     if(candidate->propertyfit[0] >0.99999 && candidate->checkedBySpin == 0 && candidate->fitness > 78.4)
     {
@@ -4910,13 +4913,21 @@ int spin_(program* candidate)
         system("./pan -m10000 -a -f -N e2 > pan2.out");
         int r2 = system("grep -q -e \"errors: 0\" pan2.out");
         if(r2 == 0)
+        {
+            printf("liveness1");
             reward += 5;
+        }
+
         
         numofspin++;
         system("./pan -m10000 -a -f -N e3 > pan3.out");
         int r3 = system("grep -q -e \"errors: 0\" pan3.out");
         if(r3 == 0)
+        {
+            printf("liveness2");
             reward += 5;
+        }
+
         
         if (reward == 20) {
             printprog(candidate->root,0,candidate);

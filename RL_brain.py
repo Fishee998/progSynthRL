@@ -51,11 +51,13 @@ class DeepQNetwork:
 
         # total learning step
         self.learn_step_counter = 0
+        self.rl = 0
 
         # initialize zero memory [s, a, r, s_]
         self.memory = np.zeros((self.memory_size, n_features * 2 + 2))
-        self.memory_bad1 = np.zeros((self.memory_size, n_features * 2 + 2))
-        self.memory_bad2 = np.zeros((self.memory_size, n_features * 2 + 2))
+        self.memory_bad = np.zeros((self.memory_size, n_features * 2 + 2))
+        self.memory_good = np.zeros((self.memory_size, n_features * 2 + 2))
+
         self.memory_candidate = range(memory_size)
         self.memory_action1 = range(memory_size)
         self.memory_action2 = range(memory_size)
@@ -166,6 +168,32 @@ class DeepQNetwork:
         self.memory[index, :] = transition
 
         self.memory_counter += 1
+
+
+    def store_transition_good(self, s, a1, r, s_):
+        if not hasattr(self, 'memory_counter_good'):
+            self.memory_counter_good = 0
+
+        transition = np.hstack((s, [a1, r], s_))
+
+        # replace the old memory with new memory
+        index = self.memory_counter_good % self.memory_size
+        self.memory_good[index, :] = transition
+
+        self.memory_counter_good += 1
+
+    def store_transition_bad(self, s, a1, r, s_):
+        if not hasattr(self, 'memory_counter_bad'):
+            self.memory_counter_bad = 0
+
+        transition = np.hstack((s, [a1, r], s_))
+
+        # replace the old memory with new memory
+        index = self.memory_counter_bad % self.memory_size
+        self.memory_bad[index, :] = transition
+
+        self.memory_counter_bad += 1
+
 
     def store_badtransition1(self, s, a1, r, s_):
         if not hasattr(self, 'memory_counter_bad1'):
@@ -331,14 +359,17 @@ class DeepQNetwork:
     def choose_action(self, observation, candidate, action1):
         # to have batch dimension when feed into tf placeholder
         observation = observation[np.newaxis, :]
-        action_value = observation[0][int(observation[0][-1]-1)]
+        action_value = action1
         if np.random.uniform() < self.epsilon:
             w1 = self.sess.run(self.w1, feed_dict={self.s: observation})
             l1 = self.sess.run(self.l1, feed_dict={self.s: observation})
             actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
-            action = self.getAction1(candidate, observation[0][:-2], int(action1), actions_value1)
+            action = self.getAction1(candidate, observation[0][:-43], int(action1), actions_value1)
+            self.rl = 1
         else:
-            action = self.getAction_random(candidate, observation[0][:-2], int(action1))
+            # print("choose by random")
+            action = self.getAction_random(candidate, observation[0][:-43], int(action1))
+            self.rl = 0
         action = int(action)
         action_store = action
         if action < 42:
@@ -358,11 +389,22 @@ class DeepQNetwork:
 
         # sample batch memory from all memory
         if self.memory_counter > self.memory_size:
-            sample_index = np.random.choice(self.memory_size, size=self.batch_size, replace=False)
+            sample_index_random = np.random.choice(self.memory_size, size=self.batch_size - 48, replace=False)
+            sample_index_good = np.random.choice(self.memory_size, size=self.batch_size - 16, replace=False)
+            sample_index_bad = np.random.choice(self.memory_size, size=self.batch_size - 64, replace=False)
         else:
-            sample_index = np.random.choice(self.memory_counter, size=self.batch_size, replace=False)
+            #sample_index = np.random.choice(self.memory_counter, size=self.batch_size, replace=False)
+            sample_index_random = np.random.choice(self.memory_counter, size=self.batch_size - 48, replace=False)
+            sample_index_good = np.random.choice(self.memory_counter, size=self.batch_size - 16, replace=False)
+            sample_index_bad = np.random.choice(self.memory_counter, size=self.batch_size - 64, replace=False)
 
-        batch_memory = self.memory[sample_index, :]
+        #batch_memory = self.memory[sample_index, :]
+
+        batch_memory_random = self.memory[sample_index_random , :]
+        batch_memory_good = self.memory[sample_index_good, :]
+        batch_memory_bad = self.memory[sample_index_bad, :]
+
+        batch_memory = np.append(np.append(batch_memory_random, batch_memory_good, axis=0), batch_memory_bad, axis=0)
 
         q_next1, q_eval1 = self.sess.run(
             [self.q_next1, self.q_eval1],
@@ -403,7 +445,10 @@ class DeepQNetwork:
             print("epsilon", self.epsilon)
             print("learn_step_counter", self.learn_step_counter)
 
-
+    def one_hot_action1(self,action1):
+        one_hot_action1 = np.zeros(42)
+        one_hot_action1[action1 - 1] = 1
+        return one_hot_action1
 
 
 
