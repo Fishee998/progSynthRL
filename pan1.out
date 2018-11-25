@@ -9,15 +9,15 @@ Full statespace search for:
 	acceptance   cycles 	+ (fairness enabled)
 	invalid end states	- (disabled by never claim)
 
-State-vector 36 byte, depth reached 385, errors: 0
-     1086 states, stored
-     1090 states, matched
-     2176 transitions (= stored+matched)
+State-vector 36 byte, depth reached 333, errors: 0
+      930 states, stored
+      924 states, matched
+     1854 transitions (= stored+matched)
         0 atomic steps
 hash conflicts:         0 (resolved)
 
 Stats on memory usage (in Megabytes):
-    0.066	equivalent memory usage for states (stored*(State-vector + overhead))
+    0.057	equivalent memory usage for states (stored*(State-vector + overhead))
     0.282	actual memory usage for states
   128.000	memory used for hash table (-w24)
     0.534	memory used for DFS stack (-m10000)
@@ -25,11 +25,12 @@ Stats on memory usage (in Megabytes):
 
 
 unreached in proctype p
-	(0 of 34 states)
+	(0 of 36 states)
 unreached in proctype q
-	(0 of 34 states)
+	./output/mutex.pml:46, state 16, "turn = 1"
+	(1 of 36 states)
 unreached in claim e1
 	_spin_nvr.tmp:8, state 10, "-end-"
 	(1 of 10 states)
 
-pan: elapsed time 0.01 seconds
+pan: elapsed time 0 seconds

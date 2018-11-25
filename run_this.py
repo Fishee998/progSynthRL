@@ -21,6 +21,7 @@ def run_maze():
     legal_action = 0
     action1 = 1
     step = 0
+    step_good = 0
     done = False
     info_ = env.reset()
     for episode in range(2000):
@@ -33,61 +34,69 @@ def run_maze():
         info_ = env.reset()
         if episode > 0:
             info_ = env.reset_1(info_, candidate_max)
+
         for t in range(100):
 
             # 100 candidates
             for index in range(candidate_num):
                 observation_ = info_.state_[index]
 
-                observation = np.append(observation_, action1 * action1 /10000.0000)
+                #observation = np.append(observation_, action1 * action1 /10000.0000)
 
                 fitness = example.get_fitness(info_.candidate_[index])
 
-                observation = np.append(observation,  pow(fitness / 100.00, 2))
+                #observation = np.append(observation,  pow(fitness / 100.00, 2))
+                if observation_[action1 - 1] != 0 and observation_[action1 - 1] != -1:
+                    action2set = np.array(RL.action2set(example.getLegalAction2(info_.candidate_[index], action1)))
+                else:
+                    action2set = []
 
+                one_hot_action2 = RL.one_hot_action2(action2set)
                 one_hot_action1 = RL.one_hot_action1(action1)
-                observation_store = np.append(np.append(observation_, one_hot_action1),  pow(fitness / 100.00, 2))
+                observation_store = np.append(np.append(np.append(observation_, one_hot_action1), one_hot_action2),  pow(fitness / 100.00, 2))
 
                 # RL choose action based on observation
                 action, action_value, action_store = RL.choose_action(observation_store, info_.candidate_[index], action1)
                 if action_store < 42:
                     action1 = action
                     observation_store_ = observation_store
-                    observation_ = observation
-                    observation_[-2] = action1 * action1 / 10000.0000
+                    #observation_ = observation
+                    #observation_[-2] = action1 * action1 / 10000.0000
                     reward = 0
                 else:
                     action2 = action
+                    '''
                     action2set = np.array(RL.action2set(example.getLegalAction2(info_.candidate_[index], action1)))
                     not_choosed_fit = []
 
+                   
                     for index_ in action2set:
                         action_operation = RL.getAction(action1, action2)
                         candidate = example.copyProgram(info_.candidate_[index])
                         candidate_ = prog.mutation(candidate, action_operation[0], action_operation[1])
                         fitness = example.get_fitness(candidate_)
-                        # example.freeAll(None, candidate_, None, None, None, 2)
                         not_choosed_fit.append(fitness)
+
+                    '''
                     action_operation = RL.getAction(action1, action2)
                     reward, done, info_ = env.step(action_operation, index)
                     observation_1 = info_.state_[index]
                     observation_ = np.append(observation_1, action1 * action1 / 10000.0000)
-
                     one_hot_action1_ = RL.one_hot_action1(action1)
+
+                    if observation_1[action1 -1] != 0 and observation_1[action1 -1] != -1:
+                        action2set_ = np.array(RL.action2set(example.getLegalAction2(info_.candidate_[index], action1)))
+                    else:
+                        action2set_ = []
+                    one_hot_action2_ = RL.one_hot_action2(action2set_)
 
 
                     fitness = example.get_fitness(info_.candidate_[index])
-                    if RL.rl == 1:
-                        m = 0
-                        for fit in not_choosed_fit:
-                            if fitness > fit:
-                                m = 1
-                        if m == 1:
-                            print("rl choose a good action")
+
 
                     observation_ = np.append(observation_, pow(fitness / 100.00, 2))
 
-                    observation_store_ = np.append(np.append(observation_1, one_hot_action1_), pow(fitness / 100.00, 2))
+                    observation_store_ = np.append(np.append(np.append(observation_1, one_hot_action1_), one_hot_action2_), pow(fitness / 100.00, 2))
 
                 if done:
                     reward = target_reward
@@ -109,6 +118,7 @@ def run_maze():
                 if reward > 0:
                     RL.store_transition_good(observation_store, action_store, reward, observation_store_)
                     reward_cum += reward
+                    step_good += 1
                 else:
                     RL.store_transition_bad(observation_store, action_store, reward, observation_store_)
                     reward_cum += reward
@@ -116,7 +126,7 @@ def run_maze():
                 RL.store_transition(observation_store, action_store, reward, observation_store_)
                 step += 1
 
-                if (step > 100) and (step % 5 == 0):
+                if (step_good > 80) and (step % 5 == 0):
                     RL.learn()
 
                 if reward == 100:

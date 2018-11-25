@@ -2,18 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4036df4a-59fb-4120-a525-90ad490395ee" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/example.o" afterPath="$PROJECT_DIR$/example.o" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RL_brain.py" afterPath="$PROJECT_DIR$/RL_brain.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_example.so" afterPath="$PROJECT_DIR$/_example.so" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/example.c" afterPath="$PROJECT_DIR$/example.c" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/log.txt" afterPath="$PROJECT_DIR$/log.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/maze_env.py" afterPath="$PROJECT_DIR$/maze_env.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mutex.pml.trail" afterPath="$PROJECT_DIR$/mutex.pml.trail" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/mutex.pml" afterPath="$PROJECT_DIR$/output/mutex.pml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan" afterPath="$PROJECT_DIR$/pan" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan.b" afterPath="$PROJECT_DIR$/pan.b" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan.c" afterPath="$PROJECT_DIR$/pan.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan.h" afterPath="$PROJECT_DIR$/pan.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan.m" afterPath="$PROJECT_DIR$/pan.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan.t" afterPath="$PROJECT_DIR$/pan.t" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan1.out" afterPath="$PROJECT_DIR$/pan1.out" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan2.out" afterPath="$PROJECT_DIR$/pan2.out" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan3.out" afterPath="$PROJECT_DIR$/pan3.out" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/run_this.py" afterPath="$PROJECT_DIR$/run_this.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/useless" afterPath="$PROJECT_DIR$/useless" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -24,16 +28,16 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/5_Deep_Q_Network$run_this.coverage" NAME="run_this Coverage Results" MODIFIED="1540177958805" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/progSynthRL_tensor$run_this.coverage" NAME="run_this Coverage Results" MODIFIED="1543042184814" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/progSynthRL_tensor$run_this.coverage" NAME="run_this Coverage Results" MODIFIED="1543157687549" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/progSynthRL$run_this.coverage" NAME="run_this Coverage Results" MODIFIED="1541595042578" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="run_this.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="run_this.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/run_this.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-985">
-              <caret line="39" column="50" lean-forward="false" selection-start-line="39" selection-start-column="50" selection-end-line="39" selection-end-column="50" />
+            <state relative-caret-position="98">
+              <caret line="129" column="0" lean-forward="false" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
               </folding>
@@ -44,7 +48,7 @@
       <file leaf-file-name="session.py" pinned="false" current-in-tab="false">
         <entry file="file:///Library/Python/2.7/site-packages/tensorflow/python/client/session.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="86">
+            <state relative-caret-position="21500">
               <caret line="1095" column="0" lean-forward="false" selection-start-line="1095" selection-start-column="0" selection-end-line="1095" selection-end-column="0" />
               <folding />
             </state>
@@ -64,8 +68,8 @@
       <file leaf-file-name="example.c" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/example.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="186">
-              <caret line="4828" column="28" lean-forward="false" selection-start-line="4828" selection-start-column="28" selection-end-line="4828" selection-end-column="28" />
+            <state relative-caret-position="235">
+              <caret line="678" column="5" lean-forward="true" selection-start-line="678" selection-start-column="5" selection-end-line="678" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -74,20 +78,20 @@
       <file leaf-file-name="RL_brain.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/RL_brain.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="19" column="21" lean-forward="true" selection-start-line="19" selection-start-column="21" selection-end-line="19" selection-end-column="21" />
+            <state relative-caret-position="98">
+              <caret line="259" column="0" lean-forward="false" selection-start-line="259" selection-start-column="0" selection-end-line="259" selection-end-column="0" />
               <folding>
-                <marker date="1543041885864" expanded="true" signature="260:265" ph="import ..." />
+                <marker date="1543155495456" expanded="true" signature="260:265" ph="import ..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="maze_env.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="maze_env.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/maze_env.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2394">
-              <caret line="57" column="0" lean-forward="true" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
+            <state relative-caret-position="161">
+              <caret line="182" column="8" lean-forward="false" selection-start-line="182" selection-start-column="8" selection-end-line="182" selection-end-column="8" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -99,7 +103,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>loss</find>
       <find>epsi</find>
       <find>choose</find>
       <find>store</find>
@@ -116,8 +119,6 @@
       <find>example.genV</find>
       <find>choo</find>
       <find>freeAll</find>
-      <find>reward_cum_total</find>
-      <find>epsilon</find>
       <find>23</find>
       <find>45</find>
       <find>49</find>
@@ -129,6 +130,9 @@
       <find>mutation_</find>
       <find>mutation1</find>
       <find>init</find>
+      <find>reward_cum_total</find>
+      <find>epsilon</find>
+      <find>legalAction2 action1 error</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -144,9 +148,9 @@
         <option value="$PROJECT_DIR$/example.h" />
         <option value="$PROJECT_DIR$/example.i" />
         <option value="$PROJECT_DIR$/prog.py" />
-        <option value="$PROJECT_DIR$/RL_brain.py" />
         <option value="$PROJECT_DIR$/example.c" />
         <option value="$PROJECT_DIR$/maze_env.py" />
+        <option value="$PROJECT_DIR$/RL_brain.py" />
         <option value="$PROJECT_DIR$/run_this.py" />
       </list>
     </option>
@@ -260,17 +264,16 @@
     <frame x="85" y="23" width="1355" height="797" extended-state="0" />
     <editor active="true" />
     <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14318354" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32967034" sideWeight="0.502583" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.47586206" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14095941" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Concurrent Activities Diagram" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32965517" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28689656" sideWeight="0.49741697" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.51424503" sideWeight="0.49741697" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -280,6 +283,7 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Concurrent Activities Diagram" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32965517" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -334,19 +338,14 @@
           <option name="timeStamp" value="374" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/maze_env.py</url>
-          <line>48</line>
-          <option name="timeStamp" value="541" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/prog.py</url>
           <line>30</line>
           <option name="timeStamp" value="566" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/maze_env.py</url>
-          <line>63</line>
-          <option name="timeStamp" value="612" />
+          <url>file://$PROJECT_DIR$/RL_brain.py</url>
+          <line>259</line>
+          <option name="timeStamp" value="638" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -356,7 +355,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="617" />
+      <option name="time" value="639" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -470,7 +469,7 @@
         <state relative-caret-position="215">
           <caret line="312" column="14" lean-forward="false" selection-start-line="312" selection-start-column="14" selection-end-line="312" selection-end-column="14" />
           <folding>
-            <marker date="1543041885864" expanded="true" signature="260:265" ph="import ..." />
+            <marker date="1543155495456" expanded="true" signature="260:265" ph="import ..." />
           </folding>
         </state>
       </provider>
@@ -682,7 +681,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="80" column="19" lean-forward="false" selection-start-line="80" selection-start-column="16" selection-end-line="80" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -704,7 +702,7 @@
     </entry>
     <entry file="file:///Library/Python/2.7/site-packages/tensorflow/python/client/session.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="86">
+        <state relative-caret-position="21500">
           <caret line="1095" column="0" lean-forward="false" selection-start-line="1095" selection-start-column="0" selection-end-line="1095" selection-end-column="0" />
           <folding />
         </state>
@@ -712,38 +710,38 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/example.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="4828" column="28" lean-forward="false" selection-start-line="4828" selection-start-column="28" selection-end-line="4828" selection-end-column="28" />
+        <state relative-caret-position="235">
+          <caret line="678" column="5" lean-forward="true" selection-start-line="678" selection-start-column="5" selection-end-line="678" selection-end-column="5" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/maze_env.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="161">
+          <caret line="182" column="8" lean-forward="false" selection-start-line="182" selection-start-column="8" selection-end-line="182" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#17#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/RL_brain.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="19" column="21" lean-forward="true" selection-start-line="19" selection-start-column="21" selection-end-line="19" selection-end-column="21" />
+        <state relative-caret-position="98">
+          <caret line="259" column="0" lean-forward="false" selection-start-line="259" selection-start-column="0" selection-end-line="259" selection-end-column="0" />
           <folding>
-            <marker date="1543041885864" expanded="true" signature="260:265" ph="import ..." />
+            <marker date="1543155495456" expanded="true" signature="260:265" ph="import ..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/run_this.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-985">
-          <caret line="39" column="50" lean-forward="false" selection-start-line="39" selection-start-column="50" selection-end-line="39" selection-end-column="50" />
+        <state relative-caret-position="98">
+          <caret line="129" column="0" lean-forward="false" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
           <folding>
             <element signature="e#0#25#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/maze_env.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2394">
-          <caret line="57" column="0" lean-forward="true" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#17#0" expanded="true" />
           </folding>
         </state>
       </provider>

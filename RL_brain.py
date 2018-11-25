@@ -33,7 +33,7 @@ class DeepQNetwork:
             replace_target_iter=10,
             memory_size=100,
             batch_size=64,
-            e_greedy_increment=0.0001,
+            e_greedy_increment=0.001,
             output_graph=False,
     ):
         self.n_actions1 = n_actions1
@@ -364,11 +364,11 @@ class DeepQNetwork:
             w1 = self.sess.run(self.w1, feed_dict={self.s: observation})
             l1 = self.sess.run(self.l1, feed_dict={self.s: observation})
             actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
-            action = self.getAction1(candidate, observation[0][:-43], int(action1), actions_value1)
+            action = self.getAction1(candidate, observation[0][:-93], int(action1), actions_value1)
             self.rl = 1
         else:
             # print("choose by random")
-            action = self.getAction_random(candidate, observation[0][:-43], int(action1))
+            action = self.getAction_random(candidate, observation[0][:-93], int(action1))
             self.rl = 0
         action = int(action)
         action_store = action
@@ -401,8 +401,8 @@ class DeepQNetwork:
         #batch_memory = self.memory[sample_index, :]
 
         batch_memory_random = self.memory[sample_index_random , :]
-        batch_memory_good = self.memory[sample_index_good, :]
-        batch_memory_bad = self.memory[sample_index_bad, :]
+        batch_memory_good = self.memory_good[sample_index_good, :]
+        batch_memory_bad = self.memory_bad[sample_index_bad, :]
 
         batch_memory = np.append(np.append(batch_memory_random, batch_memory_good, axis=0), batch_memory_bad, axis=0)
 
@@ -449,6 +449,12 @@ class DeepQNetwork:
         one_hot_action1 = np.zeros(42)
         one_hot_action1[action1 - 1] = 1
         return one_hot_action1
+
+    def one_hot_action2(self,action2):
+        one_hot_action2 = np.zeros(50)
+        for i in action2:
+            one_hot_action2[i] = 1
+        return one_hot_action2
 
 
 

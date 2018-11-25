@@ -140,29 +140,29 @@ typedef struct S_F_MAP {
 } S_F_MAP;
 
 #define _nstates4	14	/* e3 */
-#define minseq4	91
-#define maxseq4	103
+#define minseq4	95
+#define maxseq4	107
 #define _endstate4	13
 
 #define _nstates3	14	/* e2 */
-#define minseq3	78
-#define maxseq3	90
+#define minseq3	82
+#define maxseq3	94
 #define _endstate3	13
 
 #define _nstates2	11	/* e1 */
-#define minseq2	68
-#define maxseq2	77
+#define minseq2	72
+#define maxseq2	81
 #define _endstate2	10
 
-#define _nstates1	35	/* q */
-#define minseq1	34
-#define maxseq1	67
-#define _endstate1	34
+#define _nstates1	37	/* q */
+#define minseq1	36
+#define maxseq1	71
+#define _endstate1	36
 
-#define _nstates0	35	/* p */
+#define _nstates0	37	/* p */
 #define minseq0	0
-#define maxseq0	33
-#define _endstate0	34
+#define maxseq0	35
+#define _endstate0	36
 
 extern short src_ln4[];
 extern short src_ln3[];
@@ -176,8 +176,8 @@ extern S_F_MAP src_file1[];
 extern S_F_MAP src_file0[];
 
 #define T_ID	unsigned char
-#define _T5	47
-#define _T2	48
+#define _T5	45
+#define _T2	46
 #define WS		8 /* word size in bytes */
 #define SYNC	0
 #define ASYNC	0
@@ -458,6 +458,7 @@ typedef struct State {
 		unsigned short _event;
 	#endif
 #endif
+	unsigned turn : 1;
 	unsigned v0 : 1;
 	unsigned v1 : 1;
 	unsigned try0 : 1;
@@ -487,7 +488,6 @@ typedef struct TRIX_v6 {
 #endif
 
 #define HAS_TRACK	0
-/* hidden variable: */	uchar turn;
 #define FORWARD_MOVES	"pan.m"
 #define BACKWARD_MOVES	"pan.b"
 #define TRANSITIONS	"pan.t"
@@ -860,7 +860,7 @@ void qsend(int, int, int);
 #define GLOBAL	7
 #define BAD	8
 #define ALPHA_F	9
-#define NTRANS	49
+#define NTRANS	47
 #if defined(BFS_PAR) || NCORE>1
 	void e_critical(int);
 	void x_critical(int);

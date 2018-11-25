@@ -14,7 +14,7 @@ class Maze(object):
         self.n_features = 2
         # self.action_space = spaces.Tuple((spaces.Discrete(49), spaces.Discrete(50)))
         self.action_space = spaces.Discrete(92)
-        self.observation_space = spaces.Box(low= -1.0, high=6501.0, shape=(85,), dtype=np.int)
+        self.observation_space = spaces.Box(low= -1.0, high=6501.0, shape=(135,), dtype=np.int)
         self.seed()
         self.viewer = None
         self.state = None
