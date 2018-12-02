@@ -1,85 +1,124 @@
 from maze_env import Maze
 from RL_brain import DeepQNetwork
 import astEncoder
+import os
 import example
+import time
 import StringIO
 import pickle
 import classifier.tbcnn.sampling as sampling
+import numpy as np
 
+os.environ['LD_LIBRARY_PATH'] = '/usr/local/cuda-9.0/lib64'
+os.environ['CUDA_HOME'] = '/usr/local/cuda-9.0'
+os.environ["CUDA_VISIBLE_DEVICES"]= '0'
+
+candidate_num = 10
 target_reward = 80
 def run_maze():
     step = 0
+    action1 = 1
+    step_good = 0
+    done = False
     buf = StringIO.StringIO()
-
-    #tfrecord_wrt = RL.make_tfrecord()
-    for episode in range(300):
+    for episode in range(30000):
+        start = time.time()
         # initial observation
-        observation, info_ = env.reset()
-        actIndex = astEncoder.setAction1s(info_)
+
+        info_ = env.reset()
+        # actIndex = astEncoder.setAction1s(info_)
         reward_cum = 0
-        ast = astEncoder.getAstDict()
-        # state, astActNodes = astEncoder.astEncoder(ast)
-        nodes, children = sampling.gen_samples1(ast, embeddings, embed_lookup)
-        nodes, children = RL.reshapeChildNodes(nodes, children)
-        children[0][0] = children[0][0][2:]
-        while len(children[0][0]) < 5:
-            children[0][0].append(0)
-        # observation = RL.get_observation(nodes, children)
+
         for t in range(300):
-            # fresh env
-            # env.render()
 
             # RL choose action based on observation
-            action, action_real = RL.choose_action(nodes, children, actIndex, info_.candidate)
+            for index in range(candidate_num):
+                example.printAst(info_.candidate_[index])
+                ast = astEncoder.getAstDict()
+                nodes, children = sampling.gen_samples1(ast, embeddings, embed_lookup)
+                observation_ = info_.state_[index]
 
-            # RL take action and get next observation and reward
-            observation_, reward, done, info_ = env.step(action_real)
-            nodes_, children_ = sampling.gen_samples1(info_.ast, embeddings, embed_lookup)
-            nodes_, children_ = RL.reshapeChildNodes(nodes_, children_)
-            children_[0][0] = children_[0][0][2:]
-            while len(children_[0][0]) < 5:
-                children_[0][0].append(0)
-            # observation_ = RL.get_observation(nodes, children)
-            #if len(observation_) < 1680:
-            #    print("error")
-            # print((observation - observation_).any())
+                if observation_[action1 - 1] != 0 and observation_[action1 - 1] != -1:
+                    action2set = np.array(RL.action2set(example.getLegalAction2(info_.candidate_[index], action1)))
+                else:
+                    action2set = []
 
-            if done and example.get_fitness(info_.candidate) > 78.4:
-                reward = target_reward
-                print("i_ep", episode, " step:", t, " fitness", example.get_fitness(info_.candidate))
-                spin_reward = example.spin_(info_.candidate)
-                # buf2.write("program at i_ep %d: step:%d  fitnessValue:%d\n" % (i_episode, t, example.get_fitness(info_.candidate)))
-                if spin_reward == 20:
-                    buf.write("correct program at i_ep %d: step:%d \n" % (episode, t))
-                    fo = open("./correctProg.txt", "a+")
-                    fo.write(buf.getvalue())
-                    fo.close()
-                if spin_reward == 5:
-                    print("liveness")
-                if spin_reward == 10:
-                    print("safety")
-                reward = reward + spin_reward
+                fitness = example.get_fitness(info_.candidate_[index])
 
-            actIndex = astEncoder.setAction1s(info_)
+                one_hot_action2 = RL.one_hot_action2(action2set)
+                one_hot_action1 = RL.one_hot_action1(action1)
+                # print(one_hot_action1.dtype)
+                # print(one_hot_action1.shape)
+                observation_store = np.append(np.append(np.append(observation_, one_hot_action1), one_hot_action2),
+                                              pow(fitness / 100.00, 2))
 
-            RL.store_transition(nodes, children, action[0], action[1], reward, nodes_, children_)
+                # RL choose action based on observation
+                action, action_value, action_store = RL.choose_action(observation_store,  action1, nodes, children,one_hot_action1,info_.candidate_[index])
 
-            reward_cum += reward
+                if action_store < 42:
+                    action1 = action
+                    reward = 0
+                    nodes_ = nodes
+                    children_ = children
+                    one_hot_action1_ = one_hot_action1
+                else:
+                    action2 = action
+                    action_operation = RL.getAction(action1, action2)
+                    reward, done, info_ = env.step(action_operation, index)
+                    observation_1 = info_.state_[index]
+                    observation_ = np.append(observation_1, action1 * action1 / 10000.0000)
+                    one_hot_action1_ = RL.one_hot_action1(action1)
+
+                    if observation_1[action1 - 1] != 0 and observation_1[action1 - 1] != -1:
+                        action2set_ = np.array(RL.action2set(example.getLegalAction2(info_.candidate_[index], action1)))
+                    else:
+                        action2set_ = []
+                    one_hot_action2_ = RL.one_hot_action2(action2set_)
+
+                    fitness = example.get_fitness(info_.candidate_[index])
+
+                    observation_ = np.append(observation_, pow(fitness / 100.00, 2))
+
+                    observation_store_ = np.append(np.append(np.append(observation_1, one_hot_action1_), one_hot_action2_),
+                                                   pow(fitness / 100.00, 2))
+
+                    # RL take action and get next observation and reward
+                    ast = astEncoder.getAstDict()
+                    nodes_, children_ = sampling.gen_samples1(ast, embeddings, embed_lookup)
+
+                    if info_.spin_used == 1:
+                        print("i_ep", episode, " step:", t, " fitness", example.get_fitness(info_.candidate), "time", time.time() - start)
+                    if done:
+                        print("i_ep", episode, " step:", t, " fitness", example.get_fitness(info_.candidate), "time",
+                              time.time() - start)
+                        print("Congradulations!")
+                        break
 
 
-            if (step > 200) and (step % 1 == 0):
-                RL.learn()
+                if reward > 0:
+                    step_good += 1
+                    RL.store_transition_good(nodes, children, one_hot_action1, action_store, reward, nodes_, children_, one_hot_action1_)
 
-            # swap observation
-            observation = observation_
-            nodes = nodes_
-            children = children_
-            # print(observation)
+                RL.store_transition(nodes, children, one_hot_action1, action_store, reward, nodes_, children_,
+                                             one_hot_action1_)
 
-            # break while loop when end of this episode
-            if reward == 100:
-                break
-            step += 1
+
+                reward_cum += reward
+
+
+                if (step_good > 100) and (step % 2 == 0):
+                    RL.learn()
+
+                # swap observation
+                observation = observation_
+                nodes = nodes_
+                children = children_
+                # print(observation)
+
+                # break while loop when end of this episode
+                if reward == 100:
+                    break
+                step += 1
         print("episode", episode, "reward_cum", reward_cum)
     # end of game
     print('game over')
@@ -92,14 +131,13 @@ if __name__ == "__main__":
     with open('./vectors.pkl', 'rb') as fh:
         embeddings, embed_lookup = pickle.load(fh)
         num_feats = len(embeddings[0])
-    RL = DeepQNetwork(
-                      env.action_space.spaces[0].n,
-                      env.action_space.spaces[1].n,
-                      num_feats,
+    RL = DeepQNetwork(env.action_space.n,
+                      # env.action_space.spaces[1].n,
+                      10,
                       learning_rate=0.01,
-                      reward_decay=0.9,
+                      reward_decay=0.8,
                       e_greedy=0.9,
-                      replace_target_iter=2,
+                      replace_target_iter=10,
                       memory_size=100,
                       # output_graph=True
                       )

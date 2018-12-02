@@ -28,29 +28,30 @@ class DeepQNetwork:
     def __init__(
             self,
             n_actions1,
-            n_actions2,
+            # n_actions2,
             n_features,
             learning_rate=0.01,
             reward_decay=0.9,
             e_greedy=0.9,
-            replace_target_iter=300,
-            memory_size=500,
+            replace_target_iter=10,
+            memory_size=100,
             batch_size=32,
-            e_greedy_increment=0.01,
+            e_greedy_increment=0.001,
             output_graph=False,
     ):
         self.n_actions1 = n_actions1
-        self.n_actions2 = n_actions2
+        # self.n_actions2 = n_actions2
         self.n_features = n_features
-        self.ob_features = 300
         self.lr = learning_rate
         self.gamma = reward_decay
         self.epsilon_max = e_greedy
         self.replace_target_iter = replace_target_iter
         self.memory_size = memory_size
+        self.memory_size_good = memory_size
         self.batch_size = batch_size
         self.epsilon_increment = e_greedy_increment
         self.epsilon = 0 if e_greedy_increment is not None else self.epsilon_max
+
 
         # total learning step
         self.learn_step_counter = 0
@@ -58,6 +59,7 @@ class DeepQNetwork:
         # initialize zero memory [s, a, r, s_]
         # self.memory = np.zeros((self.memory_size, self.ob_features * 2 + 3))
         self.memory = []
+        self.memory_good = []
 
         # consist of [target_net, evaluate_net]
         self._build_net()
@@ -78,8 +80,9 @@ class DeepQNetwork:
     def _build_net(self):
         # ------------------ build target_net ------------------
         # self.s_ = tf.placeholder(tf.float32, [None, self.n_features], name='s_')    # input
-        self.nodes_ = tf.placeholder(tf.float32, shape=(None, None, self.n_features), name='tree_')
+        self.nodes_ = tf.placeholder(tf.float32, shape=(None, None, self.n_features), name='node_')
         self.children_ = tf.placeholder(tf.int32, shape=(None, None, None), name='children_')
+        self.action1_ = tf.placeholder(tf.float32, shape=(None, 42), name='action1_')
         with tf.variable_scope('target_net'):
             # c_names(collections_names) are the collections to store variables
             c_names = ['target_net_params', tf.GraphKeys.GLOBAL_VARIABLES]
@@ -88,34 +91,22 @@ class DeepQNetwork:
             with tf.variable_scope('l1'):
                 conv2 = self.conv_layer(1, 100, self.nodes_, self.children_, self.n_features)
                 pooling2 = self.pooling_layer(conv2)
-                # w1 = tf.get_variable('w1', [self.n_features, n_l1], initializer=w_initializer, collections=c_names)
-                # b1 = tf.get_variable('b1', [1, n_
-                #
-                #
-                # l1], initializer=b_initializer, collections=c_names)
-                # l1 = tf.nn.relu(tf.matmul(self.s_, w1) + b1)
+                self.pooling2 = pooling2 = tf.concat((pooling2, self.action1_), axis=1)
+
 
             # second layer. collections is used later when assign to target net
             with tf.variable_scope('l2_1'):
-                self.q_next1 = self.hidden_layer(pooling2, 100, self.n_actions1)
-                # w2_1 = tf.get_variable('w2', [n_l1, self.n_actions1], initializer=w_initializer, collections=c_names)
-                # b2_1 = tf.get_variable('b2', [1, self.n_actions1], initializer=b_initializer, collections=c_names)
-                # self.q_next1 = tf.matmul(l1, w2_1) + b2_1
+                self.q_next1 = self.hidden_layer(pooling2, 142, self.n_actions1)
 
-            with tf.variable_scope('l2_2'):
-                self.q_next2 = self.hidden_layer(pooling2, 100, self.n_actions2)
-                # w2_2 = tf.get_variable('w2', [n_l1, self.n_actions2], initializer=w_initializer, collections=c_names)
-                # b2_2 = tf.get_variable('b2', [1, self.n_actions2], initializer=b_initializer, collections=c_names)
-                # self.q_next2 = tf.matmul(l1, w2_2) + b2_2
 
         # ------------------ build evaluate_net ------------------
-        # self.s = tf.placeholder(tf.float32, [None, self.n_features], name='s')  # input
 
-        self.nodes = tf.placeholder(tf.float32, shape=(None, None, self.n_features), name='tree')
+        self.nodes = tf.placeholder(tf.float32, shape=(None, None, self.n_features), name='node')
         self.children = tf.placeholder(tf.int32, shape=(None, None, None), name='children')
+        self.action1 = tf.placeholder(tf.float32, shape=(None, 42), name='action1')
 
         self.q_target1 = tf.placeholder(tf.float32, [None, self.n_actions1], name='Q_target')
-        self.q_target2 = tf.placeholder(tf.float32, [None, self.n_actions2], name='Q_target')  # for calculating loss
+        # for calculating loss
         with tf.variable_scope('eval_net'):
             # c_names(collections_names) are the collections to store variables
             c_names, n_l1, w_initializer, b_initializer = \
@@ -126,86 +117,67 @@ class DeepQNetwork:
             with tf.variable_scope('l1'):
                 conv1 = self.conv_layer(1, 100, self.nodes, self.children, self.n_features)
                 pooling = self.pooling_layer(conv1)
-                # w1 = tf.get_variable('w1', [self.n_features, n_l1], initializer=w_initializer, collections=c_names)
-                # b1 = tf.get_variable('b1', [1, n_l1], initializer=b_initializer, collections=c_names)
-                # l1 = tf.nn.relu(tf.matmul(self.s, w1) + b1)
+                pooling = tf.concat((pooling, self.action1), axis=1)
+                #pooling = tf.concat(1, pooling, self.action1)
 
             # second layer. collections is used later when assign to target net
             with tf.variable_scope('l2_1'):
-                self.q_eval1 = self.hidden_layer(pooling, 100, self.n_actions1)
-                # w2 = tf.get_variable('w2', [n_l1, self.n_actions1], initializer=w_initializer, collections=c_names)
-                # b2 = tf.get_variable('b2', [1, self.n_actions1], initializer=b_initializer, collections=c_names)
-                # self.q_eval1 = tf.matmul(l1, w2) + b2
-
-            # second layer. collections is used later when assign to target net
-            with tf.variable_scope('l2_2'):
-                self.q_eval2 = self.hidden_layer(pooling, 100, self.n_actions2)
-                # w2_2 = tf.get_variable('w2', [n_l1, self.n_actions2], initializer=w_initializer, collections=c_names)
-                # b2_2 = tf.get_variable('b2', [1, self.n_actions2], initializer=b_initializer, collections=c_names)
-                # self.q_eval2 = tf.matmul(l1, w2_2) + b2_2
+                self.q_eval1 = self.hidden_layer(pooling, 142, self.n_actions1)
 
         with tf.variable_scope('loss'):
-            self.loss1 = tf.reduce_mean(tf.squared_difference(self.q_target1, self.q_eval1))
-            self.loss2 = tf.reduce_mean(tf.squared_difference(self.q_target2, self.q_eval2))
-            self.loss = self.loss1 + self.loss2
+            self.loss = tf.reduce_mean(tf.squared_difference(self.q_target1, self.q_eval1))
 
         with tf.variable_scope('train'):
-            self._train_op = tf.train.RMSPropOptimizer(self.lr).minimize(self.loss)
+            self._train_op = tf.train.AdamOptimizer(self.lr).minimize(self.loss)
 
     def make_tfrecord(self):
         out_name = 'transition.tfrecord'
         self.tfrecord_wrt = tf.python_io.TFRecordWriter(out_name)
         # return tfrecord_wrt
 
-    def store_transition(self, nodes, children, a1, a2, r, nodes_, children_):
+    def store_transition(self, nodes, children, a1, a, r, nodes_, children_, a1_):
         if not hasattr(self, 'memory_counter'):
             self.memory_counter = 0
 
         transition = {}
-        # nodesShape = nodes.shape
-        # childrenShape = children.shape
-        # nodes_shape = nodes_.shape
-        # children_shape = children_.shape
-        # a = [a1, a2, r]
-        # a_shape = a.shape
-
-        # transition = np.hstack((s, [a1, a2, r], s_))
-
-         #transition['nodes'] = tf.train.Feature(float_list = tf.train.FloatList(Value = nodes))
-        # transition['children'] = tf.train.Feature(int64_list=tf.train.Int64List(value=list(childrenShape)))
-        # transition['nodes_'] = tf.train.Feature(float_list = tf.train.FloatList(Value = nodes_))
-        # transition['children_'] = tf.train.Feature(int64_list=tf.train.Int64List(value=list(children_shape)))
-        # transition['acRe'] = tf.train.Feature(int64_list=tf.train.Int64List(value=list(a_shape)))
 
         transition['nodes'] = nodes
         transition['children'] = children
+        transition['action1'] = a1
         transition['nodes_'] = nodes_
         transition['children_'] = children_
-        transition['acRe'] = [a1, a2, r]
+        transition['action1_'] = a1_
+        transition['acRe'] = [a, r]
 
-        # replace the old memory with new memory
         index = self.memory_counter % self.memory_size
         if self.memory_counter < self.memory_size:
             self.memory.append(transition)
         else:
             self.memory[index] = transition
         self.memory_counter += 1
-        # self.memory.append(transition)
-        # self.memory_counter += 1
 
-        # exmp = tf.train.Example(features=tf.train.Features(feature=transition))
-        # exmp_serial = exmp.SerializeToString()
-        # self.tfrecord_wrt.write(exmp_serial)
-        # self.tfrecord_wrt.close()
-        # return tfrecord_wrt
-    '''
-    def get_observation(self, nodes, children):
 
-        tree_tensor = self.sess.run(self.conv1,
-                                    feed_dict={self.nodes: nodes, self.children: children})
+    def store_transition_good(self, nodes, children, a1, a, r, nodes_, children_, a1_):
+        if not hasattr(self, 'memory_counter_good'):
+            self.memory_counter_good = 0
 
-        print(len(flatten(tree_tensor)[0].flatten()))
-    '''
+        transition = {}
+
+        transition['nodes'] = nodes
+        transition['children'] = children
+        transition['action1'] = a1
+        transition['nodes_'] = nodes_
+        transition['children_'] = children_
+        transition['action1_'] = a1_
+        transition['acRe'] = [a, r]
+
+        index = self.memory_counter_good % self.memory_size_good
+        if self.memory_counter_good < self.memory_size_good:
+            self.memory_good.append(transition)
+        else:
+            self.memory_good[index] = transition
+        self.memory_counter_good += 1
+
 
     def reshapeChildNodes(self, nodes, children):
         childre = []
@@ -277,29 +249,155 @@ class DeepQNetwork:
         action = tuple(action)
         return action
 
-    def choose_action(self, nodes, children1, act1Set, candidate):
-        # to have batch dimension when feed into tf placeholder
-        # observation = observation[np.newaxis, :]
-        # self.epsilon = 0.8 * (0.993) ** episode
-
-        # nodes, children1 = self.reshapeChildNodes(nodes, children1)
-        # to have batch dimension when feed into tf placeholder
-
-        if np.random.uniform() < self.epsilon:
-            actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.nodes: nodes, self.children: children1})
-            actions_value2 = self.sess.run(self.q_eval2, feed_dict={self.nodes: nodes, self.children: children1})
-            action1 = np.argmax(actions_value1)
-            action2 = np.argmax(actions_value2)
-            # action1, action1_real = self.getAction1(act1Set, actions_value1)
-            # action2 = self.getAction2(candidate, action1_real, actions_value2)
+    def getAction1(self,candidate, act1Set, action1, action1_value):
+        action1s = np.nonzero(act1Set)[0]
+        # act1Set[action1 - 1] != 0 and
+        if act1Set[action1 - 1] != -1 and act1Set[action1 - 1] != 0:
+            action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
+            # actions = action2set
+            actions = np.append(action1s, action2set)
         else:
-            action1 = np.random.randint(0, 48)
-            action2 = np.random.randint(0, 49)
-            # action1, action1_real = self.getAction1_random(act1Set)
-            # action2 = self.getAction2_random(candidate, action1_real)
-        action_real = action = self.getAction(action1, action2)
-        # action_real = self.getAction(action1_real, action2)
-        return action, action_real
+            actions = action1s
+
+        actions = actions.flatten()
+        action1_prob = []
+        for index in actions:
+            action1_prob.append(action1_value[0][index])
+        action1 = np.argmax(action1_prob)
+        action = actions[action1]
+        return action
+
+    def getAction_random(self, candidate, act1Set, action1):
+        # print("act1Set", act1Set)
+        action1s = np.nonzero(act1Set)
+        action1 = int(action1)
+        # (act1Set[action1-1] != 0)
+        if act1Set[action1 - 1] != 0 and act1Set[action1 - 1] != -1:
+            # action2 = np.array(range(42, 92))
+            action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
+            # actions = action2set
+            actions = np.append(action1s, action2set)
+        else:
+            actions = action1s[0]
+        actions = actions.flatten()
+        # actions = np.append(action1s, action2set)
+        action = random.choice(actions)
+
+        # real_action = act1Set[action1]
+        return action
+
+    def choose_action(self, observation,  action1, nodes, children1, onehotaction1, candidate):
+        observation = observation[np.newaxis, :]
+        action_value = action1
+        if np.random.uniform() < self.epsilon:
+            action1_ = []
+            action1_.append(onehotaction1)
+            nodes, children1 = self._pad_batch_(nodes, children1)
+
+            actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.nodes: nodes, self.children: children1, self.action1: action1_})
+            action = self.getAction1(candidate, observation[0][:-93], int(action1), actions_value1)
+        else:
+            # print("choose by random")
+            action = self.getAction_random(candidate, observation[0][:-93], int(action1))
+        action = int(action)
+        action_store = action
+        if action < 42:
+            action = action + 1
+            action_value = observation[0][action - 1]
+        else:
+            action_store = action
+            action = action - 42
+
+        return action, action_value, action_store
+
+    def _pad_batch_(self, nodes1, children1):
+        nodes = []
+        nodes.append(nodes1)
+        children = []
+        children.append(children1)
+
+        max_nodes = max([len(x) for x in nodes])
+        max_children = max([len(x) for x in children])
+        feature_len = len(nodes[0][0])
+        child_len = max([len(c) for n in children for c in n])
+
+        nodes = [n + [[0] * feature_len] * (max_nodes - len(n)) for n in nodes]
+        # pad batches so that every batch has the same number of nodes
+        children = [n + ([[]] * (max_children - len(n))) for n in children]
+        # pad every child sample so every node has the same number of children
+        children = [[c + [0] * (child_len - len(c)) for c in sample] for sample in children]
+
+        return nodes, children
+
+    def _pad_batch(self, nodes, children, action1, a, r, nodes_, children_, action1_):
+        if not nodes:
+            return [], [], []
+        max_nodes = max([len(x) for x in nodes])
+        max_children = max([len(x) for x in children])
+        feature_len = len(nodes[0][0])
+        child_len = max([len(c) for n in children for c in n])
+
+        nodes = [n + [[0] * feature_len] * (max_nodes - len(n)) for n in nodes]
+        # pad batches so that every batch has the same number of nodes
+        children = [n + ([[]] * (max_children - len(n))) for n in children]
+        # pad every child sample so every node has the same number of children
+        children = [[c + [0] * (child_len - len(c)) for c in sample] for sample in children]
+
+        max_nodes_ = max([len(y) for y in nodes_])
+        max_children_ = max([len(y) for y in children_])
+        feature_len_ = len(nodes_[0][0])
+        child_len_ = max([len(c) for n in children_ for c in n])
+
+        nodes_ = [n + [[0] * feature_len_] * (max_nodes_ - len(n)) for n in nodes_]
+        # pad batches so that every batch has the same number of nodes
+        children_ = [n + ([[]] * (max_children_ - len(n))) for n in children_]
+        # pad every child sample so every node has the same number of children
+        children_ = [[c + [0] * (child_len_ - len(c)) for c in sample] for sample in children_]
+
+        return nodes, children, action1, a, r, nodes_, children_, action1_
+
+    def x(self, a):
+        children_ = []
+        nodes_ = []
+        action1_ = []
+        action1 = []
+        nodes = []
+        children = []
+        action = []
+        reward = []
+        for i in range(len(a)):
+            children_.append(a[i]["children_"])
+            nodes_.append(a[i]["nodes_"])
+            action1_.append(a[i]["action1_"])
+            action1.append(a[i]["action1"])
+            nodes.append(a[i]["nodes"])
+            children.append(a[i]["children"])
+            action.append(a[i]["acRe"][0])
+            reward.append(a[i]["acRe"][1])
+            yield (nodes, children, action1, action, reward, nodes_, children_, action1_)
+
+    def batch_samples_(self, gen, batch_size):
+        """Batch samples from a generator"""
+        nodes, children, action1, action, reward, nodes_, children_, action1_ = [], [] ,[], [] ,[], [], [], []
+        samples = 0
+        for n, c, a1, a, r, n_, c_, a1_ in gen:
+            nodes.append(n[samples])
+            children.append(c[samples])
+            action1.append(a1[samples])
+            nodes_.append(n_[samples])
+            children_.append(c_[samples])
+            action1_.append(a1_[samples])
+            action.append(a[samples])
+            reward.append(r[samples])
+            # labels.append(l)
+            samples += 1
+            if samples >= batch_size:
+                yield self._pad_batch(nodes, children, action1, action, reward, nodes_, children_, action1_)
+                nodes, children, action1, action, reward, nodes_, children_, action1_ = [], [], [], [], [], [], [], []
+                samples = 0
+
+        if nodes:
+            yield self._pad_batch(nodes, children, action1, action, reward, nodes_, children_, action1_)
 
     def learn(self):
         # check to replace target parameters
@@ -309,123 +407,44 @@ class DeepQNetwork:
 
         # sample batch memory from all memory
         if self.memory_counter > self.memory_size:
-            sample_index = np.random.choice(self.memory_size, size=self.batch_size)
+            sample_index_good = np.random.choice(self.memory_size_good, size=self.batch_size / 2)
+            sample_index = np.random.choice(self.memory_size, size=self.batch_size / 2)
         else:
-            sample_index = np.random.choice(self.memory_counter, size=self.batch_size)
-
-        # batch_memory = self.memory[sample_index, :]
+            sample_index_good = np.random.choice(self.memory_size_good, size=self.batch_size / 2)
+            sample_index = np.random.choice(self.memory_size, size=self.batch_size / 2)
 
         batch_memory = []
-        for index in range(len(sample_index)):
-            batch_memory.append(self.memory[sample_index[index]])
+        for index in sample_index:
+            batch_memory.append(self.memory[index])
 
-        a = batch_memory[:]
-        '''
-        nodes = deque()
-        #nodes2 = np.narray(batch_memory[:][0]['nodes'])
-        children = deque()
-        # children = []
-        nodes_ = []
-        children_ = []
+        for index in sample_index_good:
+            batch_memory.append(self.memory_good[index])
 
-        nodes_1 = batch_memory[:][0]['nodes_']
-        children_1 = batch_memory[:][0]['children_']
-        '''
-        for i in range(len(a)):
-            nodes = batch_memory[:][i]['nodes']
-            children = batch_memory[:][i]['children']
-            nodes_ = batch_memory[:][i]['nodes_']
-            children_ = batch_memory[:][i]['children_']
+        for i, batch in enumerate(self.batch_samples_(self.x(batch_memory[:]), self.batch_size)):
+            nodes, children, action1, action, reward, nodes_, children_, action1_ = batch
 
-            q_next1, q_eval1 = self.sess.run(
-                [self.q_next1, self.q_eval1],
+            pool, q_next1, q_eval1 = self.sess.run(
+                [self.pooling2, self.q_next1, self.q_eval1],
                 feed_dict={
-                    self.nodes_: nodes_,
-                    self.children_: children_,
-                    self.nodes: nodes,  # fixed params
+                    self.nodes: nodes,
                     self.children: children,
-                   # newest params
-                })
-
-            '''
-            q_next1 = self.sess.run(
-                [self.q_next1],
-                feed_dict={
-                    self.nodes_: nodes_,
+                    self.action1: action1,
+                    self.nodes_: nodes_,  # fixed params
                     self.children_: children_,
-
-                    # newest params
+                    self.action1_: action1_,
                 })
-
-            q_eval1 = self.sess.run(
-                [self.q_eval1],
-                feed_dict={
-                    self.nodes: nodes,  # fixed params
-                    self.children: children,
-                    # newest params
-                })
-            '''
-
-            q_next2, q_eval2 = self.sess.run(
-                [self.q_next2, self.q_eval2],
-                feed_dict={
-                    self.nodes_: nodes_,
-                    self.children_: children_,
-                    self.nodes: nodes,  # fixed params
-                    self.children: children,
-
-                })
-
-            # change q_target w.r.t q_eval's action
-            #q_target1 = q_eval1.copy()
-            #q_target2 = q_eval2.copy()
 
             q_target1 = q_eval1[:]
-            q_target2 = q_eval2[:]
-
             batch_index = np.arange(self.batch_size, dtype=np.int32)
-            batch_index = np.arange(1, dtype=np.int32)
-            eval_act_index1 = batch_memory[:][0]['acRe'][0]
-            eval_act_index2 = batch_memory[:][0]['acRe'][1]
-            reward = batch_memory[:][0]['acRe'][-1]
-            # eval_act_index = batch_memory[:, self.ob_features].astype(int)
-            # reward = batch_memory[:, self.ob_features + 1]
-
-            q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.max(q_next1, axis=1)
-            q_target2[batch_index, eval_act_index2] = reward + self.gamma * np.max(q_next2, axis=1)
-
-            """
-            For example in this batch I have 2 samples and 3 actions:
-            q_eval =
-            [[1, 2, 3],
-             [4, 5, 6]]
-    
-            q_target = q_eval =
-            [[1, 2, 3],
-             [4, 5, 6]]
-    
-            Then change q_target with the real q_target value w.r.t the q_eval's action.
-            For example in:
-                sample 0, I took action 0, and the max q_target value is -1;
-                sample 1, I took action 2, and the max q_target value is -2:
-            q_target =
-            [[-1, 2, 3],
-             [4, 5, -2]]
-    
-            So the (q_target - q_eval) becomes:
-            [[(-1)-(1), 0, 0],
-             [0, 0, (-2)-(6)]]
-    
-            We then backpropagate this error w.r.t the corresponding action to network,
-            leave other action as error=0 cause we didn't choose it.
-            """
+            q_target1[batch_index, action] = reward + self.gamma * np.max(q_next1, axis=1)
 
             # train eval network
             _, self.cost = self.sess.run([self._train_op, self.loss],
                                          feed_dict={self.nodes: nodes,  # fixed params
                                                     self.children: children,
+                                                    self.action1: action1,
                                                     self.q_target1: q_target1,
-                                                    self.q_target2: q_target2})
+                                                    })
             self.cost_his.append(self.cost)
 
         # increasing epsilon
@@ -677,3 +696,15 @@ class DeepQNetwork:
             # output will have shape (batch_size x num_nodes x num_children x feature_size)
             # NOTE: tf < 1.1 contains a bug that makes backprop not work for this!
             return tf.gather_nd(vector_lookup, children, name='children')
+
+    def one_hot_action1(self,action1):
+        one_hot_action1 = np.zeros(42)
+        one_hot_action1[action1 - 1] = 1
+        #one_hot_action1 = [one_hot_action1]
+        return np.array(one_hot_action1)
+
+    def one_hot_action2(self,action2):
+        one_hot_action2 = np.zeros(50)
+        for i in action2:
+            one_hot_action2[i] = 1
+        return one_hot_action2

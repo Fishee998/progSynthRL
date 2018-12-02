@@ -1,6 +1,20 @@
+//
+//  example.c
+//  progSynByRlSmc
+//
+//  Created by 媛庄 on 2018/9/10.
+//  Copyright © 2018年 媛庄. All rights reserved.
+//
+
 #include "example.h"
 
 
+
+int NUM_CONDITION_LEFT = 5;
+int NUM_CONDITION_RIGHT = 4;
+int NUM_ASSIGNMENT_LEFT = 5;
+int NUM_ASSIGNMENT_RIGHT = 4;
+int NUM_TREENODE = 42;
 
 const int numprog = 2;
 double genseq = 0.4;
@@ -14,7 +28,7 @@ void addNode(treeRank* tr,treenode* node)
 {
     if(node == NULL)
         return;
-
+    
     if(tr->numcandidate == tr->maxnumcandidate)
     {
         tr->maxnumcandidate *= 2;
@@ -27,10 +41,10 @@ void addNode(treeRank* tr,treenode* node)
         free(tr->candidate);
         tr->candidate = new1;
     }
-
+    
     mutationNode* p = (mutationNode*)malloc(sizeof(mutationNode));
     p->node = node;
-
+    
     tr->ranksum += node->badexamples;
     p->ranksum = tr->ranksum;
     tr->candidate[tr->numcandidate] = p;
@@ -39,7 +53,7 @@ void addNode(treeRank* tr,treenode* node)
 
 void searchNode(treenode* root,treeRank* tr,int type,int maxdepth)
 {
-
+    
     if(root == NULL)
         return;
     if(type == 1)
@@ -86,7 +100,7 @@ void searchNode(treenode* root,treeRank* tr,int type,int maxdepth)
 
 int compareNode(treenode* root,int type,int maxdepth)
 {
-
+    
     if(type == 1)
     {
         if(root->fixed == 0 || root->type == 1)        //while
@@ -145,7 +159,7 @@ mutationNode* chooseNode(treeRank* tr)
         if(tr->candidate[i] != result)
             free(tr->candidate[i]);
     free(tr);
-
+    
     return result;
 }
 
@@ -177,7 +191,7 @@ void freeTrace(trace* t)
 
 void setbadexamples(trace** traces,int num)
 {
-
+    
     int i,j;
     for(i = 0;i < num;i++)
     {
@@ -188,7 +202,7 @@ void setbadexamples(trace** traces,int num)
             else
                 traces[i]->executenode[j]->badexamples++;
         }
-
+        
     }
 }
 
@@ -196,7 +210,7 @@ void setNext(treenode* root)
 {
     if(root == NULL)
         return;
-
+    
     if(root->type == 0)
     {
         if(root->treenode1 != NULL)
@@ -242,13 +256,13 @@ int getvarvalue(exp_* e)
         printf("getvarvalue null!\n");
         return -1;
     }
-
+    
     if(e->type == 0)
         return e->index;
     if(e->type == 1)
         return varvalue[e->index];
     return 0;
-
+    
 }
 
 bool getcondvalue(cond* c)
@@ -275,7 +289,7 @@ bool getcondvalue(cond* c)
 
 void printvarvalue()
 {
-
+    
     int numofvars = numpublicvars + numprivatevars * numprog;
     int i;
     for(i = 0;i < numpublicvars;i++)
@@ -285,7 +299,7 @@ void printvarvalue()
             printf("  ");
         else
             printf(" ");
-
+        
         if(i % 8 == 7)
             printf("\n");
     }
@@ -296,14 +310,14 @@ void printvarvalue()
         for(j = 0;j < numprivatevars;j++)
         {
             printf("p%d.v%d=%d",i,j,varvalue[numpublicvars + i * numprivatevars + j]);
-
+            
             if(i < 10 && j < 10)
                 printf("   ");
             else if(i < 10 || j < 10)
                 printf("  ");
             else
                 printf(" ");
-
+            
             if(j % 8 == 7)
                 printf("\n");
         }
@@ -327,7 +341,7 @@ void printTrace(trace* t,int length)
         //    printf("v[%d]=%d;",j,t->valueofvar[i][j]);
         printf("\n");
     }
-
+    
 }
 
 bool checkVarValueChanged(program* prog)
@@ -336,7 +350,7 @@ bool checkVarValueChanged(program* prog)
     varvalue = (int*)malloc(numpublicvars + numprivatevars * numprog);
     treenode* next = prog->root;
     treenode* current = NULL;
-
+    
     int i;
     for(i = 0;i < numpublicvars + numprivatevars * numprog;i++)
         varvalue[i] = 0;
@@ -364,7 +378,7 @@ bool checkVarValueChanged(program* prog)
             }
             else
                 condition = getcondvalue(next->cond1);
-
+                
                 if(condition)
                 {
                     if(next->treenode1 != NULL)
@@ -380,7 +394,7 @@ bool checkVarValueChanged(program* prog)
                 break;
         }
     }
-
+    
     if(step < 50 && varvalue[0] == 0 && varvalue[1] == 0)
         return false;
     else
@@ -391,7 +405,7 @@ trace* gettrace(organism* org,int num)
 {
     //printf("init state:\n");
     //printvarvalue();
-
+    
     /*  trace* gtrace = (trace*)malloc(sizeof(trace));
      gtrace->steplength = steplength;
      gtrace->numofprog = numprog;
@@ -402,7 +416,7 @@ trace* gettrace(organism* org,int num)
     /*    gtrace->executeprogid = (int*)malloc(sizeof(int) * steplength);
      gtrace->executenode = (treenode**)malloc(sizeof(treenode*) * steplength);
      gtrace->satisfied = nextrand(2) == 0 ? true : false;
-
+     
      free(varvalue);
      free(nextstep);
      free(currentstep);
@@ -410,11 +424,11 @@ trace* gettrace(organism* org,int num)
      nextstep = (treenode**)malloc(sizeof(treenode*) * gtrace->numofprog);
      currentstep = (treenode**)malloc(sizeof(treenode*) * gtrace->numofprog);
      */
-
+    
     int i,j;
     int step = gtrace->steplength;            //???
     //int* stepincs = (int*)malloc(sizeof(int) * numprog);
-
+    
     for(i = 0;i < numprog;i++)
     {
         nextstep[i] = gtrace->root[i]->root;
@@ -422,8 +436,8 @@ trace* gettrace(organism* org,int num)
     }
     for(i = 0;i < gtrace->numofvar;i++)
         varvalue[i] = 0;
-
-
+    
+    
     //printf("22\n");
     for(i = 0;i < step;i++)
     {
@@ -440,10 +454,10 @@ trace* gettrace(organism* org,int num)
             gtrace->steplength = i;        //!!
             break;
         }
-
+        
         //printf("23\n");
         int executeprogid;
-
+        
         /*    if(nextstep[0] == NULL)
          executeprogid = 1;
          else if(nextstep[1] == NULL)
@@ -475,7 +489,7 @@ trace* gettrace(organism* org,int num)
          }
          else
          executeprogid = nextrand(2);*/
-
+        
         if(nextstep[0] == NULL)
             executeprogid = 1;
         else if(nextstep[1] == NULL)
@@ -496,10 +510,10 @@ trace* gettrace(organism* org,int num)
         }
         else
             executeprogid = nextrand(2);
-
+        
         while(nextstep[executeprogid]->type == 3)
             nextstep[executeprogid] = nextstep[executeprogid]->treenode1;
-
+        
         currentstep[executeprogid] = nextstep[executeprogid];
         gtrace->executeprogid[i] = executeprogid;
         gtrace->executenode[i] = currentstep[executeprogid];
@@ -519,7 +533,7 @@ trace* gettrace(organism* org,int num)
                     condition = true;
                 else
                     condition = false;
-
+                
                 //if(condition)
                 //    printf("prog:%d,num:%d,true\n",executeprogid,num);
                 //else
@@ -527,7 +541,7 @@ trace* gettrace(organism* org,int num)
             }
             else
                 condition = getcondvalue(nextstep[executeprogid]->cond1);
-
+                
                 if(condition)
                 {
                     if(nextstep[executeprogid]->treenode1 != NULL)
@@ -562,7 +576,7 @@ trace* gettrace(organism* org,int num)
                 break;
         }
         //printf("step:%d,exeprogid:%d\n",i,executeprogid);
-
+        
         //printvarvalue();
         /*gtrace->valueofvar[i] = (int*)malloc(sizeof(int) * gtrace->numofvar);
          for(k = 0;k < gtrace->numofvar;k++)
@@ -570,7 +584,7 @@ trace* gettrace(organism* org,int num)
          gtrace->valueofvar[i][k] = varvalue[k];
          }*/
     }
-
+    
     return gtrace;
 }
 
@@ -598,7 +612,7 @@ int checkEnterCS(trace* t)        //M:1 B1:2 B2:3 O1:4 O2:5
         }
         else
             inCS[t->executeprogid[i]] = 0;
-
+        
         if(!(t->executenode[i]->type == 1 && t->executenode[i]->cond1->type == -1))
         {
             if(t->executeprogid[i] == 0 && a == -1)
@@ -606,8 +620,8 @@ int checkEnterCS(trace* t)        //M:1 B1:2 B2:3 O1:4 O2:5
             else if(t->executeprogid[i] == 1 && b == -1)
                 b = 0;
         }
-
-
+        
+        
         if(inCS[0] == 1 && inCS[1] == 1)
         {
             free(inCS);
@@ -620,7 +634,7 @@ int checkEnterCS(trace* t)        //M:1 B1:2 B2:3 O1:4 O2:5
         //if(p > -1)
         //    printf("p=%d,a=%d,b=%d\n",p,a,b);
     }
-
+    
     free(inCS);
     //printf("a=%d,b=%d",a,b);
     if(a >= 2 && b >= 2)
@@ -868,9 +882,9 @@ void calculateFitness2(organism* prog,int type)
             printf("\n");
             exit(-1);
         }
-
+        
         int enter = checkEnterCS(t);
-
+        
         //freeTrace(t);    //!!
         switch(enter)
         {
@@ -883,7 +897,7 @@ void calculateFitness2(organism* prog,int type)
             case 7:M++;O3++;break;
         }
     }
-
+    
     int allB = B1 + B2 + B3;
     if(B1 > (double)allB * 0.7)
     {
@@ -902,7 +916,7 @@ void calculateFitness2(organism* prog,int type)
     prog->progs[0]->numofevent[4] = O2;
     prog->progs[0]->numofevent[5] = B3;
     prog->progs[0]->numofevent[6] = O3;
-
+    
     if(type == 1)
     {
         printf("M:%d,B1:%d,B2:%d,B3:%d,O1:%d,O2:%d,O3:%d,fitness:%lf\n",M,B1,B2,B3,O1,O2,O3,prog->fitness);
@@ -923,11 +937,11 @@ void setTraceStates(trace* t,int type)
     int lastnodecs[2];
     lastnodecs[0] = 0;
     lastnodecs[1] = 0;
-
+    
     for(j = 0;j < t->states[0]->numvar;j++)
         t->states[0]->varvalue[j] = 0;
     t->states[0]->varvalue[tracetypeindex] = type;
-
+    
     for(i = 0;i < t->steplength;i++)
     {    //printf("%d,",t->executenode[i]->type);
         for(j = 0;j < t->states[0]->numvar;j++)
@@ -954,32 +968,32 @@ void setTraceStates(trace* t,int type)
 double calculateFitness(organism* prog,Expr** exp,int numexp,double* coef)
 {
     int i;
-
-
+    
+    
     int M = 0,B1 = 0,B2 = 0,O1 = 0,O2 = 0,B3 = 0,O3 = 0;//,BM = 0;
     double a = 0.6,b = 0.2,c = 0,d = 0.2,e = -0.1;//,f = 0.7;
-
-
+    
+    
     double* result = (double*)malloc(sizeof(double) * numexp);
     for(i = 0;i < numexp;i++)
         result[i] = 0;
-
+    
     /*printf("start check\n");
      for(i = 0;i < numexp;i++)
      {
      printExpr(exp[i]);
      printf("\n");
      }*/
-
+    
     int count = 0;
     for(i = 0;i < numofcheck;i++)
     {
         if(existNullCond(prog->progs[0]->root))
             printf("exist null condition\n");
         trace* t = gettrace(prog,i);
-
-
-
+        
+        
+        
         /*int enter = checkEnterCS(t);
          switch(enter)
          {
@@ -991,8 +1005,8 @@ double calculateFitness(organism* prog,Expr** exp,int numexp,double* coef)
          case 6:M++;B3++;break;
          case 7:M++;O3++;break;
          }*/
-
-
+        
+        
         int safety = 1;
         if(i < numofcheck * 0.7)
         {
@@ -1001,16 +1015,16 @@ double calculateFitness(organism* prog,Expr** exp,int numexp,double* coef)
         }
         else
             safety = 0;
-
+        
         if(i < numofcheck * 0.7)
             setTraceStates(t,0);
         else if(i >= numofcheck * 0.7 && i < numofcheck * 0.85)
             setTraceStates(t,1);
         else
             setTraceStates(t,2);
-
-
-
+        
+        
+        
         int j;
         for(j = 0;j < numexp;j++)
         {
@@ -1023,19 +1037,19 @@ double calculateFitness(organism* prog,Expr** exp,int numexp,double* coef)
          for(j = 0;j < t->steplength;j++)
          fprintf(fp,"step%d:%d,%d,%d,%d,%d,%d\n",j,t->states[j]->varvalue[0],t->states[j]->varvalue[1],t->states[j]->varvalue[2],t->states[j]->varvalue[3],t->states[j]->varvalue[4],t->executeprogid[j ]);
          //fprintf(fp,"final result:%d\n",r);
-
-
-
+         
+         
+         
          if(safety == 1)
          printf("safety correct!%d\n",count++);    */
     }
     //fclose(fp);
-
+    
     for(i = 0;i < numexp;i++)
     {
         //if(result[i] > 300)
         //    printf("before result:%lf,numofcheck:%d\n",result[i],numofcheck);
-
+        
         result[i] = result[i] / (double)numofcheck;
         //if(result[i] > 1)
         //    printf("after result:%lf,numofcheck:%d\n",result[i],numofcheck);
@@ -1053,8 +1067,8 @@ double calculateFitness(organism* prog,Expr** exp,int numexp,double* coef)
         fitness += coef[i] * result[i];
         prog->progs[0]->propertyfit[i] = result[i];
     }
-
-
+    
+    
     /*int allB0 = B1 + B2 + B3;
      if(B1 > (double)allB0 * 0.7)
      {
@@ -1073,8 +1087,8 @@ double calculateFitness(organism* prog,Expr** exp,int numexp,double* coef)
      prog->progs[0]->numofevent[4] = O2;
      prog->progs[0]->numofevent[5] = B3;
      prog->progs[0]->numofevent[6] = O3;*/
-
-
+    
+    
     return (fitness * 100);
 }
 
@@ -1085,11 +1099,11 @@ void initTraceGlobalVar(int steplength)
     gtrace->steplength = steplength;
     gtrace->numofprog = numprog;
     gtrace->numofvar = numpublicvars + numprivatevars * numprog;
-
+    
     varvalue = (int*)malloc(sizeof(int) * gtrace->numofvar);
     nextstep = (treenode**)malloc(sizeof(treenode*) * gtrace->numofprog);
     currentstep = (treenode**)malloc(sizeof(treenode*) * gtrace->numofprog);
-
+    
     //gtrace->valueofvar = (int**)malloc(sizeof(int*) * steplength);
     gtrace->executeprogid = (int*)malloc(sizeof(int) * steplength);
     if(gtrace->executeprogid == NULL)
@@ -1099,7 +1113,7 @@ void initTraceGlobalVar(int steplength)
     }
     gtrace->executenode = (treenode**)malloc(sizeof(treenode*) * steplength);
     gtrace->satisfied = nextrand(2) == 0 ? true : false;
-
+    
     gtrace->states = (State**)malloc(sizeof(State*) * (steplength + 1));
     int i;
     for(i = 0;i < steplength + 1;i++)
@@ -1114,7 +1128,7 @@ void initTraceGlobalVar(int steplength)
         gtrace->states[i]->varname[3] = "enter0";
         gtrace->states[i]->varname[4] = "enter1";
     }
-
+    
 }
 
 
@@ -1176,7 +1190,7 @@ int nextrand(int range)    //generate a random number between 0..range-1
 
 exp_* genexp(program* prog,int vartype)
 {
-
+    
     int exptype = nextrand(2);
     if(vartype != -1)
         exptype = vartype;
@@ -1298,7 +1312,7 @@ treenode* genprog(int depth,program* prog)
 {
     int commandtype;
     int height = prog->maxdepth + 1 - depth;
-
+    
     if(height < 2)
         commandtype = 0;
     else
@@ -1312,9 +1326,9 @@ treenode* genprog(int depth,program* prog)
         //if(commandtype == 3)
         //    commandtype = 4;
     }
-
+    
     int varindex = 0;
-
+    
     treenode* result = NULL;
     switch(commandtype)
     {
@@ -1336,7 +1350,7 @@ treenode* genprog(int depth,program* prog)
             }
             result->treenode1 = genprog(depth + 1,prog);break;
     }
-
+    
     return result;
 }
 //0:IF  1:WHILE  2:UNTIL  3:SEQ  4:ASGN    5:critical section
@@ -1379,7 +1393,7 @@ treenode* genprog_(int depth,program* prog, int commandtypeVarindex[], int assig
             }
             result->treenode1 = genprog_(depth + 1,prog, commandtypeVarindex,  assignRandom, NULL, 1);break;
     }
-
+    
     return result;
 }
 
@@ -1388,29 +1402,29 @@ treenode* genCS(int depth,program* prog)
     cond* c = createCond(-1,NULL,NULL,NULL,NULL);
     treenode* t1 = createTreenode(3,0,NULL,NULL,NULL,NULL);
     treenode* result = createTreenode(1,0,c,t1,NULL,NULL);
-
+    
     t1->treenode1 = createTreenode(3,0,NULL,NULL,NULL,NULL);
     t1->treenode1->treenode1 = genprog(prog->maxdepth,prog);//createTreenode(4,3,NULL,NULL,NULL,createExp(0,1));
     //t1->treenode1->treenode1->fixed = 1;
-
+    
     //t1->treenode1->treenode2 = createTreenode(3,0,NULL,NULL,NULL,NULL);
     //t1->treenode1->treenode2->treenode1 = genprog(prog->maxdepth,prog);
     t1->treenode1->treenode2 = createTreenode(1,0,NULL,NULL,NULL,NULL);
     t1->treenode1->treenode2->cond1 = gencond(prog,5);
     t1->treenode1->treenode2->treenode1 = genprog(3,prog);
     t1->treenode1->treenode2->fixed = 1;
-
+    
     t1->treenode2 = createTreenode(3,0,NULL,NULL,NULL,NULL);
     t1->treenode2->treenode1 = createTreenode(5,0,NULL,NULL,NULL,NULL);
-
-
+    
+    
     t1->treenode2->treenode2 = genprog(prog->maxdepth,prog);//createTreenode(4,3,NULL,NULL,NULL,createExp(0,0));
     //t1->treenode2->treenode2->fixed = 1;
-
+    
     //while(assign->exp1->type == 1 && assign->exp1->index == assign->index)
     //    assign->exp1 = genexp(prog,-1);
-
-
+    
+    
     return result;
 }
 
@@ -1421,11 +1435,11 @@ void addCS(program* prog)
     tr->numcandidate = 0;
     tr->maxnumcandidate = 10;
     tr->ranksum = 0;
-
+    
     searchNode(prog->root,tr,5,prog->maxdepth);
     treenode* node = chooseNode(tr)->node;
     treenode* newnode = genCS(node->depth,prog);
-
+    
     if(node == prog->root)
         prog->root = newnode;
     else
@@ -1491,7 +1505,8 @@ void printprog(treenode* root,int blank,program* prog)
     //printf("parent type :%d",prog->parent->type);
     switch(root->type)
     {
-        case 0: for(i = 0;i < blank;i++)printf(" ");printf("if(");
+        case 0: //printf("treenode num:%d", root->number);
+            for(i = 0;i < blank;i++)printf(" ");printf("if(");
             printcond(root->cond1,prog);
             printf(")\n");
             for(i = 0;i < blank;i++)printf(" ");printf("{\n");
@@ -1503,24 +1518,28 @@ void printprog(treenode* root,int blank,program* prog)
             printprog(root->treenode2,blank + 2,prog);
             for(i = 0;i < blank;i++)printf(" ");printf("}\n");
             break;
-        case 1: for(i = 0;i < blank;i++)printf(" ");printf("while(");
+        case 1: //printf("treenode num:%d", root->number);
+            for(i = 0;i < blank;i++)printf(" ");printf("while(");
             printcond(root->cond1,prog);
             printf(")\n");
             for(i = 0;i < blank;i++)printf(" ");printf("{\n");
             printprog(root->treenode1,blank + 2,prog);
             for(i = 0;i < blank;i++)printf(" ");printf("}\n");
             break;
-        case 2: for(i = 0;i < blank;i++)printf(" ");printf("do\n");
+        case 2: //printf("treenode num:%d", root->number);
+        for(i = 0;i < blank;i++)printf(" ");printf("do\n");
             for(i = 0;i < blank;i++)printf(" ");printf("{\n");
             printprog(root->treenode1,blank + 2,prog);
             for(i = 0;i < blank;i++)printf(" ");printf("}while(");
             printcond(root->cond1,prog);
             printf(");\n");
             break;
-        case 3: printprog(root->treenode1,blank,prog);
+        case 3: //printf("treenode num:%d", root->number);
+        printprog(root->treenode1,blank,prog);
             printprog(root->treenode2,blank,prog);
             break;
         case 4:
+        //printf("treenode num:%d", root->number);;
 	    for(i = 0;i < blank;i++)printf(" ");
             if(root->index <= 2)
                 printf("v[%d] = ",root->index);
@@ -1532,56 +1551,56 @@ void printprog(treenode* root,int blank,program* prog)
 	    printexp(root->exp1,prog);
 	    printf(";\n");
             break;
-        case 5: for(i = 0;i < blank;i++)printf(" ");
+        case 5: //printf("treenode num:%d", root->number);
+        for(i = 0;i < blank;i++)printf(" ");
             printf("critical section\n");
     }
 }
 //setnodenum
 
-
-
 //0:IF  1:WHILE  2:UNTIL  3:SEQ  4:ASGN
-treenode* findNode(treenode* root, program* prog, int number)
-{
+treenode* findNode(treenode* root,program* prog, int num)
+{    //printf("printprog progtype:%d blank:%d\n",prog->type,blank);
+    //printf("num%d", num);
     treenode* result = NULL;
     if(root == NULL)
         return NULL;
-    //printf("parent type :%d",prog->parent->type);
+
     switch(root->type)
     {
-        case 0:
-            if(root->number == number)
+        case 0: //printf("treenode num:%d\n", root->number_);
+            if(root->number_ == num)
                 result = root;
             else
-                result = findNode(root->treenode1, prog, number);
-            break;
+                result = findNode(root->treenode1,prog, num);
 
-        case 1:
-            if(root->number == number)
+            break;
+        case 1: //printf("treenode num:%d\n", root->number_);
+            if(root->number_ == num)
                 result = root;
             else
-                result = findNode(root->treenode1, prog, number);
-            break;
+                result = findNode(root->treenode1, prog, num);
 
-        case 3:
-            result = findNode(root->treenode1, prog, number);
+            break;
+        case 2: //printf("treenode num:%d", root->number);
+
+            break;
+        case 3: //printf("treenode num:%d\n", root->number_);
+             result = findNode(root->treenode1, prog, num);
             if (result == NULL) {
-                result = findNode(root->treenode2, prog, number);
+                result = findNode(root->treenode2, prog, num);
             }
             break;
-
-        case 4:if(root->number == number)
+        case 4://printf("treenode num:%d\n", root->number_);
+	        if(root->number_ == num)
                 result = root;
             break;
-        case 5:if(root->number == number)
-        {
-            result = NULL;
-        }
-
+        case 5: //printf("treenode num:%d\n", root->number_);
+            if(root->number_ == num)
+                result = root;
     }
     return result;
 }
-
 
 //0:CONST  1:VAR  2:TIMES  3:PLUS  4:MINUS //5:DIV
 void setExpNum(exp_* e,program* prog, int number)
@@ -1589,9 +1608,8 @@ void setExpNum(exp_* e,program* prog, int number)
     if(e == NULL)
         return;
 
-
     e->number = number;
-
+    
 }
 
 //0:TRUE  1:FALSE  2:AND  3:OR  4:NOT
@@ -1600,8 +1618,6 @@ int setCondNum(cond* c,program* prog, int number)
 {
     if(c == NULL)
         return 0;
-    //  printf("condition{");
-    //  printf("%d",c->type);
     switch(c->type)
     {
         case -1:c->number = number;number++;break;
@@ -1625,13 +1641,13 @@ int setCondNum(cond* c,program* prog, int number)
             number = setCondNum(c->cond2,prog,number);
             break;
     }
-    //    printf("}");
     return number;
 }
 
+
 void printAst(program* prog)
 {
-    setTreenodeNum(prog->root, prog, 0);
+    //setTreenodeNum(prog->root, prog, 0);
     char* s = (char*)malloc(sizeof(char)*2000);
     memset(s, 0, sizeof(char)*2000);
     newprintprog(prog->root,prog,s);
@@ -1640,7 +1656,7 @@ void printAst(program* prog)
     fprintf(fp,"%s",s);
     fclose(fp);
 }
-
+/*
 int setTreenodeNum(treenode* root, program* prog, int number)
 {
     if(root == NULL)
@@ -1653,18 +1669,18 @@ int setTreenodeNum(treenode* root, program* prog, int number)
             number = setCondNum(root->cond1, prog, number);
             number = setTreenodeNum(root->treenode1, prog, number);
             break;
-
+            
         case 1: root->number = number;
             number ++;
             number = setCondNum(root->cond1, prog, number);
             number = setTreenodeNum(root->treenode1, prog, number);
             break;
-
+            
         case 3: number = setTreenodeNum(root->treenode1,prog,number);
             //printf(" ");
             number = setTreenodeNum(root->treenode2,prog,number);
             break;
-
+            
         case 4: root->number = number;
             number++;
             number++;
@@ -1677,14 +1693,14 @@ int setTreenodeNum(treenode* root, program* prog, int number)
     return number;
 }
 
-
+*/
 
 //newprint
 
 //0:CONST  1:VAR  2:TIMES  3:PLUS  4:MINUS //5:DIV
 void newprintexp(exp_* e,program* prog, int node, char* s)
 {
-
+    
     if(e == NULL)
         return;
     if (node == 1) {
@@ -1719,10 +1735,10 @@ void newprintexp(exp_* e,program* prog, int node, char* s)
 //0:CONST  1:VAR  2:TIMES  3:PLUS  4:MINUS //5:DIV
 void newprintexp_(exp_* e,program* prog, char* s)
 {
-
+    
     if(e == NULL)
         return;
-
+    
     //   printf("%d", e->number);
     switch(e->type)
     {
@@ -1750,10 +1766,10 @@ void newprintexp_(exp_* e,program* prog, char* s)
 //expNode
 void expNode(exp_* e,program* prog)
 {
-
+    
     if(e == NULL)
         return;
-
+    
     //  printf("expression{");
     printf("%d", e->number);
     switch(e->type)
@@ -1786,7 +1802,7 @@ void condNode(cond* c,program* prog, int node, char* s)
     // sprintf(s, "%d", c->number);
     if (node == 0) {
         strcat(s, iToStr(c->number));
-
+        
     }
     else{
         switch(c->type)
@@ -1800,7 +1816,7 @@ void condNode(cond* c,program* prog, int node, char* s)
         }
     }
     return;
-
+    
 }
 
 char* iToStr(int number)
@@ -1900,11 +1916,11 @@ void newprintprog(treenode* root,program* prog, char* s)
                 newprintexp(root->cond1->cond2->exp2, prog, 1, s);
                 strcat(s,";children:null\n");
             }
-
+            
             //  newprintcond(root->cond1, prog);
             newprintprog(root->treenode1,prog, s);
             break;
-
+            
         case 1://treenode
             strcat(s ,iToStr(root->number));
             strcat(s, "node:while;");
@@ -1913,7 +1929,7 @@ void newprintprog(treenode* root,program* prog, char* s)
             strcat(s, ";");
             treeNode_(root->treenode1, prog, 0, s);
             strcat(s, ";\n");
-
+            
             //condnode
             strcat(s, iToStr(root->cond1->number));
             strcat(s, "node:");
@@ -1991,16 +2007,16 @@ void newprintprog(treenode* root,program* prog, char* s)
             //  newprintcond(root->cond1, prog);
             newprintprog(root->treenode1, prog, s);
             break;
-
+            
         case 3: newprintprog(root->treenode1,prog, s);
             //strcat(s," ");
             newprintprog(root->treenode2, prog, s);
             break;
-
+            
         case 4:strcat(s,iToStr(root->number));
             strcat(s,"node:assign;");
             strcat(s,"children:");
-
+            
             int number = root->number;
             strcat(s,iToStr(++number));
             strcat(s,";");
@@ -2014,7 +2030,7 @@ void newprintprog(treenode* root,program* prog, char* s)
                 strcat(s, "v[");
                 strcat(s, iToStr(root->index));
                 strcat(s, "]");
-
+                
             }
             else if(root->index == 3)
             {
@@ -2054,20 +2070,20 @@ void treeNode_(treenode* root,program* prog, int node, char* s)
                 strcat(s,iToStr(root->number));
                 strcat(s,"if");
                 break;
-
+                
             case 1:strcat(s,iToStr(root->number));
                 strcat(s,"while");
                 break;
-
+                
             case 3:treeNode_(root->treenode1,prog, 0, s);
                 strcat(s,";");
                 treeNode_(root->treenode2,prog, 0, s);
                 break;
-
+                
             case 4:strcat(s,iToStr(root->number));
                 strcat(s,"assign");
                 break;
-
+                
             case 5:strcat(s,iToStr(root->number));
                 strcat(s,"cs");
         }
@@ -2079,10 +2095,10 @@ int setNumOfStatementsUp(treenode* t)
 {
     if(t == NULL)
         return 0;
-
+    
     int l = setNumOfStatementsUp(t->treenode1);
     int r = setNumOfStatementsUp(t->treenode2);
-
+    
     if(t->type != 3)
         t->numofstatements = 1;
     else
@@ -2098,7 +2114,7 @@ void setNumOfStatementsDown(treenode* t,int num)
     {
         if(num > t->numofstatements)
             t->numofstatements = num;
-
+        
         setNumOfStatementsDown(t->treenode1,t->numofstatements);
         setNumOfStatementsDown(t->treenode2,t->numofstatements);
     }
@@ -2121,9 +2137,9 @@ void setLinesTreenode(treenode* t,int depth)
     if(t == NULL)
         return;
     //printf("1.0\n");
-
+    
     t->depth = depth;
-
+    
     //printf("1.5:%d\n",t->type);
     //if(t->parent != NULL)
     //    printf("1.6:%d\n",t->parent->type);
@@ -2156,14 +2172,14 @@ int setFixed(treenode* t)
 {
     if(t == NULL)
         return 0;
-
+    
     if(t->fixed == 1)
     {
         setFixed(t->treenode1);
         setFixed(t->treenode2);
         return 1;
     }
-
+    
     if(t->type == 0)
     {
         int a = setFixed(t->treenode1);
@@ -2191,7 +2207,7 @@ int setFixed(treenode* t)
         t->fixed = 0;
     else if(t->type == 5)
         t->fixed = 1;
-
+    
     return t->fixed;
 }
 
@@ -2215,21 +2231,20 @@ int existCS(treenode* t)
     else if(existCS(t->treenode1) == 1 || existCS(t->treenode2) == 1)
         return 1;
     return 0;
-
+    
 }
 
 void setAll(program* prog)
 {
-
-    //printf("x0\n");
-    //printType(org->progs[i]->root);printf("x0.5\n");
     prog->root->next = NULL;
     setNext(prog->root);//printf("x1\n");
     setParent(prog->root);//printf("x2\n");
+    prog->root->parent = NULL;
     setFixed(prog->root);//printf("x3\n");
     setNumOfStatements(prog->root);//printf("x4\n");
     setLinesTreenode(prog->root,1);//printf("x5\n");
-
+    setTreenodeNum(prog->root, prog, 0);
+    setTreenodeNum_(prog->root, prog, 0);
 }
 
 int getFixed(treenode* t)
@@ -2255,7 +2270,7 @@ program** genInitTemplate(int num)
         inittemplate[i]->root = genCS(1,inittemplate[i]);
         inittemplate[i]->checkedBySpin = 0;
         setAll(inittemplate[i]);
-
+        
     }
     return inittemplate;
 }
@@ -2313,7 +2328,7 @@ program* genProgram(program* templat,int progid)
     program* newprog = copyProgram(templat);
     newprog->progid = progid;
     setMeOther(newprog->root,NULL,NULL,1,progid);
-
+    
     setAll(newprog);
     return newprog;
 }
@@ -2385,7 +2400,7 @@ void expToPml(exp_* e,FILE* f)
 {
     if(e == NULL)
         return;
-
+    
     if(e->type == 0)
     {
         if(e->index == 0)
@@ -2411,7 +2426,7 @@ void condToPml(cond* c,FILE* f,int blank, int progid)
     for(i = 0;i < blank;i++)
         fputs("\t",f);
     fputs("::",f);
-
+    
     if(c->type == -1)
     {
         if(progid == 0)
@@ -2420,7 +2435,7 @@ void condToPml(cond* c,FILE* f,int blank, int progid)
             for(i = 0;i < blank + 1;i++)
                 fputs("\t",f);
             fputs("try0 = 1;\n",f);
-
+            
             for(i = 0;i < blank + 1;i++)
                 fputs("\t",f);
             fputs("select(wi0:0..1);\n",f);
@@ -2431,7 +2446,7 @@ void condToPml(cond* c,FILE* f,int blank, int progid)
             for(i = 0;i < blank + 1;i++)
                 fputs("\t",f);
             fputs("try1 = 1;\n",f);
-
+            
             for(i = 0;i < blank + 1;i++)
                 fputs("\t",f);
             fputs("select(wi1:0..1);\n",f);
@@ -2469,9 +2484,9 @@ void condToPml(cond* c,FILE* f,int blank, int progid)
             fputs(" != ",f);
             expToPml(c->cond1->exp2,f);
         }
-
+        
         fputs(" && ",f);
-
+        
         if(c->cond2->type == 0)
             fputs("true",f);
         else if(c->cond2->type == 1)
@@ -2504,9 +2519,9 @@ void condToPml(cond* c,FILE* f,int blank, int progid)
             fputs(" != ",f);
             expToPml(c->cond1->exp2,f);
         }
-
+        
         fputs(" || ",f);
-
+        
         if(c->cond2->type == 0)
             fputs("true",f);
         else if(c->cond2->type == 1)
@@ -2537,7 +2552,7 @@ void progToPml(treenode* t,FILE* f,program* prog,int blank)
         fputs("if\n",f);
         condToPml(t->cond1,f,blank + 1,prog->progid);
         progToPml(t->treenode1,f,prog,blank + 2);
-
+        
         for(i = 0;i < blank;i++)
             fputs("\t",f);
         fputs("fi\n",f);
@@ -2549,11 +2564,11 @@ void progToPml(treenode* t,FILE* f,program* prog,int blank)
         fputs("do\n",f);
         condToPml(t->cond1,f,blank + 1,prog->progid);
         progToPml(t->treenode1,f,prog,blank + 2);
-
+        
         for(i = 0;i < blank + 1;i++)
             fputs("\t",f);
         fputs("::else->break;\n",f);
-
+        
         for(i = 0;i < blank;i++)
             fputs("\t",f);
         fputs("od\n",f);
@@ -2573,7 +2588,7 @@ void progToPml(treenode* t,FILE* f,program* prog,int blank)
             fputs("v1 = ",f);
         else if(t->index == 2)
             fputs("turn = ",f);
-
+        
         expToPml(t->exp1,f);
         fputs(";\n",f);
     }
@@ -2623,7 +2638,7 @@ int compareExp(exp_* e1,exp_* e2)
         return 1;
     if(e1 == NULL || e2 == NULL)
         return 0;
-
+    
     if(e1->type == e2->type && e1->index == e2->index)
         return 1;
     return 0;
@@ -2634,7 +2649,7 @@ int compareCond(cond* c1,cond* c2)
         return 1;
     if(c1 == NULL || c2 == NULL)
         return 0;
-
+    
     if(c1->type == c2->type)
     {
         if(c1->type == 0)
@@ -2663,7 +2678,7 @@ int compareTreenode(treenode* t1,treenode* t2)
         return 1;
     if(t1 == NULL || t2 == NULL)
         return 0;
-
+    
     if(t1->type == t2->type && t1->index == t2->index && compareExp(t1->exp1,t2->exp1) == 1)
         if(compareCond(t1->cond1,t2->cond1) == 1 && compareTreenode(t1->treenode1,t2->treenode1) == 1 && compareTreenode(t1->treenode2,t2->treenode2) == 1)
             return 1;
@@ -2676,18 +2691,18 @@ treenode* example_e()
     result->treenode1 = createTreenode(3,0,NULL,NULL,NULL,NULL);
     result->treenode2 = createTreenode(3,0,NULL,NULL,NULL,NULL);
     result->treenode1->treenode1 = createTreenode(4,3,NULL,NULL,NULL,createExp(0,3));
-
+    
     result->treenode1->treenode2 = createTreenode(0,0,NULL,NULL,NULL,NULL);
     treenode* p = result->treenode1->treenode2;
     p->cond1 = createCond(1,createExp(1,2),createExp(0,3),NULL,NULL);
-
+    
     p->treenode1 = createTreenode(3,0,NULL,NULL,NULL,NULL);
     p->treenode1->treenode1 = createTreenode(4,2,NULL,NULL,NULL,createExp(0,4));
     p->treenode1->treenode2 = createTreenode(1,0,createCond(2,createExp(1,4),createExp(1,2),NULL,NULL),NULL,NULL,NULL);
-
+    
     result->treenode2->treenode1 = createTreenode(5,0,NULL,NULL,NULL,NULL);
     result->treenode2->treenode2 = createTreenode(4,3,NULL,NULL,NULL,createExp(0,4));
-
+    
     treenode* output = createTreenode(1,0,NULL,result,NULL,NULL);
     output->cond1 = createCond(-1,NULL,NULL,NULL,NULL);
     return output;
@@ -2740,12 +2755,15 @@ treenode* copyTreenode(treenode* t)
     result->fixed = t->fixed;
     result->numofstatements = t->numofstatements;        //!!
     result->number = t->number;
+    result->number_ = t->number_;
     setParent(result);
     return result;
 }
 
 program* copyProgram(program* prog)
 {
+    if(prog == NULL)
+        printf("null candidate");
     program* result = (program*)malloc(sizeof(program));
     result->root = copyTreenode(prog->root);
     result->maxdepth = prog->maxdepth;
@@ -2754,6 +2772,8 @@ program* copyProgram(program* prog)
     result->numprivatevars = prog->numprivatevars;
     result->numpublicvars = prog->numpublicvars;
     result->checkedBySpin = prog->checkedBySpin;
+    result->fitness = prog->fitness;
+    result->propertyfit[0] = prog->propertyfit[0];
     return result;
 }
 
@@ -2818,13 +2838,13 @@ void mutationCond(cond* root,program* prog,int type)    //type == 1:can add     
             free(root->exp2);
             free(root->cond1);
             free(root->cond2);
-
+            
             cond* new1;
             if(type == 1)
                 new1 = gencond(prog,5);
             else
                 new1 = gencond(prog,3);
-
+            
             root->type = new1->type;
             root->exp1 = new1->exp1;
             root->exp2 = new1->exp2;
@@ -2843,7 +2863,7 @@ void mutationCond(cond* root,program* prog,int type)    //type == 1:can add     
             root->cond1 = c1;
             root->cond2 = gencond(prog,3);
         }
-
+        
     }
     else if(root->type == 3 || root->type == 4)
     {
@@ -2880,9 +2900,9 @@ void mutationCond(cond* root,program* prog,int type)    //type == 1:can add     
             free(root->exp2);
             free(root->cond1);
             free(root->cond2);
-
+            
             cond* new1 = gencond(prog,5);
-
+            
             root->type = new1->type;
             root->exp1 = new1->exp1;
             root->exp2 = new1->exp2;
@@ -2911,7 +2931,7 @@ treenode* getStatement(treenode* seq, int t)    //t=0:first    t=1:last
 {
     if(seq == NULL || seq->type != 3)
         return seq;
-
+    
     if(t == 0)
         return getStatement(seq->treenode1,0);
     else
@@ -2923,11 +2943,11 @@ program* mutation(program* parent)
     program* newprog = copyProgram(parent);
     newprog->checkedBySpin = 0;
     treenode* new1 = newprog->root;
-
+    
     //printf("mutationtype = %d\n",mutationtype);
     int mutationtype;
     mutationNode* chnode;
-
+    
     do
     {
         treeRank* tr = (treeRank*)malloc(sizeof(treeRank));
@@ -2939,7 +2959,7 @@ program* mutation(program* parent)
         searchNode(new1,tr,mutationtype,newprog->maxdepth);
         chnode = chooseNode(tr);
     }while(chnode == NULL);
-
+    
     mutype = mutationtype;
     if(mutationtype == 1)                            //Replacement Mutation type
     {
@@ -2952,7 +2972,7 @@ program* mutation(program* parent)
                 newnode = genprog(mnode->depth,newprog);
             else
                 newnode = genprog(newprog->maxdepth,newprog);
-
+            
             if(mnode->parent == NULL)
                 new1 = newnode;
             else
@@ -2980,7 +3000,7 @@ program* mutation(program* parent)
                     }while(equalExp(e,mnode->exp1) == 1);
                     free(mnode->exp1);
                     mnode->exp1 = e;
-
+                    
                 }
                 else
                 {
@@ -2991,7 +3011,7 @@ program* mutation(program* parent)
     }
     else if(mutationtype == 2)                        //Insert Mutation types
     {    //printf("mutation222\n");
-
+        
         treenode* mnode = chnode->node;
         free(chnode);
         //printf("2 mnode depth:%d,type%d\n",mnode->depth,mnode->type);
@@ -3003,9 +3023,9 @@ program* mutation(program* parent)
         if(mnode->fixed == 1 || mnode->depth + mnode->height == newprog->maxdepth + 1 || mnode->depth == 2)
             t = 3;
         //printf("2 mnode depth:%d,type:%d,t=%d fixed:%d\n",mnode->depth,mnode->type,t,mnode->fixed);
-
+        
         treenode* newnode = createTreenode(t,0,NULL,NULL,NULL,NULL);
-
+        
         if(t == 0 || t == 1)    //if,while
         {
             newnode->cond1 = gencond(newprog,5);
@@ -3016,38 +3036,23 @@ program* mutation(program* parent)
                 new1 = newnode;
             }
             else
-            {   // treenode* pp =  mnode->parent;
-                //printf("second:parent type:%d\n",mnode->parent->type);
+            {
                 if(mnode->parent->treenode1 == mnode)
                     mnode->parent->treenode1 = newnode;
                 else if(mnode->parent->treenode2 == mnode)
                     mnode->parent->treenode2 = newnode;
                 else
                     printf("mutation type2 error!\n");
-                //printf("1pptype:%d\n",pp->type);
-                //printf("1ppdepth:%d\n",pp->depth);
                 newnode->parent = mnode->parent;
                 mnode->parent = newnode;
-                //printf("before\n");
-                //printf("2pptype:%d\n",pp->type);
-                //printf("2ppdepth:%d\n",pp->depth);
-                //printType(pp);
-                //printf("after\n");
             }
         }
         else
         {
             int p;
             p = nextrand(2);
-            /*
-             if(getStatement(mnode,1)->type == 1)
-             p = 1;
-             else if(getStatement(mnode,0)->type == 5)
-             p = 0;
-             else
-             p = nextrand(2);
-             */
 
+            
             if(p == 0)
             {
                 newnode->treenode1 = mnode;
@@ -3064,7 +3069,7 @@ program* mutation(program* parent)
                 else
                     newnode->treenode1 = genprog(mnode->depth,newprog);
             }
-
+            
             if(mnode->parent == NULL)
             {
                 mnode->parent = newnode;
@@ -3122,7 +3127,7 @@ program* mutation(program* parent)
             free(mnode);
         }
     }
-
+    
     else                            //Deletion mutation type
     {
         treenode* mnode = chnode->node;
@@ -3162,7 +3167,7 @@ int numOfWi(treenode* t)
         a = 1;
     b = numOfWi(t->treenode1);
     c = numOfWi(t->treenode2);
-
+    
     return (a + b + c);
 }
 
@@ -3198,7 +3203,7 @@ program** genNewCandidate(int numofcandidate,program** candidate,int numofmutati
     int i;
     for(i = 0;i < numofcandidate;i++)
         selected[i] = 0;
-
+    
     int count = 0;
     while(count < numofmutation)
     {
@@ -3207,7 +3212,7 @@ program** genNewCandidate(int numofcandidate,program** candidate,int numofmutati
         {
             index = nextrand(numofcandidate);
         }while(selected[index] == 1);
-
+        
         selected[index] = 1;
         count++;
     }
@@ -3221,11 +3226,11 @@ program** genNewCandidate(int numofcandidate,program** candidate,int numofmutati
         if(selected[i] == 1)
         {
             //!!result[count] = (program*)malloc(sizeof(program));
-
-
+            
+            
             if(candidate[i] == NULL)
             printf("gennewcandidate error candidate null\n");
-
+            
             //printType(candidate[i]->progs[1]->root);
             //printprog(candidate[i]->progs[1]->root,0);
             //printf("before mutation\n");
@@ -3296,7 +3301,7 @@ program** selectNewCandidate(int numofcandidate,program** candidate,int numofmut
             count++;
             chosen2[i] = 1;
         }
-
+    
     for(i = 0;i < numofcandidate && count < numofcandidate;i++)
         if(candidate[i]->fitness > border - 0.0001 && candidate[i]->fitness < border + 0.0001)
         {    //printf("candidate%d,",i);
@@ -3312,7 +3317,7 @@ program** selectNewCandidate(int numofcandidate,program** candidate,int numofmut
             chosen2[i] = 1;
         }
     //printf("ccount=%d",count);
-
+    
     for(i = 0;i < numofcandidate;i++)
         if(chosen1[i] == 0)
             freeAll(NULL,candidate[i],NULL,NULL,NULL,2);
@@ -3333,7 +3338,7 @@ program** genNewCandidateWithCoefficient1(int numofcandidate,program** candidate
     int i;
     for(i = 0;i < numofcandidate;i++)
         selected[i] = 0;
-
+    
     int count = 0;
     while(count < numofmutation)
     {
@@ -3342,62 +3347,62 @@ program** genNewCandidateWithCoefficient1(int numofcandidate,program** candidate
         {
             index = nextrand(numofcandidate);
         }while(selected[index] == 1);
-
+        
         selected[index] = 1;
         count++;
     }
-
+    
     count = 0;
     for(i = 0;i < numofcandidate;i++)
     {
         if(selected[i] == 1)
         {
-
+            
             if(candidate[i] == NULL)printf("gennewcandidate error candidate null\n");
-
+            
             if(nextrand(100) < coef * 100)
                 result[count] = mutation(candidate[i]);
             else
                 result[count] = copyProgram(candidate[i]);
-
+            
             setAll(result[count]);
             count++;
         }
     }
     free(selected);
-
+    
     return result;
 }
 
 program** genNewCandidateWithCoefficient2(int numofcandidate,program** candidate,int numofmutation,double coef)//with repeat
 {
-
+    
     program** result = (program**)malloc(sizeof(program*) * numofmutation);
     int count = 0;
-
+    
     while(count < numofmutation)
     {
         int index = nextrand(numofcandidate);
-
+        
         if(nextrand(100) < coef * 100)
             result[count] = mutation(candidate[index]);
         else
             result[count] = copyProgram(candidate[index]);
-
+        
         setAll(result[count]);
         count++;
     }
-
+    
     return result;
 }
 
 program** selectNewCandidateWithFitness(int numofcandidate,program** candidate,int numofmutation, program** newcandidate)
 {
-
+    
     program** output = (program**)malloc(sizeof(program*) * numofcandidate);
     int* f = (int*)malloc(sizeof(double) * (numofcandidate + numofmutation));
     int *chosen = (int*)malloc(sizeof(int) * (numofcandidate + numofmutation));
-
+    
     int addfitness = 0;
     int i,j;
     for(i = 0;i < numofcandidate;i++)
@@ -3412,7 +3417,7 @@ program** selectNewCandidateWithFitness(int numofcandidate,program** candidate,i
         chosen[i + numofcandidate] = 0;
         addfitness += f[i + numofcandidate];
     }
-
+    
     int* roulette = (int*)malloc(sizeof(int) * addfitness);
     int tempfit = 0;
     for(i = 0;i < numofcandidate;i++)
@@ -3429,10 +3434,10 @@ program** selectNewCandidateWithFitness(int numofcandidate,program** candidate,i
             roulette[tempfit++] = i + numofcandidate;
         }
     }
-
+    
     if(tempfit != addfitness)
         printf("ERROR:TEMPFIT%d != ADDFITESS%d\n",tempfit,addfitness);
-
+    
     int count = 0;
     while(count < numofcandidate)
     {
@@ -3443,7 +3448,7 @@ program** selectNewCandidateWithFitness(int numofcandidate,program** candidate,i
             count++;
         }
     }
-
+    
     count = 0;
     for(i = 0;i < numofcandidate;i++)
     {
@@ -3465,11 +3470,11 @@ program** selectNewCandidateWithFitness(int numofcandidate,program** candidate,i
         else
             freeAll(NULL,newcandidate[i],NULL,NULL,NULL,2);
     }
-
+    
     free(f);
     free(chosen);
     free(roulette);
-
+    
     return output;
 }
 
@@ -3481,16 +3486,16 @@ Expr* createExpr(ExprType t,UnOp u,BinOp b,int bound,char* n,int v,Expr* child,E
     result->type = t;
     result->uop = u;
     result->bop = b;
-
+    
     result->stepbound = bound;
     //strcpy(result->name,n);
     result->name = n;
     result->value = v;
-
+    
     result->child = child;
     result->left = left;
     result->right = right;
-
+    
     return result;
 }
 Expr* createExprConstant(int value){
@@ -3578,7 +3583,7 @@ Expr* generateStepExpr(char* buf, int leftindex, int rightindex)
             printf("Error:property parentheses not match!\n");
             exit(-1);
         }
-
+        
         if(index == rightindex)
             return generateStepExpr(buf, leftindex + 1, rightindex - 1);
         else
@@ -3589,7 +3594,7 @@ Expr* generateStepExpr(char* buf, int leftindex, int rightindex)
             return createExprExpr2(op,left,right);
         }
     }
-
+    
     if(buf[leftindex] == 'G' || buf[leftindex] == 'F' || buf[leftindex] == 'X')
     {
         UnOp op;
@@ -3606,10 +3611,10 @@ Expr* generateStepExpr(char* buf, int leftindex, int rightindex)
             stepbound *= 10;
             stepbound += buf[index++] - '0';
         }
-
+        
         Expr* child = generateStepExpr(buf,index,rightindex);
         Expr* result = createExprStepb(op,child,stepbound);
-
+        
         return result;
     }
     else if(buf[leftindex] <= '9' && buf[leftindex] >= '0')
@@ -3621,7 +3626,7 @@ Expr* generateStepExpr(char* buf, int leftindex, int rightindex)
             value += buf[leftindex++] - '0';
         }
         return createExprConstant(value);
-
+        
     }
     else if(buf[leftindex] <= 'z' && buf[leftindex] >= 'a')
     {
@@ -3658,7 +3663,7 @@ int getStepBound(Expr* exp)
 {
     if(exp == NULL)
         return 0;
-
+    
     int left,right;
     switch(exp->type)
     {
@@ -3707,7 +3712,7 @@ void printExpr(Expr* exp)
 {
     if(exp == NULL)
         return;
-
+    
     switch(exp->type)
     {
         case Constant:printf("%d",exp->value);break;
@@ -3748,7 +3753,7 @@ int getExprValue(Expr* exp,trace* t,int currentStep)
     }
     else if(exp->type == StepBoundExpr1)
     {
-
+        
         if(exp->uop == Future)
         {
             int i;
@@ -3906,7 +3911,7 @@ Expr** set_requirments(int numofrequirements)
 {
     int i,j;
     Expr** requirements = (Expr**)malloc(sizeof(Expr*) * numofrequirements);
-
+    
     for(i = 0;i < numofrequirements;i++)
     {
         FILE* fp = NULL;
@@ -3921,7 +3926,7 @@ Expr** set_requirments(int numofrequirements)
             case 5:fp = fopen("./property/O2.bltl","r");break;
             case 6:fp = fopen("./property/O3.bltl","r");break;
         }
-
+        
         fgets(buf, 255, fp);
         fclose(fp);
         //printf("%s\n%d\n",buf,strlen(buf));
@@ -3938,15 +3943,15 @@ Expr** set_requirments(int numofrequirements)
         }
         buf[index] = '\0';
         //printf("%s\n%d\n",buf,strlen(buf));
-
+        
         Expr* e = generateStepExpr(buf,0,strlen(buf) - 1);
         //printf("xy,%d,%d\n",i,sizeof(requirements));
         requirements[i] = e;
         //printExpr(e);
         //printf("\n");
-
+        
     }
-
+    
     int maxstepbound = 0;
     for(i = 0;i < numofrequirements;i++)
     {
@@ -3956,8 +3961,8 @@ Expr** set_requirments(int numofrequirements)
     }
     //printf("max step bound:%d\n",maxstepbound);
     initTraceGlobalVar(maxstepbound + 5);
-
-
+    
+    
     return requirements;
 }
 
@@ -4060,11 +4065,11 @@ int mutationCond_(cond* root,program* prog,int type, int action)    //type == 1:
     {
         if (root->type == 3 || root->type == 4)
         {
-
+            
             switch (action)
             {
                 case 12:
-
+                    
                     root->cond2->exp1 = genexp_(prog, 1, 10);
                     break;
                 case 13:
@@ -4089,7 +4094,7 @@ int mutationCond_(cond* root,program* prog,int type, int action)    //type == 1:
                     root->cond2->exp2 = genexp_(prog, 0, 2);
                     break;
                 case 20:
-
+                    
                     root->cond2->exp2 = genexp_(prog, 0, 3);
                     break;
             }
@@ -4218,7 +4223,7 @@ int mutationCond_(cond* root,program* prog,int type, int action)    //type == 1:
             illegal = 1;
     }
     return  illegal;
-
+    
 }
 
 program* mutation1(program* parent, int nodeNum, int actionNum)
@@ -4228,6 +4233,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
     int assignRandom;
     long condrandom;
     program* newprog = copyProgram(parent);
+    setAll(newprog);
     newprog->checkedBySpin = 0;
     treenode* new1 = newprog->root;
     // treenode* chnode = (treenode*)malloc(sizeof(treenode));
@@ -4236,22 +4242,11 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
     newprog->illegal = 0;
     if (chnode == NULL)
     {
+        printf("null chnode");
         newprog->illegal = 1;
         return newprog;
     }
-    //else
-    //    printprog(chnode, 0, newprog);
-    /*
-    int* action2 = (int*)malloc(sizeof(int)*50);
-    action2 = getLegalAction2(newprog, nodeNum);
-    for (int i=0; i<sizeof(action2); i++) {
-        newprog->illegal = 0;
-        printf("%d", action2[i]);
-        actionNum = action2[i];
-    }
-     */
-    // mutype = mutationtype;
-    //Replacement Mutation type
+
     treenode* mnode = chnode;
     if (actionNum >= 0 && actionNum < 3 )
     {
@@ -4644,7 +4639,7 @@ program* mutation1(program* parent, int nodeNum, int actionNum)
             case 49:
                 if(mnode->parent != NULL && mnode->fixed != 1 && mnode->parent->type == 3 )
                 {
-                    //    printf("49action\n");
+                    // printf("49action\n");
                     treenode* new2 = mnode->parent->treenode1;
                     if (mnode->parent->treenode1 == mnode)
                     {
@@ -4732,18 +4727,6 @@ action* setAction(int layer, int actionType)
             }
         }
     }
-    /*// layer 2 4 actions
-     int m = 0;
-     for(int i=0; i<2; i++)
-     {
-     for(int j=0; j<3; j++)
-     {
-     //  nodeAction24[m] = (action*)malloc(sizeof(action));
-     //  nodeAction24[m]->commandtypeVarindex[0] = commandtypeVarindex24[i];
-     //  nodeAction24[m]->assignRandom = assignRandom_[j];
-     m++;
-     }
-     }*/
     if (layer == 2 || layer == 4) {
         nodeAction->commandtypeVarindex[0] = commandtypeVarindex24[actionType / 3];
         nodeAction->assignRandom = assignRandom_[actionType % 3];
@@ -4754,54 +4737,32 @@ action* setAction(int layer, int actionType)
         nodeAction->commandtypeVarindex[1] = commandtypeVarindex24[actionType / 3200 / 3 % 2];
         nodeAction->commandtypeVarindex[0] = commandtypeVarindex_[actionType / 3200 / 3 / 2 % 4];
     }
-    // layer 3 actions
-    /*
-     m = 0;
-     for (int i=0; i< 4; i++)
-     {
-     for (int j=0; j<2; j++)
-     {
-     for (int r=0; r<3; r++)
-     {
-     for (int c=0; c<3200; c++)
-     {
-     nodeAction3[m] =(action*)malloc(sizeof(action));
-     nodeAction3[m]->commandtypeVarindex[0] = commandtypeVarindex_[i];
-     nodeAction3[m]->commandtypeVarindex[1] = commandtypeVarindex24[j];
-     nodeAction3[m]->assignRandom = assignRandom_[r];
-     nodeAction3[m]->condrandom = condrandom_[c];
-     m++;
-     }
-     }
-     }
-     }
-     */
-
     result = nodeAction;
-
+    
     return result;
 }
 
-program* Prog(Expr** requirements ,int numofrequirements,double* coef)
+program** initProg(Expr** requirements ,int numofrequirements,double* coef)
 {
-    int numofcandidate = 1;
+    int numofcandidate = 10;
     action* act = (action*)malloc(sizeof(action));
     program** candidate = genInitTemplate(numofcandidate);
     for(int i = 0;i < numofcandidate;i++)
     {
-
         organism* org = genOrganism(candidate[i]);
         double candidatefit = calculateFitness(org,requirements,numofrequirements,coef);
         candidate[i]->fitness = candidatefit;
         //printf("init candidate %d:%lf\n",i,candidate[i]->fitness);
         for(int j = 0;j < numofrequirements;j++)
+        {
             candidate[i]->propertyfit[j] = org->progs[0]->propertyfit[j];
+
+        }
         candidate[i]->checkedBySpin = 0;
         freeAll(org,NULL,NULL,NULL,NULL,1);
-
     }
-    printAst(candidate[0]);
-    return candidate[0];
+    //printAst(candidate[0]);
+    return candidate;
 }
 
 program* mutation_(program* candidate0, int nodeNum, int actType, Expr** requirements ,int numofrequirements,double* coef)
@@ -4821,25 +4782,28 @@ program* mutation_(program* candidate0, int nodeNum, int actType, Expr** require
     return newcandidate;
 }
 
+
 int spin_(program* candidate)
 {
     int numofspin = 0;
     int numofsolution = 0;
     int right = 0;
     int reward = 0;
-
+    printf("%f\n", candidate->propertyfit[0]);
+    printf("%f\n", candidate->fitness);
+    
     if(candidate->propertyfit[0] >0.99999 && candidate->checkedBySpin == 0 && candidate->fitness > 78.4)
     {
         candidate->checkedBySpin = 1;
         organism* org = genOrganism(candidate);
-
+        
         /*printf("%d,Template:\n",i);
          printprog(candidate[j]->root,0,candidate[j]);
          printf("program0:\n");
          printprog(org->progs[0]->root,0,org->progs[0]);
          printf("program1:\n");
          printprog(org->progs[1]->root,0,org->progs[1]);*/
-
+        
         // FILE* f;
         char filename[60] = "./output/mutex.pml";
         FILE *f;
@@ -4850,33 +4814,41 @@ int spin_(program* candidate)
         }
         //sleep(2);
         fclose(f);
-
+        
         char command[100] = "spin -a ";
         strcat(command,filename);
         strcat(command," > useless");
-
-
+        
+        
         system(command);
         system("gcc -DMEMLIM=1024 -O2 -DXUSAFE -w -o pan pan.c");
-
+        
         numofspin++;
         system("./pan -m10000 -a -f -N e1 > pan1.out");
         int r1 = system("grep -q -e \"errors: 0\" pan1.out");
         if(r1 == 0)
             reward += 10;
-
+        
         numofspin++;
         system("./pan -m10000 -a -f -N e2 > pan2.out");
         int r2 = system("grep -q -e \"errors: 0\" pan2.out");
         if(r2 == 0)
+        {
+            printf("liveness1");
             reward += 5;
+        }
 
+        
         numofspin++;
         system("./pan -m10000 -a -f -N e3 > pan3.out");
         int r3 = system("grep -q -e \"errors: 0\" pan3.out");
         if(r3 == 0)
+        {
+            printf("liveness2");
             reward += 5;
+        }
 
+        
         if (reward == 20) {
             printprog(candidate->root,0,candidate);
             printprog(org->progs[0]->root,0,org->progs[0]);
@@ -4884,7 +4856,7 @@ int spin_(program* candidate)
             printf("\n");
             right = 1;
         }
-
+        
         if (right == 1) {
             FILE* f;
             char filename[100] = "./output/mutexCorrect";
@@ -4896,9 +4868,171 @@ int spin_(program* candidate)
             }
             fclose(f);
         }
-
+        
         freeAll(org,NULL,NULL,NULL,NULL,1);
     }
-
+    
     return reward;
+}
+
+
+int setTreenodeNum(treenode* root, program* prog, int number)
+{
+    if(root == NULL)
+        return 0;
+    //printf("parent type :%d",prog->parent->type);
+    switch(root->type)
+    {
+        case 0:root->number = number;
+            number ++;
+            number = setCondNum(root->cond1, prog, number);
+            number = setTreenodeNum(root->treenode1, prog, number);
+            break;
+
+        case 1: root->number = number;
+            number ++;
+            number = setCondNum(root->cond1, prog, number);
+            number = setTreenodeNum(root->treenode1, prog, number);
+            break;
+
+        case 3: number = setTreenodeNum(root->treenode1,prog,number);
+            //printf(" ");
+            number = setTreenodeNum(root->treenode2,prog,number);
+            break;
+
+        case 4: root->number = number;
+            number++;
+            number++;
+            setExpNum(root->exp1, prog, number);
+            number++;
+            break;
+        case 5:root->number = number;
+            number++;
+    }
+    return number;
+}
+
+
+int setTreenodeNum_(treenode* root, program* prog, int number_)
+{
+    if(root == NULL)
+        {
+        printf("null root");
+        return number_;
+        }
+    //printf("parent type :%d",prog->parent->type);
+
+	if(root->parent == NULL)
+	{
+		root->number_ = 0;
+		number_ = setTreenodeNum_(root->treenode1,prog,1);
+	}
+	else
+	{
+		if(root->type == 3)
+		{
+			root->number_ = root->parent->number_;
+			number_ = setTreenodeNum_(root->treenode1, prog, number_);
+			number_ = setTreenodeNum_(root->treenode2, prog, number_);
+		}
+		else
+		{
+			int temp = root->parent->number_ + 1;
+			while(temp < number_)
+			{
+				if(root->depth == 2)
+					temp += 7;
+				else if(root->depth == 3)
+					temp += 3;
+				else
+					temp += 1;
+			}
+			root->number_ = temp;
+			number_ = temp + 1;
+			if(root->treenode1 != NULL)
+				number_ = setTreenodeNum_(root->treenode1, prog, number_);
+		}
+	}
+    return number_;
+}
+
+int getConditionId(cond* c)
+{
+	if(c == NULL)
+		return 0;
+	int result = 0;
+	if(c->type <= 2)
+	{
+		result += c->exp1->index * NUM_CONDITION_RIGHT;
+		if(c->exp2->index < 2)
+			result += c->exp2->index + 1;
+		else
+			result += c->exp2->index;
+
+		if(c->type == 2)
+			result += NUM_CONDITION_LEFT * NUM_CONDITION_RIGHT;
+	}
+	else if(c->type <= 4)
+	{
+		int left = getConditionId(c->cond1);
+		int right = getConditionId(c->cond2);
+		int numCondition = NUM_CONDITION_LEFT * 2 * NUM_CONDITION_RIGHT;
+		result += (left - 1) * numCondition + right;
+
+		if(c->type == 4)
+			result += numCondition * numCondition;
+	}
+	return result;
+}
+
+int getTreenodeId(treenode* node)
+{
+	if(node == NULL)
+		return 0;
+	if(node->type == 0)
+		return getConditionId(node->cond1);
+	else if(node->type == 1)
+	{
+		int temp = NUM_CONDITION_LEFT * 2 * NUM_CONDITION_RIGHT;
+		return (getConditionId(node->cond1) + temp + temp * 2 * temp);
+	}
+	else if(node->type == 5)
+		return -1;
+	else if(node->type == 4)
+	{
+		int result = 0;
+		int temp = NUM_CONDITION_LEFT * 2 * NUM_CONDITION_RIGHT;
+		result += (temp + temp * 2 * temp) * 2;
+		result += node->index * NUM_ASSIGNMENT_RIGHT;
+		if(node->exp1->index < 2)
+			result += node->exp1->index + 1;
+		else
+			result += node->exp1->index;
+		return result;
+	}
+}
+
+void genVectorTreenode(treenode* node, int* id)
+{
+	if(node == NULL)
+		return;
+	if(node->number_ > NUM_TREENODE)
+	{
+		printf("Error:treenode number greater than 42!\n");
+		return;
+	}
+	if(node->type != 3)
+		id[node->number_ - 1] = getTreenodeId(node);
+	genVectorTreenode(node->treenode1,id);
+	genVectorTreenode(node->treenode2,id);
+}
+
+int* genVector(program* prog)
+{
+	int *vector = (int*)malloc(sizeof(int) * NUM_TREENODE);
+	int i = 0;
+	for(i = 0;i < NUM_TREENODE;i++)
+		vector[i] = 0;
+	genVectorTreenode(prog->root->treenode1,vector);
+	return vector;
 }

@@ -91,6 +91,7 @@ typedef struct treenode
     int fixed;
     int pc;    //rml
     int number;
+    int number_;
 }treenode;
 
 typedef struct program
@@ -182,6 +183,10 @@ program* copyProgram(program* prog);
 program* genProgram(program* templat,int progid);
 organism* genOrganism(program* template);
 program** genInitTemplate(int num);
+
+//treenode number only
+int* genVector(program* prog);
+int setTreenodeNum(treenode* root, program* prog, int number);
 
 void freeAll(organism* org,program* prog,treenode* t,cond* c,exp_* e,int type);
 int compareTreenode(treenode* t1,treenode* t2);
@@ -276,7 +281,7 @@ extern char *get_time();
 long setConrandom(int a, int b, int c, int d, int e, int f, int g);
 action* setAction(int layer, int actionType);
 program* mutation_(program* candidate0, int nodeNum, int actType,Expr** requirements ,int numofrequirements,double* coef);
-program* initProg(Expr** requirements ,int numofrequirements,double* coef);
+program** initProg(Expr** requirements ,int numofrequirements,double* coef);
 void outputLog_(char* str);
 int mutationCond_(cond* root,program* prog,int type, int action);
 //int* getLegalAction2(program* parent, int nodeNum, int* i_act)

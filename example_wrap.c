@@ -3255,6 +3255,24 @@ program* getCandidate(program** candidate, int i)
 {
     return candidate[i];
 }
+int state_i(int* vector, int i)
+{
+    return vector[i];
+}
+int judgeNULL(treenode* l)
+{
+    if(l == NULL)
+        return 1;
+    else
+        return 0;
+}
+int isNUll(program* p)
+{
+    if(p == NULL)
+        return 0;
+    else
+        return 1;
+}
 
 
   #define SWIG_From_double   PyFloat_FromDouble 
@@ -3681,6 +3699,165 @@ SWIGINTERN PyObject *_wrap_getCandidate(PyObject *SWIGUNUSEDPARM(self), PyObject
   } 
   arg2 = (int)(val2);
   result = (program *)getCandidate(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_program, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_state_i(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int *arg1 = (int *) 0 ;
+  int arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:state_i",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_int, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "state_i" "', argument " "1"" of type '" "int *""'"); 
+  }
+  arg1 = (int *)(argp1);
+  ecode2 = SWIG_AsVal_int(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "state_i" "', argument " "2"" of type '" "int""'");
+  } 
+  arg2 = (int)(val2);
+  result = (int)state_i(arg1,arg2);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_judgeNULL(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  treenode *arg1 = (treenode *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:judgeNULL",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_treenode, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "judgeNULL" "', argument " "1"" of type '" "treenode *""'"); 
+  }
+  arg1 = (treenode *)(argp1);
+  result = (int)judgeNULL(arg1);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_isNUll(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  program *arg1 = (program *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:isNUll",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_program, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "isNUll" "', argument " "1"" of type '" "program *""'"); 
+  }
+  arg1 = (program *)(argp1);
+  result = (int)isNUll(arg1);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_findNode(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  treenode *arg1 = (treenode *) 0 ;
+  program *arg2 = (program *) 0 ;
+  int arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  treenode *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:findNode",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_treenode, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "findNode" "', argument " "1"" of type '" "treenode *""'"); 
+  }
+  arg1 = (treenode *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_program, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "findNode" "', argument " "2"" of type '" "program *""'"); 
+  }
+  arg2 = (program *)(argp2);
+  ecode3 = SWIG_AsVal_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "findNode" "', argument " "3"" of type '" "int""'");
+  } 
+  arg3 = (int)(val3);
+  result = (treenode *)findNode(arg1,arg2,arg3);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_treenode, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_genVector(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  program *arg1 = (program *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:genVector",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_program, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "genVector" "', argument " "1"" of type '" "program *""'"); 
+  }
+  arg1 = (program *)(argp1);
+  result = (int *)genVector(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_copyProgram(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  program *arg1 = (program *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  program *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:copyProgram",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_program, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "copyProgram" "', argument " "1"" of type '" "program *""'"); 
+  }
+  arg1 = (program *)(argp1);
+  result = (program *)copyProgram(arg1);
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_program, 0 |  0 );
   return resultobj;
 fail:
@@ -4129,7 +4306,7 @@ SWIGINTERN PyObject *_wrap_initProg(PyObject *SWIGUNUSEDPARM(self), PyObject *ar
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
-  program *result = 0 ;
+  program **result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"OOO:initProg",&obj0,&obj1,&obj2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_p_Expr, 0 |  0 );
@@ -4147,8 +4324,8 @@ SWIGINTERN PyObject *_wrap_initProg(PyObject *SWIGUNUSEDPARM(self), PyObject *ar
     SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "initProg" "', argument " "3"" of type '" "double *""'"); 
   }
   arg3 = (double *)(argp3);
-  result = (program *)initProg(arg1,arg2,arg3);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_program, 0 |  0 );
+  result = (program **)initProg(arg1,arg2,arg3);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_p_program, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -4301,6 +4478,12 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"getCheckedBySpin", _wrap_getCheckedBySpin, METH_VARARGS, NULL},
 	 { (char *)"getroot", _wrap_getroot, METH_VARARGS, NULL},
 	 { (char *)"getCandidate", _wrap_getCandidate, METH_VARARGS, NULL},
+	 { (char *)"state_i", _wrap_state_i, METH_VARARGS, NULL},
+	 { (char *)"judgeNULL", _wrap_judgeNULL, METH_VARARGS, NULL},
+	 { (char *)"isNUll", _wrap_isNUll, METH_VARARGS, NULL},
+	 { (char *)"findNode", _wrap_findNode, METH_VARARGS, NULL},
+	 { (char *)"genVector", _wrap_genVector, METH_VARARGS, NULL},
+	 { (char *)"copyProgram", _wrap_copyProgram, METH_VARARGS, NULL},
 	 { (char *)"spin_", _wrap_spin_, METH_VARARGS, NULL},
 	 { (char *)"getLegalAction2", _wrap_getLegalAction2, METH_VARARGS, NULL},
 	 { (char *)"mutation1", _wrap_mutation1, METH_VARARGS, NULL},

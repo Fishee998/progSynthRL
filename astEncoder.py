@@ -67,7 +67,7 @@ def getAstDict():
                 children_ = children_.split(';')
                 for child in children_:
                     if child != '':
-                        nodeDict['children'].append(child)
+                        nodeDict['children'].append(int(child))
             else:
                 nodeDict['children'] = []
             nodeDict['numOfChildren'] = len(nodeDict['children'])
@@ -257,19 +257,6 @@ def setAction1s(info_):
             if a != 0 and info_.ast[a]['name'] in treenode:
                 astActNodes[astActNodes.index(index)] = a
     act1_index = astActNodes
-    '''
-    for index in info_.astActNodes:
-        a = int(index)
-        if a != 0 and info_.ast[a]['name'] not in treenode:
-            info_.astActNodes[info_.astActNodes.index(index)] = 0
-        else:
-            if a != 0 and info_.ast[a]['name'] in treenode:
-                info_.astActNodes[info_.astActNodes.index(index)] = a
-    # info_.actIndex = actIndex
-    act1_index = info_.astActNodes
-    
-    act1_index.append(astActNodes)
-    '''
     return act1_index
 
 

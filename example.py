@@ -160,6 +160,30 @@ def getCandidate(candidate, i):
     return _example.getCandidate(candidate, i)
 getCandidate = _example.getCandidate
 
+def state_i(vector, i):
+    return _example.state_i(vector, i)
+state_i = _example.state_i
+
+def judgeNULL(l):
+    return _example.judgeNULL(l)
+judgeNULL = _example.judgeNULL
+
+def isNUll(p):
+    return _example.isNUll(p)
+isNUll = _example.isNUll
+
+def findNode(root, prog, num):
+    return _example.findNode(root, prog, num)
+findNode = _example.findNode
+
+def genVector(prog):
+    return _example.genVector(prog)
+genVector = _example.genVector
+
+def copyProgram(prog):
+    return _example.copyProgram(prog)
+copyProgram = _example.copyProgram
+
 def spin_(candidate):
     return _example.spin_(candidate)
 spin_ = _example.spin_
