@@ -36,7 +36,7 @@ class DeepQNetwork:
             replace_target_iter=10,
             memory_size=100,
             batch_size=32,
-            e_greedy_increment=0.001,
+            e_greedy_increment=0.0001,
             output_graph=False,
     ):
         self.n_actions1 = n_actions1
@@ -82,7 +82,7 @@ class DeepQNetwork:
         # self.s_ = tf.placeholder(tf.float32, [None, self.n_features], name='s_')    # input
         self.nodes_ = tf.placeholder(tf.float32, shape=(None, None, self.n_features), name='node_')
         self.children_ = tf.placeholder(tf.int32, shape=(None, None, None), name='children_')
-        self.action1_ = tf.placeholder(tf.float32, shape=(None, 42), name='action1_')
+        self.action1_ = tf.placeholder(tf.float32, shape=(None, 135), name='action1_')
         with tf.variable_scope('target_net'):
             # c_names(collections_names) are the collections to store variables
             c_names = ['target_net_params', tf.GraphKeys.GLOBAL_VARIABLES]
@@ -96,14 +96,14 @@ class DeepQNetwork:
 
             # second layer. collections is used later when assign to target net
             with tf.variable_scope('l2_1'):
-                self.q_next1 = self.hidden_layer(pooling2, 142, self.n_actions1)
+                self.q_next1 = self.hidden_layer(pooling2, 235, self.n_actions1)
 
 
         # ------------------ build evaluate_net ------------------
 
         self.nodes = tf.placeholder(tf.float32, shape=(None, None, self.n_features), name='node')
         self.children = tf.placeholder(tf.int32, shape=(None, None, None), name='children')
-        self.action1 = tf.placeholder(tf.float32, shape=(None, 42), name='action1')
+        self.action1 = tf.placeholder(tf.float32, shape=(None, 135), name='action1')
 
         self.q_target1 = tf.placeholder(tf.float32, [None, self.n_actions1], name='Q_target')
         # for calculating loss
@@ -122,7 +122,7 @@ class DeepQNetwork:
 
             # second layer. collections is used later when assign to target net
             with tf.variable_scope('l2_1'):
-                self.q_eval1 = self.hidden_layer(pooling, 142, self.n_actions1)
+                self.q_eval1 = self.hidden_layer(pooling, 235, self.n_actions1)
 
         with tf.variable_scope('loss'):
             self.loss = tf.reduce_mean(tf.squared_difference(self.q_target1, self.q_eval1))
@@ -204,15 +204,15 @@ class DeepQNetwork:
             index += 1
         return action2Seleced
 
-    def getAction1(self, act1Set, action1_value):
-        action1Set = np.nonzero(act1Set)[0]
+    def getAction(self, actSet, action1_value):
+        action1Set = np.nonzero(actSet)
         action1_prob = []
         for index in action1Set:
             action1_prob.append(action1_value[0][index])
         action1 = np.argmax(action1_prob)
-        action1 = action1Set[action1]
-        real_action = act1Set[action1]
-        return action1, real_action
+        action = action1Set[action1]
+        real_action = actSet[action1]
+        return action, real_action
         # no restrict
         # action1 = np.argmax(action1_value[0])
 
@@ -250,6 +250,25 @@ class DeepQNetwork:
         return action
 
     def getAction1(self,candidate, act1Set, action1, action1_value):
+        action1s = np.nonzero(act1Set[:-1])
+        # act1Set[action1 - 1] != 0 and
+        '''
+        if act1Set[action1 - 1] != -1 and act1Set[action1 - 1] != 0:
+            action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
+            # actions = action2set
+            actions = np.append(action1s, action2set)
+        else:
+            actions = action1s
+        '''
+        actions = action1s[0]
+        action1_prob = []
+        for index in actions:
+            action1_prob.append(action1_value[0][index])
+        action1 = np.argmax(action1_prob)
+        action = actions[action1]
+        return action
+
+    def getChoosenActions(self, candidate, act1Set, action1):
         action1s = np.nonzero(act1Set)[0]
         # act1Set[action1 - 1] != 0 and
         if act1Set[action1 - 1] != -1 and act1Set[action1 - 1] != 0:
@@ -259,18 +278,13 @@ class DeepQNetwork:
         else:
             actions = action1s
 
-        actions = actions.flatten()
-        action1_prob = []
-        for index in actions:
-            action1_prob.append(action1_value[0][index])
-        action1 = np.argmax(action1_prob)
-        action = actions[action1]
-        return action
+        return actions
 
     def getAction_random(self, candidate, act1Set, action1):
         # print("act1Set", act1Set)
-        action1s = np.nonzero(act1Set)
+        action1s = np.nonzero(act1Set[:-1])
         action1 = int(action1)
+        '''
         # (act1Set[action1-1] != 0)
         if act1Set[action1 - 1] != 0 and act1Set[action1 - 1] != -1:
             # action2 = np.array(range(42, 92))
@@ -280,14 +294,15 @@ class DeepQNetwork:
         else:
             actions = action1s[0]
         actions = actions.flatten()
+        '''
         # actions = np.append(action1s, action2set)
-        action = random.choice(actions)
+        action = random.choice(action1s[0])
 
         # real_action = act1Set[action1]
         return action
 
-    def choose_action(self, observation,  action1, nodes, children1, onehotaction1, candidate):
-        observation = observation[np.newaxis, :]
+    def choose_action(self, action1, nodes, children1, onehotaction1, candidate):
+        #observation = observation[np.newaxis, :]
         action_value = action1
         if np.random.uniform() < self.epsilon:
             action1_ = []
@@ -295,20 +310,19 @@ class DeepQNetwork:
             nodes, children1 = self._pad_batch_(nodes, children1)
 
             actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.nodes: nodes, self.children: children1, self.action1: action1_})
-            action = self.getAction1(candidate, observation[0][:-93], int(action1), actions_value1)
+            action = self.getAction1(candidate, onehotaction1[42:], int(action1), actions_value1)
         else:
             # print("choose by random")
-            action = self.getAction_random(candidate, observation[0][:-93], int(action1))
+            action = self.getAction_random(candidate, onehotaction1[42:], int(action1))
         action = int(action)
         action_store = action
         if action < 42:
             action = action + 1
-            action_value = observation[0][action - 1]
         else:
-            action_store = action
+            #action_store = action
             action = action - 42
 
-        return action, action_value, action_store
+        return action, action_store
 
     def _pad_batch_(self, nodes1, children1):
         nodes = []
@@ -434,9 +448,22 @@ class DeepQNetwork:
                     self.action1_: action1_,
                 })
 
-            q_target1 = q_eval1[:]
+            q_target1 = q_eval1.copy()
+
+            #q_target1 = q_eval1[:]
             batch_index = np.arange(self.batch_size, dtype=np.int32)
-            q_target1[batch_index, action] = reward + self.gamma * np.max(q_next1, axis=1)
+
+            q_next1_ = []
+            for index in range(self.batch_size):
+                actionchoosen = action1[index][42:][:-1]
+                actions = np.nonzero(actionchoosen)
+                action1_prob = []
+                for index1 in actions[0]:
+                    action1_prob.append(q_next1[index][index1])
+                bestReward = np.max(action1_prob)
+                q_next1_.append(bestReward)
+
+            q_target1[batch_index, action] = reward + self.gamma * np.array(q_next1_)
 
             # train eval network
             _, self.cost = self.sess.run([self._train_op, self.loss],
@@ -448,8 +475,13 @@ class DeepQNetwork:
             self.cost_his.append(self.cost)
 
         # increasing epsilon
-        self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max else self.epsilon_max
+        if self.epsilon < self.epsilon_max:
+            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter %10 == 0 else self.epsilon
+        else:
+            self.epsilon = self.epsilon_max
         self.learn_step_counter += 1
+        #self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max else self.epsilon_max
+        #self.learn_step_counter += 1
 
 
     def plot_cost(self):
@@ -703,8 +735,8 @@ class DeepQNetwork:
         #one_hot_action1 = [one_hot_action1]
         return np.array(one_hot_action1)
 
-    def one_hot_action2(self,action2):
-        one_hot_action2 = np.zeros(50)
+    def one_hot_actionchsen(self,action2):
+        one_hot_action2 = np.zeros(92)
         for i in action2:
             one_hot_action2[i] = 1
         return one_hot_action2
