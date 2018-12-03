@@ -5,7 +5,7 @@ from gym import spaces
 from gym.utils import seeding
 import numpy as np
 import math
-candidate_num = 10
+candidate_num = 1
 import StringIO
 class Maze(object):
 
@@ -114,10 +114,10 @@ class Maze(object):
             self.spin_used = 1
             spin_reward = example.spin_(candidate_)
             if spin_reward == 5:
-                reward = reward - 0.3
+                reward = reward + 0.3
             else:
                 if spin_reward == 10:
-                    reward = reward - 0.15
+                    reward = reward + 0.6
                 else:
                     if spin_reward == 20:
                         done = True
@@ -129,7 +129,7 @@ class Maze(object):
         if not done:
             reward = reward - 0.1
 
-        print("action", action, "reward", reward, "fitness", newfitnessValue, "spin used", self.spin_used)
+        # print("action", action, "reward", reward, "fitness", newfitnessValue, "spin used", self.spin_used)
 
         return reward, done, self
 

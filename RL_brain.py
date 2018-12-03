@@ -450,7 +450,6 @@ class DeepQNetwork:
 
             q_target1 = q_eval1.copy()
 
-            #q_target1 = q_eval1[:]
             batch_index = np.arange(self.batch_size, dtype=np.int32)
 
             q_next1_ = []
@@ -529,7 +528,7 @@ class DeepQNetwork:
                 tf.summary.histogram('weights', [weights])
                 tf.summary.histogram('biases', [biases])
 
-            return tf.nn.tanh(tf.matmul(pooled, weights) + biases)
+            return tf.nn.softmax(tf.matmul(pooled, weights) + biases)
 
 
     def conv_step(self, nodes, children, feature_size, w_t, w_r, w_l, b_conv):

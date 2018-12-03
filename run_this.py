@@ -13,7 +13,7 @@ os.environ['LD_LIBRARY_PATH'] = '/usr/local/cuda-9.0/lib64'
 os.environ['CUDA_HOME'] = '/usr/local/cuda-9.0'
 os.environ["CUDA_VISIBLE_DEVICES"]= '0'
 
-candidate_num = 10
+candidate_num = 1
 target_reward = 80
 def run_maze():
     step = 0
@@ -21,16 +21,16 @@ def run_maze():
     step_good = 0
     done = False
     buf = StringIO.StringIO()
+    start = time.time()
     for episode in range(30000):
-        start = time.time()
         # initial observation
-
+        candidate_max = info_.maxCandidate
         info_ = env.reset()
         # actIndex = astEncoder.setAction1s(info_)
         reward_cum = 0
-
+        if episode > 0:
+            info_ = env.reset_1(info_, candidate_max)
         for t in range(300):
-
             # RL choose action based on observation
             for index in range(candidate_num):
                 example.printAst(info_.candidate_[index])
@@ -48,8 +48,6 @@ def run_maze():
                     (np.concatenate((one_hot_action1, one_hot_actionchoosen), axis=0), [fitness / 100.00]), axis=0)
 
                 # RL choose action based on observation
-
-
                 action, action_store = RL.choose_action(action1, nodes, children,one_hot_act1chsn,info_.candidate_[index])
 
                 if action_store < 42:
