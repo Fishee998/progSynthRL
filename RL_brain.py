@@ -93,11 +93,9 @@ class DeepQNetwork:
                 pooling2 = self.pooling_layer(conv2)
                 self.pooling2 = pooling2 = tf.concat((pooling2, self.action1_), axis=1)
 
-
             # second layer. collections is used later when assign to target net
             with tf.variable_scope('l2_1'):
                 self.q_next1 = self.hidden_layer(pooling2, 235, self.n_actions1)
-
 
         # ------------------ build evaluate_net ------------------
 
@@ -421,11 +419,11 @@ class DeepQNetwork:
 
         # sample batch memory from all memory
         if self.memory_counter > self.memory_size:
-            sample_index_good = np.random.choice(self.memory_size_good, size=self.batch_size / 2)
-            sample_index = np.random.choice(self.memory_size, size=self.batch_size / 2)
+            sample_index_good = np.random.choice(self.memory_size_good, size=self.batch_size - 16)
+            sample_index = np.random.choice(self.memory_size, size=16)
         else:
-            sample_index_good = np.random.choice(self.memory_size_good, size=self.batch_size / 2)
-            sample_index = np.random.choice(self.memory_size, size=self.batch_size / 2)
+            sample_index_good = np.random.choice(self.memory_size_good, size=self.batch_size -16)
+            sample_index = np.random.choice(self.memory_size, size=16)
 
         batch_memory = []
         for index in sample_index:
@@ -528,7 +526,7 @@ class DeepQNetwork:
                 tf.summary.histogram('weights', [weights])
                 tf.summary.histogram('biases', [biases])
 
-            return tf.nn.softmax(tf.matmul(pooled, weights) + biases)
+            return tf.nn.sigmoid(tf.matmul(pooled, weights) + biases)
 
 
     def conv_step(self, nodes, children, feature_size, w_t, w_r, w_l, b_conv):
@@ -728,7 +726,7 @@ class DeepQNetwork:
             # NOTE: tf < 1.1 contains a bug that makes backprop not work for this!
             return tf.gather_nd(vector_lookup, children, name='children')
 
-    def one_hot_action1(self,action1):
+    def one_hot_action1(self, action1):
         one_hot_action1 = np.zeros(42)
         one_hot_action1[action1 - 1] = 1
         #one_hot_action1 = [one_hot_action1]

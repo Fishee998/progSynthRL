@@ -22,17 +22,20 @@ def run_maze():
     done = False
     buf = StringIO.StringIO()
     start = time.time()
-    for episode in range(30000):
+    info_ = env.reset()
+    for episode in range(1000):
         # initial observation
         candidate_max = info_.maxCandidate
+        candidate_spin = info_.candidate_spin
+        state_spin = info_.state_spin
         info_ = env.reset()
         # actIndex = astEncoder.setAction1s(info_)
         reward_cum = 0
         if episode > 0:
-            info_ = env.reset_1(info_, candidate_max)
+            info_ = env.reset_1(info_, candidate_max, candidate_spin, state_spin)
         for t in range(300):
             # RL choose action based on observation
-            for index in range(candidate_num):
+            for index in range(len(info_.state_)):
                 example.printAst(info_.candidate_[index])
                 ast = astEncoder.getAstDict()
                 nodes, children = sampling.gen_samples1(ast, embeddings, embed_lookup)
@@ -98,7 +101,7 @@ def run_maze():
                 reward_cum += reward
 
 
-                if (step_good > 100) and (step % 2 == 0):
+                if (step_good > 100) and (step_good % 2 == 0):
                     RL.learn()
 
                 # swap observation
@@ -126,9 +129,9 @@ if __name__ == "__main__":
     RL = DeepQNetwork(env.action_space.n,
                       # env.action_space.spaces[1].n,
                       10,
-                      learning_rate=0.01,
+                      learning_rate=0.001,
                       reward_decay=0.8,
-                      e_greedy=0.9,
+                      e_greedy=0.8,
                       replace_target_iter=10,
                       memory_size=100,
                       # output_graph=True

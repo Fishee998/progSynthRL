@@ -29,12 +29,15 @@ class Maze(object):
         self.legal_action = 0
         self.maxCandidate = None
         self.maxFitness = 0
+        self.state_spin = []
+        self.candidate_spin = []
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
     def step(self, action, index):
+
         done = False
         self.spin_used = 0
         assert self.action_space.contains(action[0] + action[1]), "%r (%s) invalid" % (action, type(action))
@@ -65,7 +68,9 @@ class Maze(object):
                     example.freeAll(None, self.maxCandidate, None, None, None, 2)
                 maxCandidate = example.copyProgram(candidate_)
                 self.maxCandidate = maxCandidate
-
+                print("max candidate", self.maxFitness)
+                #self.state_spin.append(self.state_[index])
+                #self.candidate_spin.append(example.copyProgram(self.candidate_[index]))
 
             self.fitness_.append(newfitnessValue)
 
@@ -110,14 +115,21 @@ class Maze(object):
                     reward = 0
 
         if newfitnessValue > 78.4:
+            if len(self.spin) > 0:
+                for stae in self.state_spin:
+                    if (self.state_[index] == stae).all() == False:
+                        self.state_spin.append(self.state_[index])
+                        self.candidate_spin.append(example.copyProgram(self.candidate_[index]))
+                    else:
+                        reward = reward - 1
             print("???")
             self.spin_used = 1
             spin_reward = example.spin_(candidate_)
             if spin_reward == 5:
-                reward = reward + 0.3
+                print("liveness")
             else:
                 if spin_reward == 10:
-                    reward = reward + 0.6
+                    print("safety")
                 else:
                     if spin_reward == 20:
                         done = True
@@ -126,10 +138,10 @@ class Maze(object):
             reward = 1
             print("done")
 
-        if not done:
-            reward = reward - 0.1
+        #if not done:
+         #   reward = reward - 0.5
 
-        # print("action", action, "reward", reward, "fitness", newfitnessValue, "spin used", self.spin_used)
+        print("action", action, "reward", reward, "fitness", newfitnessValue, "spin used", self.spin_used)
 
         return reward, done, self
 
@@ -140,7 +152,7 @@ class Maze(object):
         self.candidate_ = []
         self.state_ = []
         candidates = prog.initProg()
-        for index in range(candidate_num):
+        for index in range(len(self.state_)):
             candidate = example.getCandidate(candidates, index)
             self.candidate_.append(candidate)
             state = self.getstate(candidate)
@@ -159,11 +171,14 @@ class Maze(object):
         self.state_.append(np.array(state))
         return self
 
-    def reset_1(self, info_, candidate):
-        example.freeAll(None, info_.candidate_[0], None, None, None, 2)
-        info_.candidate_[0] = example.copyProgram(candidate)
+    def reset_1(self, info_, candidate, candidate_spin, state_spin):
+        info_.candidate_.append(example.copyProgram(candidate))
         state = info_.getstate(candidate)
-        info_.state_[0] = np.array(state)
+        info_.state_.append(np.array(state))
+        for i in range(len(state_spin)):
+            info_.candidate_.append(example.copyProgram(candidate_spin[i]))
+            info_.state_.append(state_spin[i])
+
         return info_
 
     def getstate(self, candidate):
