@@ -2,11 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4036df4a-59fb-4120-a525-90ad490395ee" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ICM.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RL_brain.py" afterPath="$PROJECT_DIR$/RL_brain.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/ast.txt" afterPath="$PROJECT_DIR$/data/ast.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/log.txt" afterPath="$PROJECT_DIR$/log.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/maze_env.py" afterPath="$PROJECT_DIR$/maze_env.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mutex.pml.trail" afterPath="$PROJECT_DIR$/mutex.pml.trail" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/mutex.pml" afterPath="$PROJECT_DIR$/output/mutex.pml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan" afterPath="$PROJECT_DIR$/pan" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan.b" afterPath="$PROJECT_DIR$/pan.b" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan.c" afterPath="$PROJECT_DIR$/pan.c" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan.h" afterPath="$PROJECT_DIR$/pan.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan.m" afterPath="$PROJECT_DIR$/pan.m" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan.t" afterPath="$PROJECT_DIR$/pan.t" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan1.out" afterPath="$PROJECT_DIR$/pan1.out" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan2.out" afterPath="$PROJECT_DIR$/pan2.out" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pan3.out" afterPath="$PROJECT_DIR$/pan3.out" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/run_this.py" afterPath="$PROJECT_DIR$/run_this.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,16 +30,16 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/5_Deep_Q_Network$run_this.coverage" NAME="run_this Coverage Results" MODIFIED="1540177958805" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/progSynthRL_conv$run_this.coverage" NAME="run_this Coverage Results" MODIFIED="1543926460014" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/progSynthRL_conv$run_this.coverage" NAME="run_this Coverage Results" MODIFIED="1544514883211" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/progSynthRL$run_this.coverage" NAME="run_this Coverage Results" MODIFIED="1541677406571" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="run_this.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="run_this.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_this.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="599">
-              <caret line="34" column="27" lean-forward="false" selection-start-line="34" selection-start-column="27" selection-end-line="34" selection-end-column="27" />
+            <state relative-caret-position="177">
+              <caret line="39" column="41" lean-forward="false" selection-start-line="39" selection-start-column="41" selection-end-line="39" selection-end-column="41" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
               </folding>
@@ -35,21 +47,41 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="example.c" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/example.c">
+      <file leaf-file-name="ast.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data/ast.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="146">
-              <caret line="4746" column="26" lean-forward="false" selection-start-line="4746" selection-start-column="26" selection-end-line="4746" selection-end-column="26" />
+            <state relative-caret-position="-226">
+              <caret line="8" column="21" lean-forward="false" selection-start-line="8" selection-start-column="21" selection-end-line="8" selection-end-column="21" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sampling.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/classifier/tbcnn/sampling.py">
+      <file leaf-file-name="session.py" pinned="false" current-in-tab="false">
+        <entry file="file:///Library/Python/2.7/site-packages/tensorflow/python/client/session.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="620">
-              <caret line="33" column="4" lean-forward="false" selection-start-line="33" selection-start-column="4" selection-end-line="33" selection-end-column="4" />
+            <state relative-caret-position="118">
+              <caret line="1095" column="0" lean-forward="false" selection-start-line="1095" selection-start-column="0" selection-end-line="1095" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pydevd.py" pinned="false" current-in-tab="false">
+        <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="111">
+              <caret line="1025" column="0" lean-forward="false" selection-start-line="1025" selection-start-column="0" selection-end-line="1025" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="example.c" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/example.c">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-2953">
+              <caret line="1836" column="15" lean-forward="true" selection-start-line="1836" selection-start-column="15" selection-end-line="1836" selection-end-column="15" />
               <folding />
             </state>
           </provider>
@@ -58,34 +90,31 @@
       <file leaf-file-name="RL_brain.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/RL_brain.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="296">
-              <caret line="474" column="0" lean-forward="false" selection-start-line="474" selection-start-column="0" selection-end-line="474" selection-end-column="0" />
+            <state relative-caret-position="41">
+              <caret line="585" column="56" lean-forward="false" selection-start-line="585" selection-start-column="56" selection-end-line="585" selection-end-column="56" />
               <folding>
-                <element signature="e#260#289#0" expanded="true" />
+                <element signature="e#260#285#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="random.py" pinned="false" current-in-tab="false">
-        <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/random.py">
+      <file leaf-file-name="tensor_shape.py" pinned="false" current-in-tab="false">
+        <entry file="file:///Library/Python/2.7/site-packages/tensorflow/python/framework/tensor_shape.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17660">
-              <caret line="890" column="0" lean-forward="false" selection-start-line="890" selection-start-column="0" selection-end-line="890" selection-end-column="0" />
+            <state relative-caret-position="168">
+              <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="prog.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/prog.py">
+      <file leaf-file-name="variable_scope.py" pinned="false" current-in-tab="false">
+        <entry file="file:///Library/Python/2.7/site-packages/tensorflow/python/ops/variable_scope.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="500">
-              <caret line="26" column="4" lean-forward="false" selection-start-line="26" selection-start-column="4" selection-end-line="26" selection-end-column="4" />
-              <folding>
-                <marker date="1541656949534" expanded="true" signature="273:321" ph="..." />
-                <marker date="1541656949534" expanded="true" signature="931:1059" ph="..." />
-              </folding>
+            <state relative-caret-position="168">
+              <caret line="729" column="0" lean-forward="false" selection-start-line="729" selection-start-column="0" selection-end-line="729" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -93,8 +122,8 @@
       <file leaf-file-name="maze_env.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/maze_env.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-703">
-              <caret line="72" column="88" lean-forward="false" selection-start-line="72" selection-start-column="88" selection-end-line="72" selection-end-column="88" />
+            <state relative-caret-position="-942">
+              <caret line="118" column="0" lean-forward="false" selection-start-line="118" selection-start-column="0" selection-end-line="118" selection-end-column="0" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -102,11 +131,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ops.py" pinned="false" current-in-tab="false">
-        <entry file="file:///Library/Python/2.7/site-packages/tensorflow/python/framework/ops.py">
+      <file leaf-file-name="astEncoder.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/astEncoder.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8800">
-              <caret line="474" column="0" lean-forward="false" selection-start-line="474" selection-start-column="0" selection-end-line="474" selection-end-column="0" />
+            <state relative-caret-position="50">
+              <caret line="47" column="4" lean-forward="false" selection-start-line="47" selection-start-column="4" selection-end-line="47" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -114,14 +143,16 @@
       </file>
     </leaf>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>treenode number greater than 42!</find>
-      <find>mutation</find>
-      <find>legalAction2 action1 error</find>
       <find>setA</find>
-      <find>printAst</find>
-      <find>newprintprog</find>
       <find>number</find>
       <find>findNo</find>
       <find>find</find>
@@ -143,9 +174,14 @@
       <find>learn</find>
       <find>???</find>
       <find>choose</find>
-      <find>hidden</find>
       <find>initP</find>
+      <find>null candidate</find>
       <find>candidate_num</find>
+      <find>hidden</find>
+      <find>one_</find>
+      <find>cost_his</find>
+      <find>printAst</find>
+      <find>newprintprog</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -159,10 +195,11 @@
         <option value="$PROJECT_DIR$/example.h" />
         <option value="$PROJECT_DIR$/classifier/tbcnn/sampling.py" />
         <option value="$PROJECT_DIR$/data/ast.txt" />
-        <option value="$PROJECT_DIR$/RL_brain.py" />
         <option value="$PROJECT_DIR$/example.c" />
-        <option value="$PROJECT_DIR$/run_this.py" />
         <option value="$PROJECT_DIR$/maze_env.py" />
+        <option value="$PROJECT_DIR$/ICM.py" />
+        <option value="$PROJECT_DIR$/RL_brain.py" />
+        <option value="$PROJECT_DIR$/run_this.py" />
       </list>
     </option>
   </component>
@@ -180,8 +217,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
-    <option name="width" value="1440" />
-    <option name="height" value="900" />
+    <option name="x" value="77" />
+    <option name="y" value="27" />
+    <option name="width" value="1253" />
+    <option name="height" value="797" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -199,8 +238,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -212,6 +251,11 @@
               <item name="progSynthRL_conv" type="b2602c69:ProjectViewProjectNode" />
               <item name="progSynthRL_conv" type="462c0819:PsiDirectoryNode" />
               <item name="data" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="progSynthRL_conv" type="b2602c69:ProjectViewProjectNode" />
+              <item name="progSynthRL_conv" type="462c0819:PsiDirectoryNode" />
+              <item name="output" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -283,7 +327,7 @@
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10443491" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10586552" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -293,7 +337,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.44377267" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29262394" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -336,7 +380,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/maze_env.py</url>
-          <line>170</line>
+          <line>189</line>
           <option name="timeStamp" value="204" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -346,13 +390,23 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/maze_env.py</url>
+          <line>133</line>
+          <option name="timeStamp" value="356" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/maze_env.py</url>
+          <line>118</line>
+          <option name="timeStamp" value="357" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/maze_env.py</url>
           <line>124</line>
-          <option name="timeStamp" value="298" />
+          <option name="timeStamp" value="358" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/run_this.py</url>
-          <line>34</line>
-          <option name="timeStamp" value="346" />
+          <line>39</line>
+          <option name="timeStamp" value="381" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -362,7 +416,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="347" />
+      <option name="time" value="382" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
@@ -370,29 +424,12 @@
         <watch expression="q_target1" language="Python" />
         <watch expression="batch_index" language="Python" />
         <watch expression="x" language="Python" />
+        <watch expression="pool" language="Python" />
+        <watch expression="inverse1" language="Python" />
       </configuration>
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/astEncoder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="421">
-          <caret line="272" column="0" lean-forward="false" selection-start-line="272" selection-start-column="0" selection-end-line="272" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="34" column="7" lean-forward="false" selection-start-line="34" selection-start-column="7" selection-end-line="34" selection-end-column="7" />
-          <folding>
-            <marker date="1541656949534" expanded="true" signature="273:321" ph="..." />
-            <marker date="1541656949534" expanded="true" signature="931:1059" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/example.c">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="292">
@@ -426,7 +463,7 @@
         <state relative-caret-position="647">
           <caret line="271" column="19" lean-forward="true" selection-start-line="271" selection-start-column="19" selection-end-line="271" selection-end-column="19" />
           <folding>
-            <element signature="e#260#289#0" expanded="true" />
+            <element signature="e#260#285#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -467,7 +504,7 @@
         <state relative-caret-position="4680">
           <caret line="234" column="0" lean-forward="false" selection-start-line="234" selection-start-column="0" selection-end-line="234" selection-end-column="0" />
           <folding>
-            <element signature="e#260#289#0" expanded="true" />
+            <element signature="e#260#285#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -556,13 +593,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///Library/Python/2.7/site-packages/tensorflow/python/framework/tensor_shape.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="737" column="0" lean-forward="false" selection-start-line="737" selection-start-column="0" selection-end-line="737" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///Library/Python/2.7/site-packages/tensorflow/python/ops/gen_array_ops.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="61540">
@@ -622,13 +652,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="83">
-          <caret line="1025" column="0" lean-forward="false" selection-start-line="1025" selection-start-column="0" selection-end-line="1025" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Makefile">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -650,26 +673,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/astEncoder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="75" column="0" lean-forward="false" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/example.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="193">
           <caret line="183" column="31" lean-forward="false" selection-start-line="183" selection-start-column="20" selection-end-line="183" selection-end-column="31" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/ast.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="8" column="21" lean-forward="false" selection-start-line="8" selection-start-column="21" selection-end-line="8" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -699,14 +707,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="620">
           <caret line="33" column="4" lean-forward="false" selection-start-line="33" selection-start-column="4" selection-end-line="33" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///Library/Python/2.7/site-packages/tensorflow/python/client/session.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="888" column="0" lean-forward="false" selection-start-line="888" selection-start-column="0" selection-end-line="888" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -745,41 +745,97 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/RL_brain.py">
+    <entry file="file://$PROJECT_DIR$/ICM.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="296">
-          <caret line="474" column="0" lean-forward="false" selection-start-line="474" selection-start-column="0" selection-end-line="474" selection-end-column="0" />
-          <folding>
-            <element signature="e#260#289#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/example.c">
+    <entry file="file:///Library/Python/2.7/site-packages/tensorflow/python/framework/tensor_shape.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="146">
-          <caret line="4746" column="26" lean-forward="false" selection-start-line="4746" selection-start-column="26" selection-end-line="4746" selection-end-column="26" />
+        <state relative-caret-position="168">
+          <caret line="31" column="0" lean-forward="false" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Library/Python/2.7/site-packages/tensorflow/python/ops/variable_scope.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="729" column="0" lean-forward="false" selection-start-line="729" selection-start-column="0" selection-end-line="729" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/maze_env.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-703">
-          <caret line="72" column="88" lean-forward="false" selection-start-line="72" selection-start-column="88" selection-end-line="72" selection-end-column="88" />
+        <state relative-caret-position="-942">
+          <caret line="118" column="0" lean-forward="false" selection-start-line="118" selection-start-column="0" selection-end-line="118" selection-end-column="0" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="111">
+          <caret line="1025" column="0" lean-forward="false" selection-start-line="1025" selection-start-column="0" selection-end-line="1025" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Library/Python/2.7/site-packages/tensorflow/python/client/session.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="118">
+          <caret line="1095" column="0" lean-forward="false" selection-start-line="1095" selection-start-column="0" selection-end-line="1095" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/RL_brain.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="41">
+          <caret line="585" column="56" lean-forward="false" selection-start-line="585" selection-start-column="56" selection-end-line="585" selection-end-column="56" />
+          <folding>
+            <element signature="e#260#285#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/ast.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-226">
+          <caret line="8" column="21" lean-forward="false" selection-start-line="8" selection-start-column="21" selection-end-line="8" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/run_this.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="599">
-          <caret line="34" column="27" lean-forward="false" selection-start-line="34" selection-start-column="27" selection-end-line="34" selection-end-column="27" />
+        <state relative-caret-position="177">
+          <caret line="39" column="41" lean-forward="false" selection-start-line="39" selection-start-column="41" selection-end-line="39" selection-end-column="41" />
           <folding>
             <element signature="e#0#25#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/astEncoder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="50">
+          <caret line="47" column="4" lean-forward="false" selection-start-line="47" selection-start-column="4" selection-end-line="47" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/example.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2953">
+          <caret line="1836" column="15" lean-forward="true" selection-start-line="1836" selection-start-column="15" selection-end-line="1836" selection-end-column="15" />
+          <folding />
         </state>
       </provider>
     </entry>

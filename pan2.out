@@ -1,5 +1,5 @@
 pan: ltl formula e2
-pan:1: acceptance cycle (at depth 226)
+pan:1: acceptance cycle (at depth 112)
 pan: wrote mutex.pml.trail
 
 (Spin Version 6.4.8 -- 2 March 2018)
@@ -12,15 +12,15 @@ Full statespace search for:
 	acceptance   cycles 	+ (fairness enabled)
 	invalid end states	- (disabled by never claim)
 
-State-vector 36 byte, depth reached 275, errors: 1
-      123 states, stored (192 visited)
-       37 states, matched
-      229 transitions (= visited+matched)
+State-vector 36 byte, depth reached 113, errors: 1
+       57 states, stored (58 visited)
+        4 states, matched
+       62 transitions (= visited+matched)
         0 atomic steps
 hash conflicts:         0 (resolved)
 
 Stats on memory usage (in Megabytes):
-    0.008	equivalent memory usage for states (stored*(State-vector + overhead))
+    0.003	equivalent memory usage for states (stored*(State-vector + overhead))
     0.282	actual memory usage for states
   128.000	memory used for hash table (-w24)
     0.534	memory used for DFS stack (-m10000)

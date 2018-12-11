@@ -9,12 +9,9 @@ Using:
 Tensorflow: 1.0
 gym: 0.7.3
 """
-from collections import deque
-from compiler.ast import flatten
 from random import choice
 import example
 import numpy as np
-import pandas as pd
 import tensorflow as tf
 import math
 import random
@@ -76,6 +73,8 @@ class DeepQNetwork:
 
         self.sess.run(tf.global_variables_initializer())
         self.cost_his = []
+        self.cost_inverse_ = []
+        self.cost_forward_ = []
 
     def _build_net(self):
         # ------------------ build target_net ------------------
@@ -115,8 +114,8 @@ class DeepQNetwork:
             with tf.variable_scope('l1'):
                 conv1 = self.conv_layer(1, 100, self.nodes, self.children, self.n_features)
                 pooling = self.pooling_layer(conv1)
-                pooling = tf.concat((pooling, self.action1), axis=1)
-                #pooling = tf.concat(1, pooling, self.action1)
+                self.pooling = pooling = tf.concat((pooling, self.action1), axis=1)
+                # pooling = tf.concat(1, pooling, self.action1)
 
             # second layer. collections is used later when assign to target net
             with tf.variable_scope('l2_1'):
@@ -127,6 +126,113 @@ class DeepQNetwork:
 
         with tf.variable_scope('train'):
             self._train_op = tf.train.AdamOptimizer(self.lr).minimize(self.loss)
+
+        # ------------------ build inverse_net ------------------
+
+        self.inverse_input = tf.concat((self.pooling, self.pooling2), axis=1)
+        self.action_inverse_real = tf.placeholder(tf.float32, shape=(None, 92), name='action_inverse_real')
+        self.action_inverse_eval = tf.placeholder(tf.float32, shape=(None, 92), name='action_inverse_eval')
+
+        with tf.variable_scope('inverse_net'):
+            c_names, n_l1, n_l2, w_initializer, b_initializer = \
+                ['inverse_net_params', tf.GraphKeys.GLOBAL_VARIABLES], 256, 288,\
+                tf.random_normal_initializer(0., 0.3), tf.constant_initializer(0.1)
+
+            # first layer. collections is used later when assign to target net
+            with tf.variable_scope('l1_inverse'):
+                w1 = tf.get_variable('w1_inverse', [470, n_l1], initializer=w_initializer, collections=c_names)
+                b1 = tf.get_variable('b1_inverse', [1, n_l1], initializer=b_initializer, collections=c_names)
+                l1 = tf.nn.relu(tf.matmul(self.inverse_input, w1) + b1)
+
+            '''
+            # second layer. collections is used later when assign to target net
+            with tf.variable_scope('l2'):
+                w2 = tf.get_variable('w2', [n_l1, n_l2], initializer=w_initializer, collections=c_names)
+                b2 = tf.get_variable('b2', [1, n_l2], initializer=b_initializer, collections=c_names)
+                l2 = tf.nn.relu(tf.matmul(l1, w2) + b2)
+            '''
+
+            # second layer. collections is used later when assign to target net
+            with tf.variable_scope('l3_inverse'):
+                w3 = tf.get_variable('w3_inverse', [n_l1, 92], initializer=w_initializer, collections=c_names)
+                b3 = tf.get_variable('b3_inverse', [1, 92], initializer=b_initializer, collections=c_names)
+                self.action_inverse_eval = tf.matmul(l1, w3) + b3
+
+
+        with tf.variable_scope('loss_inverse'):
+            self.loss_inverse = tf.reduce_mean(tf.squared_difference(self.action_inverse_real, self.action_inverse_eval))
+
+        with tf.variable_scope('train_inverse'):
+            self._train_op_inverse = tf.train.AdamOptimizer(self.lr).minimize(self.loss_inverse)
+
+        # ------------------ build forward_net ------------------
+        self.action_forward_input = tf.placeholder(tf.float32, shape=(None, 92), name='action_forward_input')
+        self.forward_input = tf.concat((pooling, self.action_forward_input), axis=1)
+        self.forward_output = tf.placeholder(tf.float32, shape=(None, 235), name='forward_output')
+
+        with tf.variable_scope('forward_net'):
+            forward_names, n_l1_forward, n_l2_forward, w_initializer_forward, b_initializer_forward = \
+                ['forward_net_params', tf.GraphKeys.GLOBAL_VARIABLES], 256, 288,\
+                tf.random_normal_initializer(0., 0.3), tf.constant_initializer(0.1)
+
+            # first layer. collections is used later when assign to target net
+            with tf.variable_scope('l1_forward'):
+                w1_forward = tf.get_variable('w1_forward', [235, n_l1_forward], initializer=w_initializer_forward, collections=forward_names)
+                b1_forward = tf.get_variable('b1_forward', [1, n_l1_forward], initializer=b_initializer_forward, collections=forward_names)
+                l1_forward = tf.nn.relu(tf.matmul(pooling, w1_forward) + b1_forward)
+
+            # second layer. collections is used later when assign to target net
+            with tf.variable_scope('l2_forward'):
+                w2_forward = tf.get_variable('w2_forward', [n_l1_forward, n_l2_forward], initializer=w_initializer_forward, collections=forward_names)
+                b2_forward = tf.get_variable('b2_forward', [1, n_l2_forward], initializer=b_initializer_forward, collections=forward_names)
+                l2_forward = tf.nn.relu(tf.matmul(l1_forward, w2_forward) + b2_forward)
+
+            # third layer. collections is used later when assign to target net
+            with tf.variable_scope('l3_forward'):
+                w3_forward = tf.get_variable('w3_forward', [n_l2_forward, 235], initializer=w_initializer_forward, collections=forward_names)
+                b3_forward = tf.get_variable('b3_forward', [1, 235], initializer=b_initializer_forward, collections= forward_names)
+                self.forward_output = tf.matmul(l2_forward, w3_forward) + b3_forward
+
+            b = tf.stop_gradient(self.forward_output)
+            self.c = pooling2 - b
+
+        with tf.variable_scope('loss_forward'):
+            self.loss_forward = tf.reduce_mean(tf.squared_difference(pooling2,  self.forward_output))
+
+        with tf.variable_scope('train_forward'):
+            self._train_op_forward = tf.train.AdamOptimizer(self.lr).minimize(self.loss_forward)
+
+
+
+    def add_layer(self, inputs, in_size, out_size, activation_function=None):
+        # add one more layer and return the output of this layer
+        Weights = tf.Variable(tf.random_normal([in_size, out_size]))
+        biases = tf.Variable(tf.zeros([1, out_size]) + 0.1)
+        Wx_plus_b = tf.matmul(inputs, Weights) + biases
+        if activation_function is None:
+            outputs = Wx_plus_b
+        else:
+            outputs = activation_function(Wx_plus_b)
+        return outputs
+
+    def features_get(self, pooled, input_size, output_size):
+        with tf.name_scope("hidden"):
+            weights = tf.Variable(
+                tf.truncated_normal(
+                    [input_size, output_size], stddev=1.0 / math.sqrt(input_size)
+                ),
+                name='weights'
+            )
+
+            init = tf.truncated_normal([output_size, ], stddev=math.sqrt(2.0 / input_size))
+            # init = tf.zeros([output_size,])
+            biases = tf.Variable(init, name='biases')
+
+            with tf.name_scope('summaries'):
+                tf.summary.histogram('weights', [weights])
+                tf.summary.histogram('biases', [biases])
+
+            return tf.nn.sigmoid(tf.matmul(pooled, weights) + biases)
 
     def make_tfrecord(self):
         out_name = 'transition.tfrecord'
@@ -228,10 +334,7 @@ class DeepQNetwork:
         for index in list(set(action2set)):
             action2_prob.append(action2_value[0][index])
         action2_index = np.argmax(action2_prob)
-
         action2 = action2set[action2_index]
-
-        # action2  = np.argmax(action2_value[0])
         return action2
 
     def getAction2_random(self, candidate, action1_real):
@@ -249,15 +352,6 @@ class DeepQNetwork:
 
     def getAction1(self,candidate, act1Set, action1, action1_value):
         action1s = np.nonzero(act1Set[:-1])
-        # act1Set[action1 - 1] != 0 and
-        '''
-        if act1Set[action1 - 1] != -1 and act1Set[action1 - 1] != 0:
-            action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
-            # actions = action2set
-            actions = np.append(action1s, action2set)
-        else:
-            actions = action1s
-        '''
         actions = action1s[0]
         action1_prob = []
         for index in actions:
@@ -282,20 +376,7 @@ class DeepQNetwork:
         # print("act1Set", act1Set)
         action1s = np.nonzero(act1Set[:-1])
         action1 = int(action1)
-        '''
-        # (act1Set[action1-1] != 0)
-        if act1Set[action1 - 1] != 0 and act1Set[action1 - 1] != -1:
-            # action2 = np.array(range(42, 92))
-            action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
-            # actions = action2set
-            actions = np.append(action1s, action2set)
-        else:
-            actions = action1s[0]
-        actions = actions.flatten()
-        '''
-        # actions = np.append(action1s, action2set)
         action = random.choice(action1s[0])
-
         # real_action = act1Set[action1]
         return action
 
@@ -306,7 +387,6 @@ class DeepQNetwork:
             action1_ = []
             action1_.append(onehotaction1)
             nodes, children1 = self._pad_batch_(nodes, children1)
-
             actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.nodes: nodes, self.children: children1, self.action1: action1_})
             action = self.getAction1(candidate, onehotaction1[42:], int(action1), actions_value1)
         else:
@@ -435,8 +515,12 @@ class DeepQNetwork:
         for i, batch in enumerate(self.batch_samples_(self.x(batch_memory[:]), self.batch_size)):
             nodes, children, action1, action, reward, nodes_, children_, action1_ = batch
 
-            pool, q_next1, q_eval1 = self.sess.run(
-                [self.pooling2, self.q_next1, self.q_eval1],
+            action_real = []
+            for index in range(self.batch_size):
+                action_real.append(self.one_hot_action_eval(action[index]))
+
+            c, inverse, pool1, pool2, q_next1, q_eval1 = self.sess.run(
+                [self.c, self.action_inverse_eval, self.pooling, self.pooling2, self.q_next1, self.q_eval1],
                 feed_dict={
                     self.nodes: nodes,
                     self.children: children,
@@ -444,12 +528,21 @@ class DeepQNetwork:
                     self.nodes_: nodes_,  # fixed params
                     self.children_: children_,
                     self.action1_: action1_,
+                    self.action_inverse_real: action_real,
                 })
+
+            mean = []
+            for index in range(self.batch_size):
+                mean.append(np.mean(c[index]))
 
             q_target1 = q_eval1.copy()
 
             batch_index = np.arange(self.batch_size, dtype=np.int32)
 
+            action_evalue_stst1 = np.argmax(inverse, axis=1)
+
+            action_eval = []
+            action_real = []
             q_next1_ = []
             for index in range(self.batch_size):
                 actionchoosen = action1[index][42:][:-1]
@@ -459,8 +552,26 @@ class DeepQNetwork:
                     action1_prob.append(q_next1[index][index1])
                 bestReward = np.max(action1_prob)
                 q_next1_.append(bestReward)
+                # action_evalue_inverse one_hot
+                action_eval.append(self.one_hot_action_eval(action_evalue_stst1[index]))
+                action_real.append(self.one_hot_action_eval(action[index]))
 
-            q_target1[batch_index, action] = reward + self.gamma * np.array(q_next1_)
+            _, self.cost_inverse, _, self.cost_forward = self.sess.run([self._train_op_inverse, self.loss_inverse, self._train_op_forward, self.loss_forward],
+                                                 feed_dict={
+                                                     self.nodes: nodes,
+                                                     self.children: children,
+                                                     self.action1: action1,
+                                                     self.nodes_: nodes_,  # fixed params
+                                                     self.children_: children_,
+                                                     self.action1_: action1_,
+                                                     self.action_inverse_real: action_real,
+                                                     self.action_forward_input: action_real,
+                                                     self.action_inverse_eval: action_eval,
+                                                 })
+
+
+
+            q_target1[batch_index, action] = reward + self.gamma * np.array(q_next1_) + self.gamma * np.array(mean)
 
             # train eval network
             _, self.cost = self.sess.run([self._train_op, self.loss],
@@ -469,7 +580,10 @@ class DeepQNetwork:
                                                     self.action1: action1,
                                                     self.q_target1: q_target1,
                                                     })
+
             self.cost_his.append(self.cost)
+            self.cost_inverse_.append(self.cost_inverse)
+            self.cost_forward_.append(self.cost_forward)
 
         # increasing epsilon
         if self.epsilon < self.epsilon_max:
@@ -477,9 +591,6 @@ class DeepQNetwork:
         else:
             self.epsilon = self.epsilon_max
         self.learn_step_counter += 1
-        #self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max else self.epsilon_max
-        #self.learn_step_counter += 1
-
 
     def plot_cost(self):
         import matplotlib.pyplot as plt
@@ -729,11 +840,16 @@ class DeepQNetwork:
     def one_hot_action1(self, action1):
         one_hot_action1 = np.zeros(42)
         one_hot_action1[action1 - 1] = 1
-        #one_hot_action1 = [one_hot_action1]
+        # one_hot_action1 = [one_hot_action1]
         return np.array(one_hot_action1)
 
-    def one_hot_actionchsen(self,action2):
+    def one_hot_actionchsen(self, action2):
         one_hot_action2 = np.zeros(92)
         for i in action2:
             one_hot_action2[i] = 1
         return one_hot_action2
+
+    def one_hot_action_eval(self, action):
+        one_hot_action_eval = np.zeros(92)
+        one_hot_action_eval[action] = 1
+        return np.array(one_hot_action_eval)

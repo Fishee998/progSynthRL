@@ -115,31 +115,44 @@ class Maze(object):
                     reward = 0
 
         if newfitnessValue > 78.4:
-            if len(self.spin) > 0:
-                for stae in self.state_spin:
-                    if (self.state_[index] == stae).all() == False:
-                        self.state_spin.append(self.state_[index])
-                        self.candidate_spin.append(example.copyProgram(self.candidate_[index]))
-                    else:
-                        reward = reward - 1
             print("???")
-            self.spin_used = 1
-            spin_reward = example.spin_(candidate_)
-            if spin_reward == 5:
-                print("liveness")
-            else:
-                if spin_reward == 10:
-                    print("safety")
+            if len(self.state_spin) > 0:
+                same = 0
+                for stae in self.state_spin:
+                    if (self.state_[index] == stae).all() == True:
+                        same = 1
+                        break
+                if same != 1:
+                    self.spin_used = 1
+                    spin_reward = example.spin_(candidate_)
+                    if spin_reward == 5:
+                        print("liveness")
+                    else:
+                        if spin_reward == 10:
+                            print("safety")
+                        else:
+                            if spin_reward == 20:
+                                done = True
+                    self.state_spin.append(self.state_[index])
+                    self.candidate_spin.append(example.copyProgram(self.candidate_[index]))
                 else:
-                    if spin_reward == 20:
-                        done = True
-
+                    reward = reward - 1
+            else:
+                self.spin_used = 1
+                spin_reward = example.spin_(candidate_)
+                if spin_reward == 5:
+                    print("liveness")
+                else:
+                    if spin_reward == 10:
+                        print("safety")
+                    else:
+                        if spin_reward == 20:
+                            done = True
+                self.state_spin.append(self.state_[index])
+                self.candidate_spin.append(example.copyProgram(self.candidate_[index]))
         if done:
             reward = 1
             print("done")
-
-        #if not done:
-         #   reward = reward - 0.5
 
         print("action", action, "reward", reward, "fitness", newfitnessValue, "spin used", self.spin_used)
 
@@ -152,7 +165,13 @@ class Maze(object):
         self.candidate_ = []
         self.state_ = []
         candidates = prog.initProg()
-        for index in range(len(self.state_)):
+        for index in range(candidate_num):
+            candidate = example.getCandidate(candidates, index)
+            self.candidate_.append(candidate)
+            state = self.getstate(candidate)
+            self.state_.append(np.array(state))
+
+        for index in range(len(self.state_) - candidate_num):
             candidate = example.getCandidate(candidates, index)
             self.candidate_.append(candidate)
             state = self.getstate(candidate)

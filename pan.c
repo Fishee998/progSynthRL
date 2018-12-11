@@ -533,41 +533,41 @@ uchar reached2 [] = {
 uchar *loopstate2;
 
 short src_ln1 [] = {
-	  0,  35,  35,  35,  36,  37,  38,  39, 
-	 39,  39,  40,  40,  42,  43,  45,  46, 
-	 47,  44,  49,  49,  49,  41,  51,  41, 
-	 51,  52,  53,  54,  55,  56,  57,  57, 
-	 36,  59,  36,  59,   0, };
+	  0,  33,  33,  33,  34,  35,  36,  37, 
+	 37,  37,  38,  38,  39,  40,  41,  43, 
+	 45,  46,  44,  48,  48,  48,  42,  50, 
+	 42,  50,  51,  52,  53,  53,  34,  55, 
+	 34,  55,   0, };
 S_F_MAP src_file1 [] = {
 	{ "-", 0, 0 },
-	{ "./output/mutex.pml", 1, 35 },
-	{ "-", 36, 37 }
+	{ "./output/mutex.pml", 1, 33 },
+	{ "-", 34, 35 }
 };
 uchar reached1 [] = {
 	  0,   1,   1,   0,   1,   1,   0,   1, 
-	  1,   0,   1,   0,   1,   0,   1,   0, 
-	  0,   0,   1,   1,   1,   0,   1,   1, 
-	  0,   0,   0,   0,   0,   0,   1,   1, 
-	  0,   1,   1,   0,   0, };
+	  1,   0,   1,   0,   0,   0,   0,   1, 
+	  1,   0,   0,   1,   1,   1,   0,   1, 
+	  1,   0,   0,   0,   1,   1,   0,   1, 
+	  1,   0,   0, };
 uchar *loopstate1;
 
 short src_ln0 [] = {
 	  0,   7,   7,   7,   8,   9,  10,  11, 
-	 11,  11,  12,  12,  14,  15,  17,  18, 
-	 19,  16,  21,  21,  21,  13,  23,  13, 
-	 23,  24,  25,  26,  27,  28,  29,  29, 
-	  8,  31,   8,  31,   0, };
+	 11,  11,  12,  12,  13,  14,  15,  17, 
+	 19,  20,  18,  22,  22,  22,  16,  24, 
+	 16,  24,  25,  26,  27,  27,   8,  29, 
+	  8,  29,   0, };
 S_F_MAP src_file0 [] = {
 	{ "-", 0, 0 },
-	{ "./output/mutex.pml", 1, 35 },
-	{ "-", 36, 37 }
+	{ "./output/mutex.pml", 1, 33 },
+	{ "-", 34, 35 }
 };
 uchar reached0 [] = {
 	  0,   1,   1,   0,   1,   1,   0,   1, 
-	  1,   0,   1,   0,   1,   0,   1,   0, 
-	  0,   0,   1,   1,   1,   0,   1,   1, 
-	  0,   0,   0,   0,   0,   0,   1,   1, 
-	  0,   1,   1,   0,   0, };
+	  1,   0,   1,   0,   0,   0,   0,   1, 
+	  1,   0,   0,   1,   1,   1,   0,   1, 
+	  1,   0,   0,   0,   1,   1,   0,   1, 
+	  1,   0,   0, };
 uchar *loopstate0;
 uchar reached5[3];  /* np_ */
 uchar *loopstate5;  /* np_ */
@@ -12490,7 +12490,7 @@ do_reach(void)
 void
 iniglobals(int calling_pid)
 {
-		turn = 0;
+		now.turn = 0;
 		now.v0 = 0;
 		now.v1 = 0;
 		now.try0 = 0;
@@ -12500,6 +12500,7 @@ iniglobals(int calling_pid)
 		now.cs0 = 0;
 		now.cs1 = 0;
 #ifdef VAR_RANGES
+		logval("turn", now.turn);
 		logval("v0", now.v0);
 		logval("v1", now.v1);
 		logval("try0", now.try0);
@@ -14209,6 +14210,7 @@ void
 c_globals(void)
 {	/* int i; */
 	printf("global vars:\n");
+	printf("	bit    turn:	%d\n", now.turn);
 	printf("	bit    v0:	%d\n", now.v0);
 	printf("	bit    v1:	%d\n", now.v1);
 	printf("	bit    try0:	%d\n", now.try0);
@@ -14249,7 +14251,7 @@ c_chandump(int unused)
 {	unused++; /* avoid complaints */
 }
 
-Trans *t_id_lkup[106];
+Trans *t_id_lkup[102];
 
 
 #ifdef BFS_PAR

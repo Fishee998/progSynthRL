@@ -97,18 +97,10 @@ def run_maze():
                 RL.store_transition(nodes, children, one_hot_act1chsn, action_store, reward, nodes_, children_,
                                     one_hot_act1chsn_)
 
-
                 reward_cum += reward
-
 
                 if (step_good > 100) and (step_good % 2 == 0):
                     RL.learn()
-
-                # swap observation
-                #observation = observation_
-                #nodes = nodes_
-                #children = children_
-                # print(observation)
 
                 # break while loop when end of this episode
                 if reward == 100:
