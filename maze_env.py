@@ -154,7 +154,7 @@ class Maze(object):
             reward = 1
             print("done")
 
-        print("action", action, "reward", reward, "fitness", newfitnessValue, "spin used", self.spin_used)
+        # print("action", action, "reward", reward, "fitness", newfitnessValue, "spin used", self.spin_used)
 
         return reward, done, self
 

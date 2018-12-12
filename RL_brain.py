@@ -27,7 +27,7 @@ class DeepQNetwork:
             n_actions1,
             # n_actions2,
             n_features,
-            learning_rate=0.01,
+            learning_rate=0.001,
             reward_decay=0.9,
             e_greedy=0.9,
             replace_target_iter=10,
@@ -181,20 +181,20 @@ class DeepQNetwork:
                 b1_forward = tf.get_variable('b1_forward', [1, n_l1_forward], initializer=b_initializer_forward, collections=forward_names)
                 l1_forward = tf.nn.relu(tf.matmul(pooling, w1_forward) + b1_forward)
 
+            '''
             # second layer. collections is used later when assign to target net
             with tf.variable_scope('l2_forward'):
                 w2_forward = tf.get_variable('w2_forward', [n_l1_forward, n_l2_forward], initializer=w_initializer_forward, collections=forward_names)
                 b2_forward = tf.get_variable('b2_forward', [1, n_l2_forward], initializer=b_initializer_forward, collections=forward_names)
                 l2_forward = tf.nn.relu(tf.matmul(l1_forward, w2_forward) + b2_forward)
-
+            '''
             # third layer. collections is used later when assign to target net
             with tf.variable_scope('l3_forward'):
-                w3_forward = tf.get_variable('w3_forward', [n_l2_forward, 235], initializer=w_initializer_forward, collections=forward_names)
+                w3_forward = tf.get_variable('w3_forward', [n_l1_forward, 235], initializer=w_initializer_forward, collections=forward_names)
                 b3_forward = tf.get_variable('b3_forward', [1, 235], initializer=b_initializer_forward, collections= forward_names)
-                self.forward_output = tf.matmul(l2_forward, w3_forward) + b3_forward
+                self.forward_output = tf.matmul(l1_forward, w3_forward) + b3_forward
 
-            b = tf.stop_gradient(self.forward_output)
-            self.c = pooling2 - b
+            self.c = pooling2 - self.forward_output
 
         with tf.variable_scope('loss_forward'):
             self.loss_forward = tf.reduce_mean(tf.squared_difference(pooling2,  self.forward_output))
@@ -571,7 +571,7 @@ class DeepQNetwork:
 
 
 
-            q_target1[batch_index, action] = reward + self.gamma * np.array(q_next1_) + self.gamma * np.array(mean)
+            q_target1[batch_index, action] = reward + self.gamma * np.array(q_next1_) + 100 * np.array(mean)
 
             # train eval network
             _, self.cost = self.sess.run([self._train_op, self.loss],
@@ -587,7 +587,7 @@ class DeepQNetwork:
 
         # increasing epsilon
         if self.epsilon < self.epsilon_max:
-            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter %10 == 0 else self.epsilon
+            self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter % 10 == 0 else self.epsilon
         else:
             self.epsilon = self.epsilon_max
         self.learn_step_counter += 1
