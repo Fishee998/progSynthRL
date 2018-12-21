@@ -5,7 +5,7 @@ from gym import spaces
 from gym.utils import seeding
 import numpy as np
 import math
-candidate_num = 1
+candidate_num = 2
 import StringIO
 class Maze(object):
 

@@ -49,7 +49,6 @@ class DeepQNetwork:
         self.epsilon_increment = e_greedy_increment
         self.epsilon = 0 if e_greedy_increment is not None else self.epsilon_max
 
-
         # total learning step
         self.learn_step_counter = 0
 
@@ -64,7 +63,9 @@ class DeepQNetwork:
         e_params = tf.get_collection('eval_net_params')
         self.replace_target_op = [tf.assign(t, e) for t, e in zip(t_params, e_params)]
 
-        self.sess = tf.Session()
+        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.4)
+        config = tf.ConfigProto(gpu_options=gpu_options)
+        self.sess = tf.Session(config=config)
 
         if output_graph:
             # $ tensorboard --logdir=logs

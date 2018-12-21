@@ -2,9 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4036df4a-59fb-4120-a525-90ad490395ee" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/example.o" afterPath="$PROJECT_DIR$/example.o" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RL_brain.py" afterPath="$PROJECT_DIR$/RL_brain.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_example.so" afterPath="$PROJECT_DIR$/_example.so" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/ast.txt" afterPath="$PROJECT_DIR$/data/ast.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/example.c" afterPath="$PROJECT_DIR$/example.c" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/log.txt" afterPath="$PROJECT_DIR$/log.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/maze_env.py" afterPath="$PROJECT_DIR$/maze_env.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/run_this.py" afterPath="$PROJECT_DIR$/run_this.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,15 +21,15 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/5_Deep_Q_Network$run_this.coverage" NAME="run_this Coverage Results" MODIFIED="1540177958805" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/progSynthRL_conv$run_this.coverage" NAME="run_this Coverage Results" MODIFIED="1544537774153" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/progSynthRL$run_this.coverage" NAME="run_this Coverage Results" MODIFIED="1545383228908" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/progSynthRL$run_this.coverage" NAME="run_this Coverage Results" MODIFIED="1545383951687" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="run_this.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="run_this.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_this.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="87">
-              <caret line="102" column="0" lean-forward="false" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
+            <state relative-caret-position="182">
+              <caret line="23" column="28" lean-forward="false" selection-start-line="23" selection-start-column="28" selection-end-line="23" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -54,18 +58,18 @@
       <file leaf-file-name="example.c" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/example.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="36520">
-              <caret line="1826" column="1" lean-forward="false" selection-start-line="1826" selection-start-column="1" selection-end-line="1826" selection-end-column="1" />
+            <state relative-caret-position="-449">
+              <caret line="4743" column="0" lean-forward="true" selection-start-line="4743" selection-start-column="0" selection-end-line="4743" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RL_brain.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="RL_brain.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/RL_brain.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="155">
-              <caret line="480" column="0" lean-forward="false" selection-start-line="480" selection-start-column="0" selection-end-line="480" selection-end-column="0" />
+            <state relative-caret-position="-94">
+              <caret line="50" column="0" lean-forward="true" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -94,8 +98,8 @@
       <file leaf-file-name="maze_env.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/maze_env.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="753">
-              <caret line="200" column="0" lean-forward="false" selection-start-line="200" selection-start-column="0" selection-end-line="200" selection-end-column="0" />
+            <state relative-caret-position="140">
+              <caret line="7" column="17" lean-forward="false" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -106,14 +110,9 @@
       <file leaf-file-name="astEncoder.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/astEncoder.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="860">
-              <caret line="47" column="4" lean-forward="false" selection-start-line="47" selection-start-column="4" selection-end-line="47" selection-end-column="4" />
-              <folding>
-                <marker date="1545382680281" expanded="true" signature="8677:8928" ph="..." />
-                <marker date="1545382680281" expanded="true" signature="8710:8774" ph="..." />
-                <marker date="1545382680281" expanded="true" signature="8784:8906" ph="..." />
-                <marker date="1545382680281" expanded="true" signature="8933:10222" ph="'''...'''" />
-              </folding>
+            <state relative-caret-position="236">
+              <caret line="23" column="5" lean-forward="true" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="5" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -150,7 +149,6 @@
       <find>learn</find>
       <find>???</find>
       <find>choose</find>
-      <find>initP</find>
       <find>null candidate</find>
       <find>candidate_num</find>
       <find>hidden</find>
@@ -159,6 +157,7 @@
       <find>newprintprog</find>
       <find>reward_cum</find>
       <find>cost_his</find>
+      <find>initP</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -171,10 +170,10 @@
         <option value="$PROJECT_DIR$/astEncoder.py" />
         <option value="$PROJECT_DIR$/example.h" />
         <option value="$PROJECT_DIR$/classifier/tbcnn/sampling.py" />
-        <option value="$PROJECT_DIR$/example.c" />
         <option value="$PROJECT_DIR$/ICM.py" />
         <option value="$PROJECT_DIR$/data/ast.txt" />
         <option value="$PROJECT_DIR$/maze_env.py" />
+        <option value="$PROJECT_DIR$/example.c" />
         <option value="$PROJECT_DIR$/run_this.py" />
         <option value="$PROJECT_DIR$/RL_brain.py" />
       </list>
@@ -243,6 +242,7 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/zhuang/workspaceRL/progSynthRL/astEncoder.py" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -301,6 +301,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="797" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10729614" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -311,7 +312,7 @@
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.42735043" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.044159543" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -717,27 +718,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/astEncoder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="860">
-          <caret line="47" column="4" lean-forward="false" selection-start-line="47" selection-start-column="4" selection-end-line="47" selection-end-column="4" />
-          <folding>
-            <marker date="1545382680281" expanded="true" signature="8677:8928" ph="..." />
-            <marker date="1545382680281" expanded="true" signature="8710:8774" ph="..." />
-            <marker date="1545382680281" expanded="true" signature="8784:8906" ph="..." />
-            <marker date="1545382680281" expanded="true" signature="8933:10222" ph="'''...'''" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/example.c">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="36520">
-          <caret line="1826" column="1" lean-forward="false" selection-start-line="1826" selection-start-column="1" selection-end-line="1826" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/ast.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="160">
@@ -747,26 +727,42 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/maze_env.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="753">
-          <caret line="200" column="0" lean-forward="false" selection-start-line="200" selection-start-column="0" selection-end-line="200" selection-end-column="0" />
+        <state relative-caret-position="140">
+          <caret line="7" column="17" lean-forward="false" selection-start-line="7" selection-start-column="17" selection-end-line="7" selection-end-column="17" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/RL_brain.py">
+    <entry file="file://$PROJECT_DIR$/astEncoder.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="480" column="0" lean-forward="false" selection-start-line="480" selection-start-column="0" selection-end-line="480" selection-end-column="0" />
+        <state relative-caret-position="236">
+          <caret line="23" column="5" lean-forward="true" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/example.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-449">
+          <caret line="4743" column="0" lean-forward="true" selection-start-line="4743" selection-start-column="0" selection-end-line="4743" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/run_this.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="87">
-          <caret line="102" column="0" lean-forward="false" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
+        <state relative-caret-position="182">
+          <caret line="23" column="28" lean-forward="false" selection-start-line="23" selection-start-column="28" selection-end-line="23" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/RL_brain.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-94">
+          <caret line="50" column="0" lean-forward="true" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
           <folding />
         </state>
       </provider>

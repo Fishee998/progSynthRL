@@ -4744,7 +4744,7 @@ action* setAction(int layer, int actionType)
 
 program** initProg(Expr** requirements ,int numofrequirements,double* coef)
 {
-    int numofcandidate = 1;
+    int numofcandidate = 2;
     action* act = (action*)malloc(sizeof(action));
     program** candidate = genInitTemplate(numofcandidate);
     for(int i = 0;i < numofcandidate;i++)

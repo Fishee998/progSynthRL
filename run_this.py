@@ -9,21 +9,19 @@ import pickle
 import classifier.tbcnn.sampling as sampling
 import numpy as np
 
-os.environ['LD_LIBRARY_PATH'] = '/usr/local/cuda-9.0/lib64'
-os.environ['CUDA_HOME'] = '/usr/local/cuda-9.0'
-os.environ["CUDA_VISIBLE_DEVICES"]= '0'
+os.environ['LD_LIBRARY_PATH'] = '/usr/local/cuda-10.0/lib64'
+os.environ['CUDA_HOME'] = '/usr/local/cuda-10.0'
+os.environ["CUDA_VISIBLE_DEVICES"]= '2'
 
-candidate_num = 1
+candidate_num = 2
 target_reward = 80
 def run_maze():
     step = 0
     action1 = 1
     step_good = 0
-    done = False
-    buf = StringIO.StringIO()
     start = time.time()
     info_ = env.reset()
-    for episode in range(1000):
+    for episode in range(600):
         # initial observation
         candidate_max = info_.maxCandidate
         candidate_spin = info_.candidate_spin
