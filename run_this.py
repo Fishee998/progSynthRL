@@ -100,7 +100,7 @@ def run_maze():
                 reward_cum += reward
 
                 if (step_good > 100) and (step_good % 2 == 0):
-                    RL.learn()
+                     RL.learn()
 
                 # break while loop when end of this episode
                 if reward == 100:
