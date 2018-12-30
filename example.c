@@ -658,6 +658,8 @@ int getLength(int* action2)
     return sizeof(action2);
 }
 
+
+
 int* getLegalAction2(program* parent, int nodeNum)
 {
     int* action = (int*)malloc(sizeof(int)*50);

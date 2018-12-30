@@ -17,8 +17,6 @@ candidate_num = 100
 target_reward = 80
 def run_maze():
     buf = StringIO.StringIO()
-    illegal_action = 0
-    legal_action = 0
     action1 = 1
     step = 0
     step_good = 0
@@ -41,11 +39,11 @@ def run_maze():
             for index in range(candidate_num):
                 observation_ = info_.state_[index]
 
-                #observation = np.append(observation_, action1 * action1 /10000.0000)
+                # observation = np.append(observation_, action1 * action1 /10000.0000)
 
                 fitness = example.get_fitness(info_.candidate_[index])
 
-                #observation = np.append(observation,  pow(fitness / 100.00, 2))
+                # observation = np.append(observation,  pow(fitness / 100.00, 2))
                 if observation_[action1 - 1] != 0 and observation_[action1 - 1] != -1:
                     action2set = np.array(RL.action2set(example.getLegalAction2(info_.candidate_[index], action1)))
                 else:
@@ -60,24 +58,11 @@ def run_maze():
                 if action_store < 42:
                     action1 = action
                     observation_store_ = observation_store
-                    #observation_ = observation
-                    #observation_[-2] = action1 * action1 / 10000.0000
+                    # observation_ = observation
+                    # observation_[-2] = action1 * action1 / 10000.0000
                     reward = 0
                 else:
                     action2 = action
-                    '''
-                    action2set = np.array(RL.action2set(example.getLegalAction2(info_.candidate_[index], action1)))
-                    not_choosed_fit = []
-
-                   
-                    for index_ in action2set:
-                        action_operation = RL.getAction(action1, action2)
-                        candidate = example.copyProgram(info_.candidate_[index])
-                        candidate_ = prog.mutation(candidate, action_operation[0], action_operation[1])
-                        fitness = example.get_fitness(candidate_)
-                        not_choosed_fit.append(fitness)
-
-                    '''
                     action_operation = RL.getAction(action1, action2)
                     reward, done, info_ = env.step(action_operation, index)
                     observation_1 = info_.state_[index]
@@ -90,9 +75,7 @@ def run_maze():
                         action2set_ = []
                     one_hot_action2_ = RL.one_hot_action2(action2set_)
 
-
                     fitness = example.get_fitness(info_.candidate_[index])
-
 
                     observation_ = np.append(observation_, pow(fitness / 100.00, 2))
 
@@ -148,7 +131,7 @@ if __name__ == "__main__":
     RL = DeepQNetwork(env.action_space.n,
                       # env.action_space.spaces[1].n,
                       env.observation_space.shape[0],
-                      learning_rate=0.01,
+                      learning_rate=0.001,
                       reward_decay=0.8,
                       e_greedy=0.9,
                       replace_target_iter=10,

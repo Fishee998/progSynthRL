@@ -249,6 +249,19 @@ class DeepQNetwork:
             index += 1
         return action2Seleced
 
+    def getLegalAction_prob(self, candidate, act1Set, action1):
+        action1s = np.nonzero(act1Set)[0]
+        if act1Set[action1 - 1] != -1 and act1Set[action1 - 1] != 0:
+            action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
+            # actions = action2set
+            actions = np.append(action1s, action2set)
+        else:
+            actions = action1s
+
+        actions = actions.flatten()
+
+        return actions
+
     def getAction1(self,candidate, act1Set, action1, action1_value):
         action1s = np.nonzero(act1Set)[0]
         # act1Set[action1 - 1] != 0 and
@@ -364,7 +377,7 @@ class DeepQNetwork:
             w1 = self.sess.run(self.w1, feed_dict={self.s: observation})
             l1 = self.sess.run(self.l1, feed_dict={self.s: observation})
             actions_value1 = self.sess.run(self.q_eval1, feed_dict={self.s: observation})
-            action = self.getAction1(candidate, observation[0][:-93], int(action1), actions_value1)
+            actions = self.getAction1(candidate, observation[0][:-93], int(action1))
             self.rl = 1
         else:
             # print("choose by random")
@@ -414,19 +427,30 @@ class DeepQNetwork:
             })
 
         # change q_target w.r.t q_eval's action
-        q_target1 = q_eval1.copy()
+
 
         batch_index = np.arange(self.batch_size, dtype=np.int32)
         eval_act_index1 = batch_memory[:, self.n_features].astype(int)
         reward = batch_memory[:, self.n_features + 1]
 
-        q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.argmax(q_next1, axis=1)
+        x = np.max(q_next1, axis=1)
+
+        sets = np.nonzero(batch_memory[:, -self.n_features:])
+        '''
+        if batch_memory[:,  -self.n_features:][eval_act_index1] != 0 and batch_memory[:,  -self.n_features:][eval_act_index1] != -1:
+            action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
+            # actions = action2set
+            actions = np.append(action1s, action2set)
+            else:
+                actions = action1s
+        '''
+
+        q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.max(q_next1, axis=1)
 
         # train eval network
         _, self.cost = self.sess.run([self._train_op, self.loss],
                                      feed_dict={self.s: batch_memory[:, :self.n_features],
                                                 self.q_target1: q_target1
-                                                #self.q_target2: q_target2
                                                 })
         self.cost_his.append(self.cost)
         # print("loss",self.cost_his[-1] )
@@ -456,5 +480,17 @@ class DeepQNetwork:
             one_hot_action2[i] = 1
         return one_hot_action2
 
+    def obs(self, info_, action1):
+        observation_ = info_.state
+        fitness = info_.fitness
+        if observation_[action1 - 1] != 0 and observation_[action1 - 1] != -1:
+            action2set = np.array(self.action2set(example.getLegalAction2(info_.candidate, action1)))
+        else:
+            action2set = []
 
+        one_hot_action2 = self.one_hot_action2(action2set)
+        one_hot_action1 = self.one_hot_action1(action1)
+        observation_store = np.append(np.append(np.append(observation_, one_hot_action1), one_hot_action2),
+                                      pow(fitness / 100.00, 2))
 
+        return observation_store
