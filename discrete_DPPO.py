@@ -22,19 +22,21 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 import gym, threading, queue
+#import tensorlayer as tl
 
 import example
 
-EP_MAX = 100000
-EP_LEN = 300
-N_WORKER = 4                # parallel workers
-GAMMA = 0.9                 # reward discount factor
+candidate_num = 64
+EP_MAX = 10000
+EP_LEN = 20
+N_WORKER = 1                # parallel workers
+GAMMA = 0.8                 # reward discount factor
 A_LR = 0.0001               # learning rate for actor
 C_LR = 0.0001               # learning rate for critic
 MIN_BATCH_SIZE = 64         # minimum batch size for updating PPO
 UPDATE_STEP = 15            # loop update operation n-steps
 EPSILON = 0.2               # for clipping surrogate objective
-GAME = 'CartPole-v0'
+GAME = 'maze'
 
 env = Maze()
 # env = gym.make(GAME)
@@ -60,7 +62,7 @@ class PPONet(object):
 
         # critic
         w_init = tf.random_normal_initializer(0., .1)
-        lc = tf.layers.dense(self.tfs, 200, tf.nn.relu, kernel_initializer=w_init, name='lc')
+        lc = tf.layers.dense(self.tfs, 100, tf.nn.relu, kernel_initializer=w_init, name='lc')
         self.v = tf.layers.dense(lc, 1)
         self.tfdc_r = tf.placeholder(tf.float32, [None, 1], 'discounted_r')
         self.advantage = self.tfdc_r - self.v
@@ -108,18 +110,19 @@ class PPONet(object):
 
     def _build_anet(self, name, trainable):
         with tf.variable_scope(name):
-            l_a = tf.layers.dense(self.tfs, 200, tf.nn.relu, trainable=trainable)
-            a_prob = tf.layers.dense(l_a, A_DIM, tf.nn.softmax, trainable=trainable)
+            self.l_a = tf.layers.dense(self.tfs, 100, tf.nn.leaky_relu, trainable=trainable)
+            a_prob = tf.layers.dense(self.l_a, A_DIM, tf.nn.softmax, trainable=trainable)
         params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope=name)
         return a_prob, params
 
     def choose_action(self, s, candidate, action1):  # run by a local
-        prob_weights = self.sess.run(self.pi, feed_dict={self.tfs: s[None, :]})
+        # prob = self.sess.run(self.l_a, feed_dict={self.tfs: s[None, :]})
+        prob, prob_weights = self.sess.run([self.l_a, self.pi], feed_dict={self.tfs: s[None, :]})
         a = prob_weights.shape[1]
         b = prob_weights.ravel()
         observation = s[np.newaxis, :]
         action_value = action1
-        legalAction = RL.getLegalAction_prob(candidate, observation[0][:-93], action1)
+        legalAction = RL.getLegalAction_prob(candidate, observation[0][:-43], action1)
 
         for prob_index in range(92):
             if prob_index not in legalAction:
@@ -127,8 +130,12 @@ class PPONet(object):
 
         sum_prob = np.sum(b)
 
-        for prob_index in range(92):
+        if sum_prob == 0:
+            print("0 error")
+        for prob_index in legalAction:
             b[prob_index] = b[prob_index] / sum_prob
+            if b[prob_index] == 0:
+                print("b[prob_index] error")
 
         # action = np.random.choice(range(prob_weights.shape[1]), p=prob_weights.ravel())  # select action w.r.t the actions prob
         action = np.random.choice(range(prob_weights.shape[1]), p = b)
@@ -159,34 +166,39 @@ class Worker(object):
         global GLOBAL_EP, GLOBAL_RUNNING_R, GLOBAL_UPDATE_COUNTER
         while not COORD.should_stop():
             action1 = 1
+            if GLOBAL_EP > 0:
+                print(len(info_.maxCandidate))
+                info_ = self.env.reset_(info_.maxCandidate)
             # observation = state + act1 + legal act2 + fitValue
-            info_ = self.env.reset()
-            s = RL.obs(info_, action1)
-
+            else:
+                info_ = self.env.reset()
             ep_r = 0
             buffer_s, buffer_a, buffer_r = [], [], []
             for t in range(EP_LEN):
                 if not ROLLING_EVENT.is_set():                  # while global PPO is updating
                     ROLLING_EVENT.wait()                        # wait until PPO is updated
                     buffer_s, buffer_a, buffer_r = [], [], []   # clear history buffer, use new policy to collect data
-                action, action_value, action_store = self.ppo.choose_action(s, info_.candidate, action1)
-                if action_store < 42:
-                    action1 = action
-                    s_ = RL.obs(info_, action1)
-                    r = 0
-                    done = False
-                else:
-                    action2 = action
-                    a = RL.getAction(action1, action2)
-                    r, done, info_ = self.env.step(a)
-                    s_ = RL.obs(info_, action1)
+                for index_ in range(candidate_num):
+                    s = RL.obs(info_.candidate_[index_]['state'], info_.candidate_[index_]['fit'], action1)
+                    action, action_value, action_store = self.ppo.choose_action(s, info_.candidate_[index_]['prog'], action1)
+                    print("action", action_store)
+                    if action_store < 42:
+                        action1 = action
+                        s_ = RL.obs(info_.candidate_[index_]['state'], info_.candidate_[index_]['fit'], action1)
+                        r = 0
+                        done = False
+                    else:
+                        action2 = action
+                        a = RL.getAction(action1, action2)
+                        r, done, info_ = self.env.step(a, index_)
+                        s_ = RL.obs(info_.candidate_[index_]['state'], info_.candidate_[index_]['fit'], action1)
 
-                buffer_s.append(s)
-                # a = action_store
-                buffer_a.append(action_store)
-                buffer_r.append(r)
-                s = s_
-                ep_r += r
+                    buffer_s.append(s)
+                    # a = action_store
+                    buffer_a.append(action_store)
+                    buffer_r.append(r)
+                    s = s_
+                    ep_r += r
 
                 GLOBAL_UPDATE_COUNTER += 1                      # count to minimum batch size, no need to wait other workers
                 if t == EP_LEN - 1 or GLOBAL_UPDATE_COUNTER >= MIN_BATCH_SIZE or done:

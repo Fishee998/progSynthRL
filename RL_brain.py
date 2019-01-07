@@ -253,8 +253,9 @@ class DeepQNetwork:
         action1s = np.nonzero(act1Set)[0]
         if act1Set[action1 - 1] != -1 and act1Set[action1 - 1] != 0:
             action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
+            action1 = random.sample(action1s, 2)
+            actions = np.append(action1, action2set)
             # actions = action2set
-            actions = np.append(action1s, action2set)
         else:
             actions = action1s
 
@@ -480,17 +481,20 @@ class DeepQNetwork:
             one_hot_action2[i] = 1
         return one_hot_action2
 
-    def obs(self, info_, action1):
+    def obs(self, state, fitness, action1):
+        '''
         observation_ = info_.state
         fitness = info_.fitness
+
         if observation_[action1 - 1] != 0 and observation_[action1 - 1] != -1:
             action2set = np.array(self.action2set(example.getLegalAction2(info_.candidate, action1)))
         else:
             action2set = []
 
         one_hot_action2 = self.one_hot_action2(action2set)
+        '''
         one_hot_action1 = self.one_hot_action1(action1)
-        observation_store = np.append(np.append(np.append(observation_, one_hot_action1), one_hot_action2),
-                                      pow(fitness / 100.00, 2))
-
+        #observation_store = np.append(np.append(np.append(observation_, one_hot_action1), one_hot_action2),
+        #                              pow(fitness / 100.00, 2))
+        observation_store = np.append(np.append(state, one_hot_action1), pow(fitness / 100.00, 2))
         return observation_store

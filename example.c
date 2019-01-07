@@ -993,22 +993,7 @@ double calculateFitness(organism* prog,Expr** exp,int numexp,double* coef)
         if(existNullCond(prog->progs[0]->root))
             printf("exist null condition\n");
         trace* t = gettrace(prog,i);
-        
-        
-        
-        /*int enter = checkEnterCS(t);
-         switch(enter)
-         {
-         case 1:M++;break;
-         case 2:M++;B1++;break;
-         case 3:M++;B2++;break;
-         case 4:M++;O1++;break;
-         case 5:M++;O2++;break;
-         case 6:M++;B3++;break;
-         case 7:M++;O3++;break;
-         }*/
-        
-        
+
         int safety = 1;
         if(i < numofcheck * 0.7)
         {
