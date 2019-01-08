@@ -77,19 +77,19 @@
 
 	case 17: // STATE 11
 		;
-		now.v0 = trpt->bup.oval;
+		now.v1 = trpt->bup.oval;
 		;
 		goto R999;
 
 	case 18: // STATE 12
 		;
-		now.v0 = trpt->bup.oval;
+		now.turn = trpt->bup.oval;
 		;
 		goto R999;
 
 	case 19: // STATE 13
 		;
-		now.turn = trpt->bup.oval;
+		now.v1 = trpt->bup.oval;
 		;
 		goto R999;
 ;
@@ -102,32 +102,40 @@
 		now.turn = trpt->bup.oval;
 		;
 		goto R999;
+;
+		;
+		
+	case 24: // STATE 20
+		;
+		now.turn = trpt->bup.oval;
+		;
+		goto R999;
 
-	case 23: // STATE 27
+	case 25: // STATE 31
 		;
 		now.cs1 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 24: // STATE 28
+	case 26: // STATE 32
 		;
 		now.try1 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 25: // STATE 29
+	case 27: // STATE 33
 		;
 		now.cs1 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 26: // STATE 30
+	case 28: // STATE 34
 		;
-		now.v0 = trpt->bup.oval;
+		now.v1 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 27: // STATE 36
+	case 29: // STATE 40
 		;
 		p_restor(II);
 		;
@@ -136,13 +144,13 @@
 
 		 /* PROC p */
 
-	case 28: // STATE 1
+	case 30: // STATE 1
 		;
 		now.wi0 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 29: // STATE 2
+	case 31: // STATE 2
 		;
 		now.wi0 = trpt->bup.oval;
 		;
@@ -150,39 +158,39 @@
 ;
 		;
 		
-	case 31: // STATE 6
+	case 33: // STATE 6
 		;
 		now.try0 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 32: // STATE 7
+	case 34: // STATE 7
 		;
 		now.wi0 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 33: // STATE 8
+	case 35: // STATE 8
 		;
 		now.wi0 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 34: // STATE 11
+	case 36: // STATE 11
 		;
-		now.v1 = trpt->bup.oval;
-		;
-		goto R999;
-
-	case 35: // STATE 12
-		;
-		now.v1 = trpt->bup.oval;
+		now.v0 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 36: // STATE 13
+	case 37: // STATE 12
 		;
 		now.turn = trpt->bup.oval;
+		;
+		goto R999;
+
+	case 38: // STATE 13
+		;
+		now.v0 = trpt->bup.oval;
 		;
 		goto R999;
 ;
@@ -190,37 +198,45 @@
 		;
 		;
 		
-	case 39: // STATE 16
+	case 41: // STATE 16
+		;
+		now.turn = trpt->bup.oval;
+		;
+		goto R999;
+;
+		;
+		
+	case 43: // STATE 20
 		;
 		now.turn = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 40: // STATE 27
+	case 44: // STATE 31
 		;
 		now.cs0 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 41: // STATE 28
+	case 45: // STATE 32
 		;
 		now.try0 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 42: // STATE 29
+	case 46: // STATE 33
 		;
 		now.cs0 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 43: // STATE 30
+	case 47: // STATE 34
 		;
-		now.v1 = trpt->bup.oval;
+		now.v0 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 44: // STATE 36
+	case 48: // STATE 40
 		;
 		p_restor(II);
 		;

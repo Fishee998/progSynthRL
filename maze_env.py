@@ -5,7 +5,6 @@ from gym import spaces
 from gym.utils import seeding
 import numpy as np
 import math
-candidate_num = 2
 class Maze(object):
 
     actionSet = astEncoder.setActSet()
@@ -14,7 +13,7 @@ class Maze(object):
         self.n_features = 2
         # self.action_space = spaces.Tuple((spaces.Discrete(49), spaces.Discrete(50)))
         self.action_space = spaces.Discrete(92)
-        self.observation_space = spaces.Box(low= -1.0, high=6501.0, shape=(135,), dtype=np.int)
+        self.observation_space = spaces.Box(low= -1.0, high=6501.0, shape=(85,), dtype=np.int)
         self.seed()
         self.viewer = None
         self.state = None
@@ -29,7 +28,8 @@ class Maze(object):
         self.maxCandidate = None
         self.maxFitness = 0
         self.candidate = None
-
+        self.state_spin = []
+        self.candidate_spin = []
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
@@ -64,12 +64,38 @@ class Maze(object):
                     example.freeAll(None, self.maxCandidate, None, None, None, 2)
                 maxCandidate = example.copyProgram(candidate_)
                 self.maxCandidate = maxCandidate
-
+                reward = 1
+                print('maxfitness:{maxfitness}'.format(maxfitness = self.maxFitness))
             self.fitness = newfitnessValue
 
-            x = newfitnessValue - oldfitnessValue
+            # x = newfitnessValue - oldfitnessValue
+            # x = newfitnessValue - self.maxFitness
+            if newfitnessValue > 74:
+                reward = -0.1
+            else:
+                if newfitnessValue > 64:
+                    reward = -0.3
+                else:
+                    reward = -0.5
             '''
-            reward = 0.01 * x
+            if newfitnessValue < 74:
+                reward = -0.2
+            else:
+                if newfitnessValue < 34:
+                    reward = -0.3
+                else:
+                    if newfitnessValue < 24:
+                        reward = -0.5
+            # reward = x
+            '''
+            '''
+            if newfitnessValue > 74:
+                reward = 0.8
+            else:
+                if newfitnessValue > 64:
+                    reward = 0.6
+                else:
+                    reward = -0.2
             
             if newfitnessValue > 60:
                 reward = 0.3
@@ -77,7 +103,7 @@ class Maze(object):
                 if newfitnessValue > 70:
                     reward = 0.5
             '''
-            
+            '''
             if x > 0:
                 if newfitnessValue > 74:
                     reward = 0.6 + 0.009 * x
@@ -109,36 +135,50 @@ class Maze(object):
                                         reward = 0.3 + 0.0005 * x
                 else:
                     reward = 0
-
+            '''
         spin_reward = 0
-        if newfitnessValue > 78.4:
-            reward = 1
+        if newfitnessValue > 79:
+            reward = 0.1
             print("???")
-            if len(self.spin) > 0:
+            '''
+            print(len(self.state_spin))
+            if len(self.state_spin) > 0:
                 for stae in self.state_spin:
                     if (self.state == stae).all() == False:
                         self.state_spin.append(self.state)
                         self.candidate_spin.append(example.copyProgram(self.candidate))
                     else:
                         reward = reward - 1
+            else:
+                self.state_spin.append(self.state)
+                self.candidate_spin.append(example.copyProgram(self.candidate))
             self.spin_used = 1
+            '''
             spin_reward = example.spin_(candidate_)
-            if spin_reward == 5:
+            if spin_reward == 4:
                 print("liveness")
+                reward = reward + 0.1
             else:
                 if spin_reward == 10:
+                    reward = reward + 0.2
                     print("safety")
                 else:
                     if spin_reward == 20:
                         reward = 2
                         done = True
-
+                    else:
+                        if spin_reward == 8:
+                            print("liveness1 liveness2")
+                            reward = reward + 0.2
+                        else:
+                            reward = reward - 0.1
+            
         done = bool(spin_reward == 20)
         if done:
             reward = 2
             print("done")
 
-        print('action: {action} fitness: {fitness}'.format(action=action, fitness=newfitnessValue))
+        # print('action: {action} fitness: {fitness}'.format(action=action, fitness=newfitnessValue))
 
         return reward, done, self
 
@@ -150,7 +190,7 @@ class Maze(object):
         # self.state_ = []
         candidates = prog.initProg()
         '''
-        #for index in range(candidate_num):
+        for index in range(candidate_num):
             candidate = example.getCandidate(candidates, index)
             self.candidate.append(candidate)
             state = self.getstate(candidate)
@@ -161,25 +201,32 @@ class Maze(object):
         self.candidate = candidate
         self.state = np.array(self.getstate(candidate))
         self.fitness = example.get_fitness(candidate)
+        
         return self
 
     def reset_(self, candidate):
         self.state = spaces.Box(low=-1.0, high=6501.0, shape=(42,), dtype=np.int)
         # self.state = spaces.Box(low=0, high=20, shape=(300,), dtype=int)
         # 100 candidates
+        '''
         example.freeAll(None, self.candidate_[0], None, None, None, 2)
         self.state_ = []
         self.candidate_[0] = example.copyProgram(candidate)
         state = self.getstate(candidate)
         self.state_.append(np.array(state))
+        '''
+        self.candidate = example.copyProgram(candidate)
+        self.state = self.getstate(candidate)
+        self.fitness = example.get_fitness(candidate)
         return self
 
-    def reset_1(self, info_, candidate):
-        example.freeAll(None, info_.candidate_[0], None, None, None, 2)
-        info_.candidate_[0] = example.copyProgram(candidate)
-        state = info_.getstate(candidate)
-        info_.state_[0] = np.array(state)
-        return info_
+    def reset_1(self, candidate):
+        #example.freeAll(None, info_.candidate_[0], None, None, None, 2)
+        self.candidate = example.copyProgram(candidate)
+        self.state = np.array(info_.getstate(candidate))
+        self.fitness = example.get_fitness(candidate) 
+        #info_.state_[0] = np.array(state)
+        return self
 
     def getstate(self, candidate):
         vector = example.genVector(candidate)

@@ -22,18 +22,19 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 import gym, threading, queue
-
+import os
 import example
 
-EP_MAX = 100000
-EP_LEN = 300
-N_WORKER = 4                # parallel workers
-GAMMA = 0.9                 # reward discount factor
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+EP_MAX = 10000
+EP_LEN = 100
+N_WORKER = 1                # parallel workers
+GAMMA = 0.8                 # reward discount factor
 A_LR = 0.0001               # learning rate for actor
 C_LR = 0.0001               # learning rate for critic
 MIN_BATCH_SIZE = 64         # minimum batch size for updating PPO
-UPDATE_STEP = 15            # loop update operation n-steps
-EPSILON = 0.2               # for clipping surrogate objective
+UPDATE_STEP = 30            # loop update operation n-steps
+EPSILON = 0.001            # for clipping surrogate objective
 GAME = 'CartPole-v0'
 
 env = Maze()
@@ -55,12 +56,14 @@ RL = DeepQNetwork(env.action_space.n,
 
 class PPONet(object):
     def __init__(self):
-        self.sess = tf.Session()
+        config = tf.ConfigProto() 
+        config.gpu_options.per_process_gpu_memory_fraction = 0.3
+        self.sess = tf.Session(config=config)
         self.tfs = tf.placeholder(tf.float32, [None, S_DIM], 'state')
 
         # critic
         w_init = tf.random_normal_initializer(0., .1)
-        lc = tf.layers.dense(self.tfs, 200, tf.nn.relu, kernel_initializer=w_init, name='lc')
+        lc = tf.layers.dense(self.tfs, 100, tf.nn.relu, kernel_initializer=w_init, name='lc')
         self.v = tf.layers.dense(lc, 1)
         self.tfdc_r = tf.placeholder(tf.float32, [None, 1], 'discounted_r')
         self.advantage = self.tfdc_r - self.v
@@ -108,7 +111,7 @@ class PPONet(object):
 
     def _build_anet(self, name, trainable):
         with tf.variable_scope(name):
-            l_a = tf.layers.dense(self.tfs, 200, tf.nn.relu, trainable=trainable)
+            l_a = tf.layers.dense(self.tfs, 100, tf.nn.relu, trainable=trainable)
             a_prob = tf.layers.dense(l_a, A_DIM, tf.nn.softmax, trainable=trainable)
         params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope=name)
         return a_prob, params
@@ -119,7 +122,7 @@ class PPONet(object):
         b = prob_weights.ravel()
         observation = s[np.newaxis, :]
         action_value = action1
-        legalAction = RL.getLegalAction_prob(candidate, observation[0][:-93], action1)
+        legalAction = RL.getLegalAction_prob(candidate, observation[0][:-43], action1)
 
         for prob_index in range(92):
             if prob_index not in legalAction:
@@ -159,8 +162,17 @@ class Worker(object):
         global GLOBAL_EP, GLOBAL_RUNNING_R, GLOBAL_UPDATE_COUNTER
         while not COORD.should_stop():
             action1 = 1
+            # if GLOBAL_EP / 2 != 0:
+            #    info_ = self.env.reset_(self.maxCandidate)
             # observation = state + act1 + legal act2 + fitValue
+            # else:
             info_ = self.env.reset()
+            
+            maxCand = info_.maxCandidate
+            if GLOBAL_EP % 2 != 0:
+                info_ = self.env.reset_(maxCand)
+            else:
+                info_ = self.env.reset()
             s = RL.obs(info_, action1)
 
             ep_r = 0
@@ -170,10 +182,11 @@ class Worker(object):
                     ROLLING_EVENT.wait()                        # wait until PPO is updated
                     buffer_s, buffer_a, buffer_r = [], [], []   # clear history buffer, use new policy to collect data
                 action, action_value, action_store = self.ppo.choose_action(s, info_.candidate, action1)
+                # print('action:{action}'.format(action=action_store))
                 if action_store < 42:
                     action1 = action
                     s_ = RL.obs(info_, action1)
-                    r = 0
+                    r = -0.05
                     done = False
                 else:
                     action2 = action

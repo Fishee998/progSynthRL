@@ -483,14 +483,15 @@ class DeepQNetwork:
     def obs(self, info_, action1):
         observation_ = info_.state
         fitness = info_.fitness
+        '''
         if observation_[action1 - 1] != 0 and observation_[action1 - 1] != -1:
             action2set = np.array(self.action2set(example.getLegalAction2(info_.candidate, action1)))
         else:
             action2set = []
-
-        one_hot_action2 = self.one_hot_action2(action2set)
+        '''
+        #one_hot_action2 = self.one_hot_action2(action2set)
         one_hot_action1 = self.one_hot_action1(action1)
-        observation_store = np.append(np.append(np.append(observation_, one_hot_action1), one_hot_action2),
-                                      pow(fitness / 100.00, 2))
-
+        # observation_store = np.append(np.append(np.append(observation_, one_hot_action1), one_hot_action2),
+                                      #pow(fitness / 100.00, 2))
+        observation_store = np.append(np.append(observation_, one_hot_action1), fitness / 100.00)
         return observation_store

@@ -1,7 +1,7 @@
 #ifndef PAN_H
 #define PAN_H
 
-#define SpinVersion	"Spin Version 6.4.8 -- 2 March 2018"
+#define SpinVersion	"Spin Version 6.4.6 -- 2 December 2016"
 #define PanSource	"./output/mutex.pml"
 
 #define G_long	8
@@ -123,9 +123,6 @@
 	#define HAS_NP	2
 	#define VERI	5	/* np_ */
 #endif
-#if defined(NOCLAIM) && defined(NP)
-	#undef NOCLAIM
-#endif
 #ifndef NOCLAIM
 	#define NCLAIMS	3
 	#ifndef NP
@@ -140,29 +137,29 @@ typedef struct S_F_MAP {
 } S_F_MAP;
 
 #define _nstates4	14	/* e3 */
-#define minseq4	95
-#define maxseq4	107
+#define minseq4	103
+#define maxseq4	115
 #define _endstate4	13
 
 #define _nstates3	14	/* e2 */
-#define minseq3	82
-#define maxseq3	94
+#define minseq3	90
+#define maxseq3	102
 #define _endstate3	13
 
 #define _nstates2	11	/* e1 */
-#define minseq2	72
-#define maxseq2	81
+#define minseq2	80
+#define maxseq2	89
 #define _endstate2	10
 
-#define _nstates1	37	/* q */
-#define minseq1	36
-#define maxseq1	71
-#define _endstate1	36
+#define _nstates1	41	/* q */
+#define minseq1	40
+#define maxseq1	79
+#define _endstate1	40
 
-#define _nstates0	37	/* p */
+#define _nstates0	41	/* p */
 #define minseq0	0
-#define maxseq0	35
-#define _endstate0	36
+#define maxseq0	39
+#define _endstate0	40
 
 extern short src_ln4[];
 extern short src_ln3[];
@@ -176,8 +173,8 @@ extern S_F_MAP src_file1[];
 extern S_F_MAP src_file0[];
 
 #define T_ID	unsigned char
-#define _T5	45
-#define _T2	46
+#define _T5	49
+#define _T2	50
 #define WS		8 /* word size in bytes */
 #define SYNC	0
 #define ASYNC	0
@@ -256,10 +253,8 @@ typedef struct P5 { /* np_ */
 
 
 #ifndef NOCLAIM
- #ifndef NP
 	#undef VERI
 	#define VERI	6
- #endif
 	#define Pclaim	P6
 
 typedef struct P6 {
@@ -860,7 +855,7 @@ void qsend(int, int, int);
 #define GLOBAL	7
 #define BAD	8
 #define ALPHA_F	9
-#define NTRANS	47
+#define NTRANS	51
 #if defined(BFS_PAR) || NCORE>1
 	void e_critical(int);
 	void x_critical(int);

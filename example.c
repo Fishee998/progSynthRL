@@ -4917,7 +4917,7 @@ int spin_(program* candidate)
         if(r2 == 0)
         {
             printf("liveness1");
-            reward += 5;
+            reward += 4;
         }
 
         
@@ -4927,7 +4927,7 @@ int spin_(program* candidate)
         if(r3 == 0)
         {
             printf("liveness2");
-            reward += 5;
+            reward += 4;
         }
 
         

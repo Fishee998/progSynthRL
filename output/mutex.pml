@@ -9,13 +9,17 @@ active proctype p()
 		::wi0 == 0->
 			try0 = 1;
 			select(wi0:0..1);
-			v1 = 1;
-			v1 = 1;
-			turn = 0;
+			v0 = 1;
+			turn = 1;
+			v0 = 1;
 			do
-				::turn == 0 && v0 != 0->
+				::v1 != 0 && turn != 0->
+					if
+						::v0 == 0 && v1 == 1->
+							turn = 1;
+					fi
 					do
-						::v0 == 1->
+						::v0 == 1 && v1 == 1->
 							turn = 1;
 						::else->break;
 					od
@@ -24,7 +28,7 @@ active proctype p()
 			cs0++;
 			try0 = 0;
 			cs0--;
-			v1 = 0;
+			v0 = 0;
 		::else->break;
 	od
 }
@@ -36,13 +40,17 @@ active proctype q()
 		::wi1 == 0->
 			try1 = 1;
 			select(wi1:0..1);
-			v0 = 1;
-			v0 = 1;
+			v1 = 1;
 			turn = 0;
+			v1 = 1;
 			do
-				::turn == 0 && v1 != 0->
+				::v0 != 0 && turn != 1->
+					if
+						::v0 == 0 && v1 == 1->
+							turn = 1;
+					fi
 					do
-						::v0 == 0->
+						::v0 == 0 && v0 == 1->
 							turn = 1;
 						::else->break;
 					od
@@ -51,7 +59,7 @@ active proctype q()
 			cs1++;
 			try1 = 0;
 			cs1--;
-			v0 = 0;
+			v1 = 0;
 		::else->break;
 	od
 }

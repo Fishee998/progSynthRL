@@ -1,6 +1,9 @@
 pan: ltl formula e3
+pan:1: acceptance cycle (at depth 32)
+pan: wrote mutex.pml.trail
 
-(Spin Version 6.4.8 -- 2 March 2018)
+(Spin Version 6.4.6 -- 2 December 2016)
+Warning: Search not completed
 	+ Partial Order Reduction
 
 Full statespace search for:
@@ -9,28 +12,20 @@ Full statespace search for:
 	acceptance   cycles 	+ (fairness enabled)
 	invalid end states	- (disabled by never claim)
 
-State-vector 36 byte, depth reached 333, errors: 0
-     1486 states, stored (3382 visited)
-     4766 states, matched
-     8148 transitions (= visited+matched)
+State-vector 36 byte, depth reached 34, errors: 1
+       49 states, stored (94 visited)
+       27 states, matched
+      121 transitions (= visited+matched)
         0 atomic steps
 hash conflicts:         0 (resolved)
 
 Stats on memory usage (in Megabytes):
-    0.091	equivalent memory usage for states (stored*(State-vector + overhead))
-    0.282	actual memory usage for states
+    0.003	equivalent memory usage for states (stored*(State-vector + overhead))
+    0.281	actual memory usage for states
   128.000	memory used for hash table (-w24)
     0.534	memory used for DFS stack (-m10000)
   128.730	total actual memory usage
 
 
-unreached in proctype p
-	(0 of 36 states)
-unreached in proctype q
-	./output/mutex.pml:46, state 16, "turn = 1"
-	(1 of 36 states)
-unreached in claim e3
-	_spin_nvr.tmp:30, state 13, "-end-"
-	(1 of 13 states)
 
 pan: elapsed time 0 seconds

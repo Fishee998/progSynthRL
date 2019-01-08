@@ -237,7 +237,7 @@
 		_m = 3; goto P999; /* 0 */
 
 		 /* PROC q */
-	case 11: // STATE 1 - ./output/mutex.pml:34 - [wi1 = 0] (0:0:1 - 1)
+	case 11: // STATE 1 - ./output/mutex.pml:38 - [wi1 = 0] (0:0:1 - 1)
 		IfNotBlocked
 		reached[1][1] = 1;
 		(trpt+1)->bup.oval = ((int)now.wi1);
@@ -247,7 +247,7 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 12: // STATE 2 - ./output/mutex.pml:34 - [wi1 = 1] (0:0:1 - 1)
+	case 12: // STATE 2 - ./output/mutex.pml:38 - [wi1 = 1] (0:0:1 - 1)
 		IfNotBlocked
 		reached[1][2] = 1;
 		(trpt+1)->bup.oval = ((int)now.wi1);
@@ -257,13 +257,13 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 13: // STATE 5 - ./output/mutex.pml:36 - [((wi1==0))] (0:0:0 - 1)
+	case 13: // STATE 5 - ./output/mutex.pml:40 - [((wi1==0))] (0:0:0 - 1)
 		IfNotBlocked
 		reached[1][5] = 1;
 		if (!((((int)now.wi1)==0)))
 			continue;
 		_m = 3; goto P999; /* 0 */
-	case 14: // STATE 6 - ./output/mutex.pml:37 - [try1 = 1] (0:0:1 - 1)
+	case 14: // STATE 6 - ./output/mutex.pml:41 - [try1 = 1] (0:0:1 - 1)
 		IfNotBlocked
 		reached[1][6] = 1;
 		(trpt+1)->bup.oval = ((int)now.try1);
@@ -273,7 +273,7 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 15: // STATE 7 - ./output/mutex.pml:38 - [wi1 = 0] (0:0:1 - 1)
+	case 15: // STATE 7 - ./output/mutex.pml:42 - [wi1 = 0] (0:0:1 - 1)
 		IfNotBlocked
 		reached[1][7] = 1;
 		(trpt+1)->bup.oval = ((int)now.wi1);
@@ -283,7 +283,7 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 16: // STATE 8 - ./output/mutex.pml:38 - [wi1 = 1] (0:0:1 - 1)
+	case 16: // STATE 8 - ./output/mutex.pml:42 - [wi1 = 1] (0:0:1 - 1)
 		IfNotBlocked
 		reached[1][8] = 1;
 		(trpt+1)->bup.oval = ((int)now.wi1);
@@ -293,29 +293,19 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 17: // STATE 11 - ./output/mutex.pml:39 - [v0 = 1] (0:0:1 - 3)
+	case 17: // STATE 11 - ./output/mutex.pml:43 - [v1 = 1] (0:0:1 - 3)
 		IfNotBlocked
 		reached[1][11] = 1;
-		(trpt+1)->bup.oval = ((int)now.v0);
-		now.v0 = 1;
+		(trpt+1)->bup.oval = ((int)now.v1);
+		now.v1 = 1;
 #ifdef VAR_RANGES
-		logval("v0", ((int)now.v0));
+		logval("v1", ((int)now.v1));
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 18: // STATE 12 - ./output/mutex.pml:40 - [v0 = 1] (0:0:1 - 1)
+	case 18: // STATE 12 - ./output/mutex.pml:44 - [turn = 0] (0:0:1 - 1)
 		IfNotBlocked
 		reached[1][12] = 1;
-		(trpt+1)->bup.oval = ((int)now.v0);
-		now.v0 = 1;
-#ifdef VAR_RANGES
-		logval("v0", ((int)now.v0));
-#endif
-		;
-		_m = 3; goto P999; /* 0 */
-	case 19: // STATE 13 - ./output/mutex.pml:41 - [turn = 0] (0:0:1 - 1)
-		IfNotBlocked
-		reached[1][13] = 1;
 		(trpt+1)->bup.oval = ((int)now.turn);
 		now.turn = 0;
 #ifdef VAR_RANGES
@@ -323,19 +313,29 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 20: // STATE 14 - ./output/mutex.pml:43 - [(((turn==0)&&(v1!=0)))] (0:0:0 - 1)
+	case 19: // STATE 13 - ./output/mutex.pml:45 - [v1 = 1] (0:0:1 - 1)
+		IfNotBlocked
+		reached[1][13] = 1;
+		(trpt+1)->bup.oval = ((int)now.v1);
+		now.v1 = 1;
+#ifdef VAR_RANGES
+		logval("v1", ((int)now.v1));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 20: // STATE 14 - ./output/mutex.pml:47 - [(((v0!=0)&&(turn!=1)))] (0:0:0 - 1)
 		IfNotBlocked
 		reached[1][14] = 1;
-		if (!(((((int)now.turn)==0)&&(((int)now.v1)!=0))))
+		if (!(((((int)now.v0)!=0)&&(((int)now.turn)!=1))))
 			continue;
 		_m = 3; goto P999; /* 0 */
-	case 21: // STATE 15 - ./output/mutex.pml:45 - [((v0==0))] (0:0:0 - 1)
+	case 21: // STATE 15 - ./output/mutex.pml:49 - [(((v0==0)&&(v1==1)))] (0:0:0 - 1)
 		IfNotBlocked
 		reached[1][15] = 1;
-		if (!((((int)now.v0)==0)))
+		if (!(((((int)now.v0)==0)&&(((int)now.v1)==1))))
 			continue;
 		_m = 3; goto P999; /* 0 */
-	case 22: // STATE 16 - ./output/mutex.pml:46 - [turn = 1] (0:0:1 - 1)
+	case 22: // STATE 16 - ./output/mutex.pml:50 - [turn = 1] (0:0:1 - 1)
 		IfNotBlocked
 		reached[1][16] = 1;
 		(trpt+1)->bup.oval = ((int)now.turn);
@@ -345,9 +345,25 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 23: // STATE 27 - ./output/mutex.pml:51 - [cs1 = (cs1+1)] (0:0:1 - 3)
+	case 23: // STATE 19 - ./output/mutex.pml:53 - [(((v0==0)&&(v0==1)))] (0:0:0 - 1)
 		IfNotBlocked
-		reached[1][27] = 1;
+		reached[1][19] = 1;
+		if (!(((((int)now.v0)==0)&&(((int)now.v0)==1))))
+			continue;
+		_m = 3; goto P999; /* 0 */
+	case 24: // STATE 20 - ./output/mutex.pml:54 - [turn = 1] (0:0:1 - 1)
+		IfNotBlocked
+		reached[1][20] = 1;
+		(trpt+1)->bup.oval = ((int)now.turn);
+		now.turn = 1;
+#ifdef VAR_RANGES
+		logval("turn", ((int)now.turn));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 25: // STATE 31 - ./output/mutex.pml:59 - [cs1 = (cs1+1)] (0:0:1 - 3)
+		IfNotBlocked
+		reached[1][31] = 1;
 		(trpt+1)->bup.oval = ((int)now.cs1);
 		now.cs1 = (((int)now.cs1)+1);
 #ifdef VAR_RANGES
@@ -355,9 +371,9 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 24: // STATE 28 - ./output/mutex.pml:52 - [try1 = 0] (0:0:1 - 1)
+	case 26: // STATE 32 - ./output/mutex.pml:60 - [try1 = 0] (0:0:1 - 1)
 		IfNotBlocked
-		reached[1][28] = 1;
+		reached[1][32] = 1;
 		(trpt+1)->bup.oval = ((int)now.try1);
 		now.try1 = 0;
 #ifdef VAR_RANGES
@@ -365,9 +381,9 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 25: // STATE 29 - ./output/mutex.pml:53 - [cs1 = (cs1-1)] (0:0:1 - 1)
+	case 27: // STATE 33 - ./output/mutex.pml:61 - [cs1 = (cs1-1)] (0:0:1 - 1)
 		IfNotBlocked
-		reached[1][29] = 1;
+		reached[1][33] = 1;
 		(trpt+1)->bup.oval = ((int)now.cs1);
 		now.cs1 = (((int)now.cs1)-1);
 #ifdef VAR_RANGES
@@ -375,24 +391,24 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 26: // STATE 30 - ./output/mutex.pml:54 - [v0 = 0] (0:0:1 - 1)
+	case 28: // STATE 34 - ./output/mutex.pml:62 - [v1 = 0] (0:0:1 - 1)
 		IfNotBlocked
-		reached[1][30] = 1;
-		(trpt+1)->bup.oval = ((int)now.v0);
-		now.v0 = 0;
+		reached[1][34] = 1;
+		(trpt+1)->bup.oval = ((int)now.v1);
+		now.v1 = 0;
 #ifdef VAR_RANGES
-		logval("v0", ((int)now.v0));
+		logval("v1", ((int)now.v1));
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 27: // STATE 36 - ./output/mutex.pml:57 - [-end-] (0:0:0 - 3)
+	case 29: // STATE 40 - ./output/mutex.pml:65 - [-end-] (0:0:0 - 3)
 		IfNotBlocked
-		reached[1][36] = 1;
+		reached[1][40] = 1;
 		if (!delproc(1, II)) continue;
 		_m = 3; goto P999; /* 0 */
 
 		 /* PROC p */
-	case 28: // STATE 1 - ./output/mutex.pml:7 - [wi0 = 0] (0:0:1 - 1)
+	case 30: // STATE 1 - ./output/mutex.pml:7 - [wi0 = 0] (0:0:1 - 1)
 		IfNotBlocked
 		reached[0][1] = 1;
 		(trpt+1)->bup.oval = ((int)now.wi0);
@@ -402,7 +418,7 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 29: // STATE 2 - ./output/mutex.pml:7 - [wi0 = 1] (0:0:1 - 1)
+	case 31: // STATE 2 - ./output/mutex.pml:7 - [wi0 = 1] (0:0:1 - 1)
 		IfNotBlocked
 		reached[0][2] = 1;
 		(trpt+1)->bup.oval = ((int)now.wi0);
@@ -412,13 +428,13 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 30: // STATE 5 - ./output/mutex.pml:9 - [((wi0==0))] (0:0:0 - 1)
+	case 32: // STATE 5 - ./output/mutex.pml:9 - [((wi0==0))] (0:0:0 - 1)
 		IfNotBlocked
 		reached[0][5] = 1;
 		if (!((((int)now.wi0)==0)))
 			continue;
 		_m = 3; goto P999; /* 0 */
-	case 31: // STATE 6 - ./output/mutex.pml:10 - [try0 = 1] (0:0:1 - 1)
+	case 33: // STATE 6 - ./output/mutex.pml:10 - [try0 = 1] (0:0:1 - 1)
 		IfNotBlocked
 		reached[0][6] = 1;
 		(trpt+1)->bup.oval = ((int)now.try0);
@@ -428,7 +444,7 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 32: // STATE 7 - ./output/mutex.pml:11 - [wi0 = 0] (0:0:1 - 1)
+	case 34: // STATE 7 - ./output/mutex.pml:11 - [wi0 = 0] (0:0:1 - 1)
 		IfNotBlocked
 		reached[0][7] = 1;
 		(trpt+1)->bup.oval = ((int)now.wi0);
@@ -438,7 +454,7 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 33: // STATE 8 - ./output/mutex.pml:11 - [wi0 = 1] (0:0:1 - 1)
+	case 35: // STATE 8 - ./output/mutex.pml:11 - [wi0 = 1] (0:0:1 - 1)
 		IfNotBlocked
 		reached[0][8] = 1;
 		(trpt+1)->bup.oval = ((int)now.wi0);
@@ -448,49 +464,49 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 34: // STATE 11 - ./output/mutex.pml:12 - [v1 = 1] (0:0:1 - 3)
+	case 36: // STATE 11 - ./output/mutex.pml:12 - [v0 = 1] (0:0:1 - 3)
 		IfNotBlocked
 		reached[0][11] = 1;
-		(trpt+1)->bup.oval = ((int)now.v1);
-		now.v1 = 1;
+		(trpt+1)->bup.oval = ((int)now.v0);
+		now.v0 = 1;
 #ifdef VAR_RANGES
-		logval("v1", ((int)now.v1));
+		logval("v0", ((int)now.v0));
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 35: // STATE 12 - ./output/mutex.pml:13 - [v1 = 1] (0:0:1 - 1)
+	case 37: // STATE 12 - ./output/mutex.pml:13 - [turn = 1] (0:0:1 - 1)
 		IfNotBlocked
 		reached[0][12] = 1;
-		(trpt+1)->bup.oval = ((int)now.v1);
-		now.v1 = 1;
-#ifdef VAR_RANGES
-		logval("v1", ((int)now.v1));
-#endif
-		;
-		_m = 3; goto P999; /* 0 */
-	case 36: // STATE 13 - ./output/mutex.pml:14 - [turn = 0] (0:0:1 - 1)
-		IfNotBlocked
-		reached[0][13] = 1;
 		(trpt+1)->bup.oval = ((int)now.turn);
-		now.turn = 0;
+		now.turn = 1;
 #ifdef VAR_RANGES
 		logval("turn", ((int)now.turn));
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 37: // STATE 14 - ./output/mutex.pml:16 - [(((turn==0)&&(v0!=0)))] (0:0:0 - 1)
+	case 38: // STATE 13 - ./output/mutex.pml:14 - [v0 = 1] (0:0:1 - 1)
+		IfNotBlocked
+		reached[0][13] = 1;
+		(trpt+1)->bup.oval = ((int)now.v0);
+		now.v0 = 1;
+#ifdef VAR_RANGES
+		logval("v0", ((int)now.v0));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 39: // STATE 14 - ./output/mutex.pml:16 - [(((v1!=0)&&(turn!=0)))] (0:0:0 - 1)
 		IfNotBlocked
 		reached[0][14] = 1;
-		if (!(((((int)now.turn)==0)&&(((int)now.v0)!=0))))
+		if (!(((((int)now.v1)!=0)&&(((int)now.turn)!=0))))
 			continue;
 		_m = 3; goto P999; /* 0 */
-	case 38: // STATE 15 - ./output/mutex.pml:18 - [((v0==1))] (0:0:0 - 1)
+	case 40: // STATE 15 - ./output/mutex.pml:18 - [(((v0==0)&&(v1==1)))] (0:0:0 - 1)
 		IfNotBlocked
 		reached[0][15] = 1;
-		if (!((((int)now.v0)==1)))
+		if (!(((((int)now.v0)==0)&&(((int)now.v1)==1))))
 			continue;
 		_m = 3; goto P999; /* 0 */
-	case 39: // STATE 16 - ./output/mutex.pml:19 - [turn = 1] (0:0:1 - 1)
+	case 41: // STATE 16 - ./output/mutex.pml:19 - [turn = 1] (0:0:1 - 1)
 		IfNotBlocked
 		reached[0][16] = 1;
 		(trpt+1)->bup.oval = ((int)now.turn);
@@ -500,9 +516,25 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 40: // STATE 27 - ./output/mutex.pml:24 - [cs0 = (cs0+1)] (0:0:1 - 3)
+	case 42: // STATE 19 - ./output/mutex.pml:22 - [(((v0==1)&&(v1==1)))] (0:0:0 - 1)
 		IfNotBlocked
-		reached[0][27] = 1;
+		reached[0][19] = 1;
+		if (!(((((int)now.v0)==1)&&(((int)now.v1)==1))))
+			continue;
+		_m = 3; goto P999; /* 0 */
+	case 43: // STATE 20 - ./output/mutex.pml:23 - [turn = 1] (0:0:1 - 1)
+		IfNotBlocked
+		reached[0][20] = 1;
+		(trpt+1)->bup.oval = ((int)now.turn);
+		now.turn = 1;
+#ifdef VAR_RANGES
+		logval("turn", ((int)now.turn));
+#endif
+		;
+		_m = 3; goto P999; /* 0 */
+	case 44: // STATE 31 - ./output/mutex.pml:28 - [cs0 = (cs0+1)] (0:0:1 - 3)
+		IfNotBlocked
+		reached[0][31] = 1;
 		(trpt+1)->bup.oval = ((int)now.cs0);
 		now.cs0 = (((int)now.cs0)+1);
 #ifdef VAR_RANGES
@@ -510,9 +542,9 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 41: // STATE 28 - ./output/mutex.pml:25 - [try0 = 0] (0:0:1 - 1)
+	case 45: // STATE 32 - ./output/mutex.pml:29 - [try0 = 0] (0:0:1 - 1)
 		IfNotBlocked
-		reached[0][28] = 1;
+		reached[0][32] = 1;
 		(trpt+1)->bup.oval = ((int)now.try0);
 		now.try0 = 0;
 #ifdef VAR_RANGES
@@ -520,9 +552,9 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 42: // STATE 29 - ./output/mutex.pml:26 - [cs0 = (cs0-1)] (0:0:1 - 1)
+	case 46: // STATE 33 - ./output/mutex.pml:30 - [cs0 = (cs0-1)] (0:0:1 - 1)
 		IfNotBlocked
-		reached[0][29] = 1;
+		reached[0][33] = 1;
 		(trpt+1)->bup.oval = ((int)now.cs0);
 		now.cs0 = (((int)now.cs0)-1);
 #ifdef VAR_RANGES
@@ -530,19 +562,19 @@
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 43: // STATE 30 - ./output/mutex.pml:27 - [v1 = 0] (0:0:1 - 1)
+	case 47: // STATE 34 - ./output/mutex.pml:31 - [v0 = 0] (0:0:1 - 1)
 		IfNotBlocked
-		reached[0][30] = 1;
-		(trpt+1)->bup.oval = ((int)now.v1);
-		now.v1 = 0;
+		reached[0][34] = 1;
+		(trpt+1)->bup.oval = ((int)now.v0);
+		now.v0 = 0;
 #ifdef VAR_RANGES
-		logval("v1", ((int)now.v1));
+		logval("v0", ((int)now.v0));
 #endif
 		;
 		_m = 3; goto P999; /* 0 */
-	case 44: // STATE 36 - ./output/mutex.pml:30 - [-end-] (0:0:0 - 3)
+	case 48: // STATE 40 - ./output/mutex.pml:34 - [-end-] (0:0:0 - 3)
 		IfNotBlocked
-		reached[0][36] = 1;
+		reached[0][40] = 1;
 		if (!delproc(1, II)) continue;
 		_m = 3; goto P999; /* 0 */
 	case  _T5:	/* np_ */
