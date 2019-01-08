@@ -10,11 +10,13 @@ Tensorflow: 1.0
 gym: 0.7.3
 """
 from random import choice
+from maze_env import Maze
 import example
 import numpy as np
 import pandas as pd
 import tensorflow as tf
 import random
+
 
 np.random.seed(1)
 tf.set_random_seed(1)
@@ -480,18 +482,28 @@ class DeepQNetwork:
             one_hot_action2[i] = 1
         return one_hot_action2
 
-    def obs(self, info_, action1):
-        observation_ = info_.state
-        fitness = info_.fitness
+    def obs(self, candidate, action1):
+        observation_ = self.getstate(candidate)
+        fitness = example.get_fitness(candidate)
         '''
         if observation_[action1 - 1] != 0 and observation_[action1 - 1] != -1:
             action2set = np.array(self.action2set(example.getLegalAction2(info_.candidate, action1)))
         else:
             action2set = []
         '''
-        #one_hot_action2 = self.one_hot_action2(action2set)
+
         one_hot_action1 = self.one_hot_action1(action1)
         # observation_store = np.append(np.append(np.append(observation_, one_hot_action1), one_hot_action2),
                                       #pow(fitness / 100.00, 2))
         observation_store = np.append(np.append(observation_, one_hot_action1), fitness / 100.00)
         return observation_store
+
+    def getstate(self, candidate):
+        vector = example.genVector(candidate)
+        state = []
+        for ind in range(42):
+            if example.state_i(vector, ind) > 0:
+                state.append(example.state_i(vector, ind) / 10000.0000)
+            else:
+                state.append(example.state_i(vector, ind))
+        return state

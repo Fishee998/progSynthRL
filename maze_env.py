@@ -30,15 +30,16 @@ class Maze(object):
         self.candidate = None
         self.state_spin = []
         self.candidate_spin = []
+        self.candidates = []
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
-    def step(self, action):
+    def step(self, index, action):
         assert self.action_space.contains(action[0] + action[1]), "%r (%s) invalid" % (action, type(action))
         # self.fitness = []
-        candidate = self.candidate
+        candidate = self.candidates[index]
 
         fitness = example.get_fitness(candidate)
 
@@ -64,12 +65,9 @@ class Maze(object):
                     example.freeAll(None, self.maxCandidate, None, None, None, 2)
                 maxCandidate = example.copyProgram(candidate_)
                 self.maxCandidate = maxCandidate
-                reward = 1
                 print('maxfitness:{maxfitness}'.format(maxfitness = self.maxFitness))
             self.fitness = newfitnessValue
 
-            # x = newfitnessValue - oldfitnessValue
-            # x = newfitnessValue - self.maxFitness
             if newfitnessValue > 74:
                 reward = -0.1
             else:
@@ -77,70 +75,11 @@ class Maze(object):
                     reward = -0.3
                 else:
                     reward = -0.5
-            '''
-            if newfitnessValue < 74:
-                reward = -0.2
-            else:
-                if newfitnessValue < 34:
-                    reward = -0.3
-                else:
-                    if newfitnessValue < 24:
-                        reward = -0.5
-            # reward = x
-            '''
-            '''
-            if newfitnessValue > 74:
-                reward = 0.8
-            else:
-                if newfitnessValue > 64:
-                    reward = 0.6
-                else:
-                    reward = -0.2
-            
-            if newfitnessValue > 60:
-                reward = 0.3
-            else:
-                if newfitnessValue > 70:
-                    reward = 0.5
-            '''
-            '''
-            if x > 0:
-                if newfitnessValue > 74:
-                    reward = 0.6 + 0.009 * x
-                else:
-                    if newfitnessValue > 69:
-                        reward = 0.4 + 0.007 * x
-                    else:
-                        if newfitnessValue > 40:
-                            reward = 0.05 + 0.005 * x
-                        else:
-                            reward = 0.03 + 0.003 * x
-            else:
-                if x < 0:
-                    if newfitnessValue < 30:
-                        reward = -0.3 + 0.009 * x
-                    else:
-                        if newfitnessValue < 40:
-                            reward = -0.3 + 0.007 * x
-                        else:
-                            if newfitnessValue < 50:
-                                reward = -0.3 + 0.005 * x
-                            else:
-                                if newfitnessValue < 60:
-                                    reward = 0.003 * x
-                                else:
-                                    if newfitnessValue < 69:
-                                        reward = 0.1 + 0.001 * x
-                                    else:
-                                        reward = 0.3 + 0.0005 * x
-                else:
-                    reward = 0
-            '''
         spin_reward = 0
         if newfitnessValue > 79:
             reward = 0.1
             print("???")
-            '''
+            self.maxCandidate = None
             print(len(self.state_spin))
             if len(self.state_spin) > 0:
                 for stae in self.state_spin:
@@ -153,7 +92,7 @@ class Maze(object):
                 self.state_spin.append(self.state)
                 self.candidate_spin.append(example.copyProgram(self.candidate))
             self.spin_used = 1
-            '''
+
             spin_reward = example.spin_(candidate_)
             if spin_reward == 4:
                 print("liveness")
@@ -197,11 +136,13 @@ class Maze(object):
             self.state.append(np.array(state))
             # self.astActNodes_.append(astActNodes)
         '''
+
         candidate = example.getCandidate(candidates, 0)
         self.candidate = candidate
         self.state = np.array(self.getstate(candidate))
         self.fitness = example.get_fitness(candidate)
-        
+        self.candidates.append(self.candidate)
+
         return self
 
     def reset_(self, candidate):
@@ -215,9 +156,18 @@ class Maze(object):
         state = self.getstate(candidate)
         self.state_.append(np.array(state))
         '''
-        self.candidate = example.copyProgram(candidate)
-        self.state = self.getstate(candidate)
-        self.fitness = example.get_fitness(candidate)
+        if self.maxCandidate != None:
+            self.candidate = example.copyProgram(candidate)
+            self.state = self.getstate(candidate)
+            self.fitness = example.get_fitness(candidate)
+        else:
+            candidates = prog.initProg()
+            candidate = example.getCandidate(candidates, 0)
+            self.candidate = candidate
+        self.candidates.append(self.candidate)
+        self.candidates.extend(self.state_spin)
+
+
         return self
 
     def reset_1(self, candidate):

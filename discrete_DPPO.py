@@ -166,14 +166,14 @@ class Worker(object):
             #    info_ = self.env.reset_(self.maxCandidate)
             # observation = state + act1 + legal act2 + fitValue
             # else:
-            info_ = self.env.reset()
-            
-            maxCand = info_.maxCandidate
-            if GLOBAL_EP % 2 != 0:
-                info_ = self.env.reset_(maxCand)
-            else:
+
+            if GLOBAL_EP == 0:
                 info_ = self.env.reset()
-            s = RL.obs(info_, action1)
+            else:
+                maxCand = info_.maxCandidate
+                info_ = self.env.reset_(maxCand)
+
+            # s = RL.obs(info_, action1)
 
             ep_r = 0
             buffer_s, buffer_a, buffer_r = [], [], []
@@ -181,51 +181,55 @@ class Worker(object):
                 if not ROLLING_EVENT.is_set():                  # while global PPO is updating
                     ROLLING_EVENT.wait()                        # wait until PPO is updated
                     buffer_s, buffer_a, buffer_r = [], [], []   # clear history buffer, use new policy to collect data
-                action, action_value, action_store = self.ppo.choose_action(s, info_.candidate, action1)
-                # print('action:{action}'.format(action=action_store))
-                if action_store < 42:
-                    action1 = action
-                    s_ = RL.obs(info_, action1)
-                    r = -0.05
-                    done = False
-                else:
-                    action2 = action
-                    a = RL.getAction(action1, action2)
-                    r, done, info_ = self.env.step(a)
-                    s_ = RL.obs(info_, action1)
-
-                buffer_s.append(s)
-                # a = action_store
-                buffer_a.append(action_store)
-                buffer_r.append(r)
-                s = s_
-                ep_r += r
-
-                GLOBAL_UPDATE_COUNTER += 1                      # count to minimum batch size, no need to wait other workers
-                if t == EP_LEN - 1 or GLOBAL_UPDATE_COUNTER >= MIN_BATCH_SIZE or done:
-                    if done:
-                        v_s_ = 0                                # end of episode
+                for index_ in range(len(info_.candidates)):
+                    candidate = info_.candidates[index_]
+                    s = RL.obs(candidate, action1)
+                    action, action_value, action_store = self.ppo.choose_action(s, candidate, action1)
+                    # print('action:{action}'.format(action=action_store))
+                    if action_store < 42:
+                        action1 = action
+                        s_ = RL.obs(info_.candidates[index_], action1)
+                        r = -0.05
+                        done = False
                     else:
-                        v_s_ = self.ppo.get_v(s_)
+                        action2 = action
+                        a = RL.getAction(action1, action2)
+                        r, done, info_ = self.env.step(index_, a)
+                        info_.candidates[index_] = info_.candidate
+                        s_ = RL.obs(info_.candidate, action1)
 
-                    discounted_r = []                           # compute discounted reward
-                    for r in buffer_r[::-1]:
-                        v_s_ = r + GAMMA * v_s_
-                        discounted_r.append(v_s_)
-                    discounted_r.reverse()
+                    buffer_s.append(s)
+                    # a = action_store
+                    buffer_a.append(action_store)
+                    buffer_r.append(r)
+                    # s = s_
+                    ep_r += r
 
-                    bs, ba, br = np.vstack(buffer_s), np.vstack(buffer_a), np.array(discounted_r)[:, None]
-                    buffer_s, buffer_a, buffer_r = [], [], []
-                    QUEUE.put(np.hstack((bs, ba, br)))          # put data in the queue
-                    if GLOBAL_UPDATE_COUNTER >= MIN_BATCH_SIZE:
-                        ROLLING_EVENT.clear()       # stop collecting data
-                        UPDATE_EVENT.set()          # globalPPO update
+                    GLOBAL_UPDATE_COUNTER += 1                      # count to minimum batch size, no need to wait other workers
+                    if t == EP_LEN - 1 or GLOBAL_UPDATE_COUNTER >= MIN_BATCH_SIZE or done:
+                        if done:
+                            v_s_ = 0                                # end of episode
+                        else:
+                            v_s_ = self.ppo.get_v(s_)
 
-                    if GLOBAL_EP >= EP_MAX:         # stop training
-                        COORD.request_stop()
-                        break
+                        discounted_r = []                           # compute discounted reward
+                        for r in buffer_r[::-1]:
+                            v_s_ = r + GAMMA * v_s_
+                            discounted_r.append(v_s_)
+                        discounted_r.reverse()
 
-                    if done: break
+                        bs, ba, br = np.vstack(buffer_s), np.vstack(buffer_a), np.array(discounted_r)[:, None]
+                        buffer_s, buffer_a, buffer_r = [], [], []
+                        QUEUE.put(np.hstack((bs, ba, br)))          # put data in the queue
+                        if GLOBAL_UPDATE_COUNTER >= MIN_BATCH_SIZE:
+                            ROLLING_EVENT.clear()       # stop collecting data
+                            UPDATE_EVENT.set()          # globalPPO update
+
+                        if GLOBAL_EP >= EP_MAX:         # stop training
+                            COORD.request_stop()
+                            break
+
+                        if done: break
 
             # record reward changes, plot later
             if len(GLOBAL_RUNNING_R) == 0: GLOBAL_RUNNING_R.append(ep_r)
