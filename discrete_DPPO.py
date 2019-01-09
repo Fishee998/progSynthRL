@@ -28,7 +28,7 @@ import example
 os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 EP_MAX = 10000
 EP_LEN = 100
-N_WORKER = 1                # parallel workers
+N_WORKER = 2                # parallel workers
 GAMMA = 0.8                 # reward discount factor
 A_LR = 0.0001               # learning rate for actor
 C_LR = 0.0001               # learning rate for critic
@@ -189,7 +189,7 @@ class Worker(object):
                     if action_store < 42:
                         action1 = action
                         s_ = RL.obs(info_.candidates[index_], action1)
-                        r = -0.05
+                        r = -0.1
                         done = False
                     else:
                         action2 = action

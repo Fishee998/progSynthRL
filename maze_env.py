@@ -156,16 +156,14 @@ class Maze(object):
         state = self.getstate(candidate)
         self.state_.append(np.array(state))
         '''
+        self.candidates = []
+        candidates = prog.initProg()
+        candidate = example.getCandidate(candidates, 0)
+        self.candidates.append(candidate)
         if self.maxCandidate != None:
             self.candidate = example.copyProgram(candidate)
-            self.state = self.getstate(candidate)
-            self.fitness = example.get_fitness(candidate)
-        else:
-            candidates = prog.initProg()
-            candidate = example.getCandidate(candidates, 0)
-            self.candidate = candidate
-        self.candidates.append(self.candidate)
-        self.candidates.extend(self.state_spin)
+            self.candidates.append(self.candidate)
+        self.candidates.extend(self.candidate_spin)
 
 
         return self

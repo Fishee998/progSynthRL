@@ -256,7 +256,8 @@ class DeepQNetwork:
         if act1Set[action1 - 1] != -1 and act1Set[action1 - 1] != 0:
             action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
             # actions = action2set
-            actions = np.append(action1s, action2set)
+            action1 = random.sample(action1s, 2)
+            actions = np.append(action1, action2set)
         else:
             actions = action1s
 
