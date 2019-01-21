@@ -37,6 +37,11 @@ def run_maze():
                 example.printAst(info_.candidate_[index])
                 ast = astEncoder.getAstDict()
                 nodes, children = sampling.gen_samples1(ast, embeddings, embed_lookup)
+                progint = example.printAstint(info_.candidate_[index])
+                length_progint = example.get_action2(progint, 0)
+                for i in range(length_progint):
+                    print(example.state_i(progint, i))
+
                 observation = info_.state_[index]
                 fitness = example.get_fitness(info_.candidate_[index])
 

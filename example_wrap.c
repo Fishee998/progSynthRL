@@ -4460,6 +4460,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_printAstint(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  program *arg1 = (program *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:printAstint",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_program, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "printAstint" "', argument " "1"" of type '" "program *""'"); 
+  }
+  arg1 = (program *)(argp1);
+  result = (int *)printAstint(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
 	 { (char *)"new_intp", _wrap_new_intp, METH_VARARGS, NULL},
@@ -4502,6 +4524,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"mutation_", _wrap_mutation_, METH_VARARGS, NULL},
 	 { (char *)"printprog", _wrap_printprog, METH_VARARGS, NULL},
 	 { (char *)"getLength", _wrap_getLength, METH_VARARGS, NULL},
+	 { (char *)"printAstint", _wrap_printAstint, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 

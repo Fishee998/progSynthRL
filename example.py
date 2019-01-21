@@ -255,6 +255,10 @@ printprog = _example.printprog
 def getLength(action2):
     return _example.getLength(action2)
 getLength = _example.getLength
+
+def printAstint(prog):
+    return _example.printAstint(prog)
+printAstint = _example.printAstint
 # This file is compatible with both classic and new-style classes.
 
 cvar = _example.cvar

@@ -98,3 +98,4 @@ extern program** initProg(Expr** requirements ,int numofrequirements,double* coe
 extern program* mutation_(program* candidate0, int nodeNum, int actType,Expr** requirements ,int numofrequirements,double* coef);
 extern void printprog(treenode* root,int blank,program* prog);
 extern int getLength(int* action2);
+extern int* printAstint(program* prog);
