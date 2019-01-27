@@ -3,6 +3,9 @@
 import pickle
 import numpy as np
 import random
+import example
+import numToNum as nTn
+
 
 def gen_samples(trees, labels, vectors, vector_lookup):
     """Creates a generator that returns a tree in BFS order with each node
@@ -42,9 +45,10 @@ def gen_samples1(ast, vectors, vector_lookup):
     for tree in ast:
         # label = label_lookup[tree['label']]
         node = tree['name']
+
         nodes.append(vectors[vector_lookup[node]])
         children.append(tree['children'])
-        children[0] = children[0][2:]
+    children[0] = children[0][1:]
     return nodes, children
 
 def batch_samples(gen, batch_size):
@@ -82,3 +86,50 @@ def _pad_batch(nodes, children, labels):
 
 def _onehot(i, total):
     return [1.0 if j == i else 0.0 for j in range(total)]
+
+def _pad_batch_(nodes1, children1):
+    nodes = []
+    nodes.append(nodes1)
+    children = []
+    children.append(children1)
+
+    max_nodes = max([len(x) for x in nodes])
+    max_children = max([len(x) for x in children])
+    feature_len = len(nodes[0][0])
+    child_len = max([len(c) for n in children for c in n])
+
+    nodes = [n + [[0] * feature_len] * (max_nodes - len(n)) for n in nodes]
+    # pad batches so that every batch has the same number of nodes
+    children = [n + ([[]] * (max_children - len(n))) for n in children]
+    # pad every child sample so every node has the same number of children
+    children = [[c + [0] * (child_len - len(c)) for c in sample] for sample in children]
+
+    return nodes, children
+
+
+def gen_samplesint(vectors):
+    length = example.intProg(0)
+    prog_index = 1
+    nodes = []
+    children = []
+    child = []
+    first = 0
+    while prog_index < length:
+        temp = example.intProg(prog_index)
+        # print("gen_samplesint\n")
+        # print(temp)
+        if temp != -1:
+            if first == 0:
+                temp = nTn.NODE_MAP_[temp]
+                nodes.append(vectors[temp])
+                first = 1
+            else:
+                if (temp != -2):
+                    child.append(temp)
+        else:
+            children.append(child)
+            child = []
+            first = 0
+        prog_index = prog_index + 1
+    children[0] = children[0][1:]
+    return nodes, children

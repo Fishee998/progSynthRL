@@ -3255,9 +3255,15 @@ program* getCandidate(program** candidate, int i)
 {
     return candidate[i];
 }
+
 int state_i(int* vector, int i)
 {
     return vector[i];
+}
+int intProg(int i)
+{
+    extern int *gp_progint;
+    return gp_progint[i];
 }
 int judgeNULL(treenode* l)
 {
@@ -3730,6 +3736,28 @@ SWIGINTERN PyObject *_wrap_state_i(PyObject *SWIGUNUSEDPARM(self), PyObject *arg
   } 
   arg2 = (int)(val2);
   result = (int)state_i(arg1,arg2);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_intProg(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:intProg",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "intProg" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = (int)(val1);
+  result = (int)intProg(arg1);
   resultobj = SWIG_From_int((int)(result));
   return resultobj;
 fail:
@@ -4466,7 +4494,6 @@ SWIGINTERN PyObject *_wrap_printAstint(PyObject *SWIGUNUSEDPARM(self), PyObject 
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  int *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"O:printAstint",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_program, 0 |  0 );
@@ -4474,8 +4501,8 @@ SWIGINTERN PyObject *_wrap_printAstint(PyObject *SWIGUNUSEDPARM(self), PyObject 
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "printAstint" "', argument " "1"" of type '" "program *""'"); 
   }
   arg1 = (program *)(argp1);
-  result = (int *)printAstint(arg1);
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_int, 0 |  0 );
+  printAstint(arg1);
+  resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
   return NULL;
@@ -4501,6 +4528,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"getroot", _wrap_getroot, METH_VARARGS, NULL},
 	 { (char *)"getCandidate", _wrap_getCandidate, METH_VARARGS, NULL},
 	 { (char *)"state_i", _wrap_state_i, METH_VARARGS, NULL},
+	 { (char *)"intProg", _wrap_intProg, METH_VARARGS, NULL},
 	 { (char *)"judgeNULL", _wrap_judgeNULL, METH_VARARGS, NULL},
 	 { (char *)"isNUll", _wrap_isNUll, METH_VARARGS, NULL},
 	 { (char *)"findNode", _wrap_findNode, METH_VARARGS, NULL},

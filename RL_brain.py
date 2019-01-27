@@ -306,7 +306,6 @@ class DeepQNetwork:
 
     def choose_action(self, action1, nodes, children1, onehotaction1, candidate):
         #observation = observation[np.newaxis, :]
-        action_value = action1
         if np.random.uniform() < self.epsilon:
             action1_ = []
             action1_.append(onehotaction1)
@@ -423,18 +422,25 @@ class DeepQNetwork:
 
         # sample batch memory from all memory
         if self.memory_counter > self.memory_size:
-            sample_index_good = np.random.choice(self.memory_size_good, size=self.batch_size - 16)
-            sample_index = np.random.choice(self.memory_size, size=16)
+            sample_index_good = np.random.choice(self.memory_size_good, size=self.batch_size)
+            sample_index = np.random.choice(self.memory_size, size=self.batch_size)
         else:
-            sample_index_good = np.random.choice(self.memory_size_good, size=self.batch_size -16)
-            sample_index = np.random.choice(self.memory_size, size=16)
+            sample_index_good = np.random.choice(self.memory_size_good, size=self.batch_size)
+            sample_index = np.random.choice(self.memory_size, size=self.batch_size)
 
         batch_memory = []
+        batch_memory1 = []
         for index in sample_index:
             batch_memory.append(self.memory[index])
 
-        for index in sample_index_good:
-            batch_memory.append(self.memory_good[index])
+
+        #for index in sample_index:
+        #    batch_memory1.append(self.memory_good[index])
+
+        #for i, batch in enumerate(self.batch_samples_(self.x(batch_memory1[:]), self.batch_size)):
+        #    nodes, children, action1, action, reward, nodes_, children_, action1_ = batch
+
+
 
         for i, batch in enumerate(self.batch_samples_(self.x(batch_memory[:]), self.batch_size)):
             nodes, children, action1, action, reward, nodes_, children_, action1_ = batch
@@ -504,7 +510,7 @@ class DeepQNetwork:
         with tf.name_scope('conv_layer'):
             self.nodes1 = nodes = [
                 self.conv_node(nodes, children, feature_size, output_size)
-                for _ in range(num_conv)
+                 for _ in range(num_conv)
             ]
             a = tf.concat(nodes, axis=2)
             return tf.concat(nodes, axis=2)

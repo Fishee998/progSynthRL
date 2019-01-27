@@ -1645,14 +1645,14 @@ int setCondNum(cond* c,program* prog, int number)
 }
 
 //0:CONST  1:VAR  2:TIMES  3:PLUS  4:MINUS //5:DIV
-void newprintexpint(exp_* e,program* prog, int node, int* s, int start)
+intprog* newprintexpint(exp_* e,program* prog, int node, intprog* cand)
 {
 
     if(e == NULL)
-        return;
+        return cand;
     if (node != 1)
     {
-        s[start] = e->number;
+        cand->progint[cand->start] = e->number;
 
     }
     else
@@ -1665,90 +1665,30 @@ void newprintexpint(exp_* e,program* prog, int node, int* s, int start)
                     printf("newprintexpint 5 error");
                 }
                 if(e->index < 2)
-                    s[start] = e->index + 15;
+                    cand->progint[cand->start] = e->index + 15;
                 else if(e->index >= 3)
-                    s[start] = e->index + 14;
+                    cand->progint[cand->start] = e->index + 14;
                 break;
             case 1:
-                s[start] = e->index + 10;
+                cand->progint[cand->start] = e->index + 10;
 
         }
     }
-    return;
-}
-
-
-int condint(treenode* root,program* prog, int* s, int start)
-{
-    s[++start] = root->cond1->type + 5;
-    if (root->cond1->type < 1)
-    {
-        s[++start] = -2;
-        s[++start] = -1;
-    }
-    else if(root->cond1->type < 3)
-    {
-        s[++start] = root->cond1->exp1->number;
-        s[++start] = root->cond1->exp2->number;
-        s[++start] = -1;
-        //exp1
-        newprintexpint(root->cond1->exp1, prog, 1, s, ++start);
-        s[++start] = -2;
-        s[++start] = -1;
-        //exp2
-        newprintexpint(root->cond1->exp2, prog, 1, s, ++start);
-        s[++start] = -2;
-        s[++start] = -1;
-    }
-    else
-    {
-        s[++start] = root->cond1->cond1->number;
-        s[++start] = root->cond1->cond2->number;
-        s[++start] = -1;
-        //cond1
-        s[++start] = root->cond1->cond1->type + 5;
-        newprintexpint(root->cond1->cond1->exp1, prog, 0, s, ++start);
-        newprintexpint(root->cond1->cond1->exp2, prog, 0, s, ++start);
-        s[++start] = -1;
-
-        //exp1
-        newprintexpint(root->cond1->cond1->exp1, prog, 1, s, ++start);
-        s[++start] = -2;
-        s[++start] = -1;
-        //exp2
-        newprintexpint(root->cond1->cond1->exp2, prog, 1, s, ++start);
-        s[++start] = -2;
-        s[++start] = -1;
-        //cond2
-        s[++start] = root->cond1->cond2->type + 5;
-        newprintexpint(root->cond1->cond2->exp1, prog, 0, s, ++start);
-        newprintexpint(root->cond1->cond2->exp2, prog, 0, s, ++start);
-        s[++start] = -1;
-        //exp1
-        newprintexpint(root->cond1->cond2->exp1, prog, 1, s, ++start);
-        s[++start] = -2;
-        s[++start] = -1;
-        //exp2
-        newprintexpint(root->cond1->cond2->exp2, prog, 1, s, ++start);
-        s[++start] = -2;
-        s[++start] = -1;
-
-    }
-    return start;
+    return cand;
 }
 
 //treeNode
 //if:0 while:1 assign:2 cs:3
-int treeNode_int(treenode* root,program* prog, int node, int* s, int start)
+intprog* treeNode_int(treenode* root,program* prog, int node, intprog* cand)
 {    //sprintf(s,"newprintprog progtype:%d blank:%d\n",prog->type,blank);
     //  int i;
     if(root == NULL)
-        return 0;
+        return cand;
     //sprintf(s,"parent type :%d",prog->parent->type);
     if (node == 0 && root->type != 3)
     {
-        s[start] = root->number;
-        start++;
+        cand->progint[cand->start] = root->number;
+        cand->start++;
         // strcat(s,iToStr(root->number));
     }
     else
@@ -1757,125 +1697,209 @@ int treeNode_int(treenode* root,program* prog, int node, int* s, int start)
         {
             case 0://treenode
                 // strcat(s,iToStr(root->number));
-                s[start] = 0;
-                start++;
+                cand->progint[cand->start] = 0;
+                cand->start++;
                 //strcat(s,"if");
                 break;
 
             case 1://strcat(s,iToStr(root->number));
-                s[start] = 1;
-                start++;
+                cand->progint[cand->start] = 1;
+                cand->start++;
                 //strcat(s,"while");
                 break;
 
-            case 3:start = treeNode_int(root->treenode1,prog, 0, s, start);
+            case 3:treeNode_int(root->treenode1,prog, 0, cand);
                 //strcat(s,";");
-                start = treeNode_int(root->treenode2,prog, 0, s, start);
+                treeNode_int(root->treenode2,prog, 0, cand);
                 break;
 
             case 4:
-                s[start] = 2;
-                start++;
+                cand->progint[cand->start] = 2;
+                cand->start++;
                 break;
 
-            case 5:s[start] = 3;
-                start++;
+            case 5:cand->progint[cand->start] = 3;
+                cand->start++;
         }
     }
-    return start;
+    return cand;
 }
 
+intprog* condint(treenode* root,program* prog, intprog* cand)
+{
+    cand->progint[++cand->start] = root->cond1->type + 5;
+    //s[++start] = root->cond1->type + 5;
+    if (root->cond1->type < 1)
+    {
+        cand->progint[++cand->start] = -2;
+        cand->progint[++cand->start] = -1;
+    }
+    else if(root->cond1->type < 3)
+    {
+        cand->progint[++cand->start] = root->cond1->exp1->number;
+        cand->progint[++cand->start] = root->cond1->exp2->number;
+        cand->progint[++cand->start] = -1;
+        //exp1
+        cand->start++;
+        //cand =
+        newprintexpint(root->cond1->exp1, prog, 1, cand);
+        cand->progint[++cand->start] = -2;
+        cand->progint[++cand->start] = -1;
+        //exp2
+        cand->start++;
+        //cand =
+        newprintexpint(root->cond1->exp2, prog, 1, cand);
+        cand->progint[++cand->start] = -2;
+        cand->progint[++cand->start] = -1;
+    }
+    else
+    {
+        cand->progint[++cand->start] = root->cond1->cond1->number;
+        cand->progint[++cand->start] = root->cond1->cond2->number;
+        cand->progint[++cand->start] = -1;
+        //cond1
+        cand->progint[++cand->start] = root->cond1->cond1->type + 5;
+        cand->start++;
+        //cand =
+        newprintexpint(root->cond1->cond1->exp1, prog, 0, cand);
+        cand->start++;
+        //cand =
+        newprintexpint(root->cond1->cond1->exp2, prog, 0, cand);
 
-int newprintprogint(treenode* root,program* prog, int* s, int start)
+        cand->progint[++cand->start] = -1;
+
+        //exp1
+        cand->start++;
+        //cand =
+        newprintexpint(root->cond1->cond1->exp1, prog, 1, cand);
+        cand->progint[++cand->start] = -2;
+        cand->progint[++cand->start] = -1;
+        //exp2
+        cand->start++;
+        //cand =
+        newprintexpint(root->cond1->cond1->exp2, prog, 1, cand);
+        cand->progint[++cand->start] = -2;
+        cand->progint[++cand->start] = -1;
+        //cond2
+        cand->progint[++cand->start] = root->cond1->cond2->type + 5;
+        cand->start++;
+        //cand =
+        newprintexpint(root->cond1->cond2->exp1, prog, 0, cand);
+        cand->start++;
+        //cand =
+        newprintexpint(root->cond1->cond2->exp2, prog, 0, cand);
+        cand->progint[++cand->start] = -1;
+        //exp1
+        cand->start++;
+        //cand =
+        newprintexpint(root->cond1->cond2->exp1, prog, 1, cand);
+        cand->progint[++cand->start] = -2;
+        cand->progint[++cand->start] = -1;
+        //exp2
+        cand->start++;
+        //cand =
+        newprintexpint(root->cond1->cond2->exp2, prog, 1, cand);
+        cand->progint[++cand->start] = -2;
+        cand->progint[++cand->start] = -1;
+
+    }
+    return cand;
+}
+
+intprog* newprintprogint(treenode* root,program* prog, intprog* cand)
 {    //printf("newprintprog progtype:%d blank:%d\n",prog->type,blank);
     if(root == NULL)
-        return start;
+        return cand;
     switch(root->type)
     {
         case 0:
-            s[start] = 0;
-            s[++start] = root->cond1->number;
-            start = treeNode_int(root->treenode1, prog, 0, s, ++start);
-            s[start] = -1;
+            cand->progint[cand->start] = 0;
+            cand->progint[++cand->start] = root->cond1->number;
+            // printf("%d", start);
+            cand->start++;
+
+            //cand =
+            treeNode_int(root->treenode1, prog, 0, cand);
+            // printf("%d", start);
+            cand->progint[cand->start] = -1;
             //condnode
-            start = condint(root, prog, s, start);
-            start = newprintprogint(root->treenode1, prog, s, ++start);
+            //cand =
+            condint(root, prog, cand);
+            cand->start++;
+            newprintprogint(root->treenode1, prog, cand);
             break;
         case 1:
-            s[start] = 1;
-            s[++start] = root->cond1->number;
-            start = treeNode_int(root->treenode1, prog, 0, s, ++start);
-            s[start] = -1;
-            //condnode
-            start = condint(root, prog, s, start);
+            cand->progint[cand->start] = 1;
+            cand->progint[++cand->start] = root->cond1->number;
+            cand->start++;
+            //cand =
+            treeNode_int(root->treenode1, prog, 0, cand);
 
-            start = newprintprogint(root->treenode1, prog, s, ++start);
+            cand->progint[cand->start] = -1;
+            //condnode
+
+            //cand =
+            condint(root, prog, cand);
+            cand->start++;
+            newprintprogint(root->treenode1, prog, cand);
             break;
         case 3:
-            start = newprintprogint(root->treenode1, prog, s, start);
 
-            start = newprintprogint(root->treenode2, prog, s, start);
+            newprintprogint(root->treenode1, prog, cand);
+
+            newprintprogint(root->treenode2, prog, cand);
+
             break;
         case 4:
-            s[start] = 2;
-            s[++start] = root->number++;
-            s[++start] = root->exp1->number;
-            s[++start] = -1;
+            cand->progint[cand->start] = 2;
+            cand->progint[++cand->start] = ++root->number;
+            cand->progint[++cand->start] = root->exp1->number;
+            cand->progint[++cand->start] = -1;
             //exp1
-            s[++start] = root->index + 10;
-            s[++start] = -2;
-            s[++start] = -1;
+            cand->progint[++cand->start] = root->index + 10;
+            cand->progint[++cand->start] = -2;
+            cand->progint[++cand->start] = -1;
             //exp2
             switch (root->exp1->type) {
                 case 0:
                     if(root->exp1->index < 2)
-                        s[++start] = root->exp1->index + 15;
+                        cand->progint[++cand->start] = root->exp1->index + 15;
                     else if(root->exp1->index >= 3)
-                        s[++start] = root->exp1->index + 14;
+                        cand->progint[++cand->start] = root->exp1->index + 14;
                     break;
                 default:
-                    s[++start] = root->exp1->index + 10;
+                    cand->progint[++cand->start] = root->exp1->index + 10;
             }
-            s[++start] = -2;
-            s[++start] = -1;
-            start++;
+            cand->progint[++cand->start] = -2;
+            cand->progint[++cand->start] = -1;
+            cand->start++;
             break;
         case 5:
             // start = start - 2;
-            s[start] = 3;
-            s[++start] = -2;
-            s[++start] = -1;
-            start++;
+            cand->progint[cand->start] = 3;
+            cand->progint[++cand->start] = -2;
+            cand->progint[++cand->start] = -1;
+            cand->start++;
 
     }
-    return start;
+    return cand;
 }
 
-
-
-int* printAstint(program* prog)
+int *gp_progint;
+void printAstint(program* prog)
 {
-    int progint[200] = {0};
-	//for(int i = 0;i < (start1+1);i++)
-	//	vector[i] = 0;
-	int start1 = newprintprogint(prog->root, prog, progint,1);
-	progint[0] = start1;
-
-    int *vector_prog = (int*)malloc(sizeof(int) * start1);
-	for(int i = 0;i < start1;i++)
-		vector_prog[i] = 0;
-	newprintprogint(prog->root, prog, vector_prog, 1);
-	vector_prog[0] = start1;
-	for(int i = 0; i< start1; i++)
-	{
-	    printf("i%d\n", i);
-	    printf("%d\n", vector_prog[i]);
-	}
-
-	//genVectorTreenode(prog->root->treenode1,vector);
-	return vector_prog;
+    intprog* candidate_int = (intprog*)malloc(sizeof(intprog)*1);
+    candidate_int->start = 1;
+    candidate_int->progint = (int*)malloc(sizeof(int)* 1000);
+    memset(candidate_int->progint, 0, sizeof(int)*1000);
+    newprintprogint(prog->root, prog, candidate_int);
+    candidate_int->progint[0] = candidate_int->start;
+    //printf("\n");
+    //for(int i = 0; i < candidate_int->progint[0]; i++)
+    //    printf("%d", candidate_int->progint[i]);
+    gp_progint = candidate_int->progint;
+    return;
 }
-
 
 void printAst(program* prog)
 {
@@ -5266,5 +5290,6 @@ int* genVector(program* prog)
 	for(i = 0;i < NUM_TREENODE;i++)
 		vector[i] = 0;
 	genVectorTreenode(prog->root->treenode1,vector);
+	// printf("\n%p",vector );
 	return vector;
 }

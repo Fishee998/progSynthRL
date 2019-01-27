@@ -164,6 +164,10 @@ def state_i(vector, i):
     return _example.state_i(vector, i)
 state_i = _example.state_i
 
+def intProg(i):
+    return _example.intProg(i)
+intProg = _example.intProg
+
 def judgeNULL(l):
     return _example.judgeNULL(l)
 judgeNULL = _example.judgeNULL
