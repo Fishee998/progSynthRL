@@ -14,6 +14,11 @@ typedef enum ExprType{Constant,Variable,Expr1,StepBoundExpr1,Expr2}ExprType;
 typedef enum UnOp{Neg,Not,Future,Globally,Next}UnOp;
 typedef enum BinOp{Imp,And,Or,Eq,Neq,Lt,Le,Gt,Ge,Add,Min,Mul,Div}BinOp;    //,Until,WeakUntil
 
+typedef struct intprog{
+    int start;
+    int* progint;
+}intprog;
+
 typedef struct action{
     int commandtypeVarindex[2];
     int assignRandom;
@@ -91,6 +96,7 @@ typedef struct treenode
     int fixed;
     int pc;    //rml
     int number;
+    int number_;
 }treenode;
 
 typedef struct program

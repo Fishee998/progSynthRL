@@ -77,10 +77,9 @@ class Maze(object):
                     reward = -0.5
         spin_reward = 0
         if newfitnessValue > 79:
-            reward = 0.1
-            print("???")
+            reward = 1
             self.maxCandidate = None
-            print(len(self.state_spin))
+            # print(len(self.state_spin))
             if len(self.state_spin) > 0:
                 for stae in self.state_spin:
                     if (self.state == stae).all() == False:
@@ -98,11 +97,11 @@ class Maze(object):
                 print("liveness")
                 reward = reward + 0.1
             else:
-                if spin_reward == 10:
+                if spin_reward == 8:
                     reward = reward + 0.2
                     print("safety")
                 else:
-                    if spin_reward == 20:
+                    if spin_reward == 18:
                         reward = 2
                         done = True
                     else:
@@ -112,7 +111,7 @@ class Maze(object):
                         else:
                             reward = reward - 0.1
             
-        done = bool(spin_reward == 20)
+        done = bool(spin_reward == 18)
         if done:
             reward = 2
             print("done")
@@ -138,6 +137,7 @@ class Maze(object):
         '''
 
         candidate = example.getCandidate(candidates, 0)
+
         self.candidate = candidate
         self.state = np.array(self.getstate(candidate))
         self.fitness = example.get_fitness(candidate)

@@ -397,6 +397,23 @@ class DeepQNetwork:
 
         return action, action_value, action_store
 
+
+    def _pad_batch(self, nodes, children):
+        if not nodes:
+            return [], [], []
+        max_nodes = max([len(x) for x in nodes])
+        max_children = max([len(x) for x in children])
+        feature_len = len(nodes[0][0])
+        child_len = max([len(c) for n in children for c in n])
+
+        nodes = [n + [[0] * feature_len] * (max_nodes - len(n)) for n in nodes]
+        # pad batches so that every batch has the same number of nodes
+        children = [n + ([[]] * (max_children - len(n))) for n in children]
+        # pad every child sample so every node has the same number of children
+        children = [[c + [0] * (child_len - len(c)) for c in sample] for sample in children]
+
+        return nodes, children
+
     def learn(self):
         # check to replace target parameters
         if self.learn_step_counter % self.replace_target_iter == 0:
@@ -472,8 +489,13 @@ class DeepQNetwork:
             print("epsilon", self.epsilon)
             print("learn_step_counter", self.learn_step_counter)
 
-    def one_hot_action1(self,action1):
+    def one_hot_action1(self, action1):
         one_hot_action1 = np.zeros(42)
+        one_hot_action1[action1 - 1] = 1
+        return one_hot_action1
+
+    def one_hot_action_store(self, action1):
+        one_hot_action1 = np.zeros(92)
         one_hot_action1[action1 - 1] = 1
         return one_hot_action1
 
@@ -508,3 +530,9 @@ class DeepQNetwork:
             else:
                 state.append(example.state_i(vector, ind))
         return state
+
+    def one_hot_actionchsen(self, action2):
+        one_hot_action2 = np.zeros(92)
+        for i in action2:
+            one_hot_action2[i] = 1
+        return one_hot_action2

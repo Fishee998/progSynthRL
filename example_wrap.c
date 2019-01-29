@@ -3255,9 +3255,15 @@ program* getCandidate(program** candidate, int i)
 {
     return candidate[i];
 }
+
 int state_i(int* vector, int i)
 {
     return vector[i];
+}
+int intProg(int i)
+{
+    extern int *gp_progint;
+    return gp_progint[i];
 }
 int judgeNULL(treenode* l)
 {
@@ -3730,6 +3736,28 @@ SWIGINTERN PyObject *_wrap_state_i(PyObject *SWIGUNUSEDPARM(self), PyObject *arg
   } 
   arg2 = (int)(val2);
   result = (int)state_i(arg1,arg2);
+  resultobj = SWIG_From_int((int)(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_intProg(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  int arg1 ;
+  int val1 ;
+  int ecode1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:intProg",&obj0)) SWIG_fail;
+  ecode1 = SWIG_AsVal_int(obj0, &val1);
+  if (!SWIG_IsOK(ecode1)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode1), "in method '" "intProg" "', argument " "1"" of type '" "int""'");
+  } 
+  arg1 = (int)(val1);
+  result = (int)intProg(arg1);
   resultobj = SWIG_From_int((int)(result));
   return resultobj;
 fail:
@@ -4460,6 +4488,27 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_printAstint(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  program *arg1 = (program *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:printAstint",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_program, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "printAstint" "', argument " "1"" of type '" "program *""'"); 
+  }
+  arg1 = (program *)(argp1);
+  printAstint(arg1);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
 	 { (char *)"new_intp", _wrap_new_intp, METH_VARARGS, NULL},
@@ -4479,6 +4528,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"getroot", _wrap_getroot, METH_VARARGS, NULL},
 	 { (char *)"getCandidate", _wrap_getCandidate, METH_VARARGS, NULL},
 	 { (char *)"state_i", _wrap_state_i, METH_VARARGS, NULL},
+	 { (char *)"intProg", _wrap_intProg, METH_VARARGS, NULL},
 	 { (char *)"judgeNULL", _wrap_judgeNULL, METH_VARARGS, NULL},
 	 { (char *)"isNUll", _wrap_isNUll, METH_VARARGS, NULL},
 	 { (char *)"findNode", _wrap_findNode, METH_VARARGS, NULL},
@@ -4502,6 +4552,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"mutation_", _wrap_mutation_, METH_VARARGS, NULL},
 	 { (char *)"printprog", _wrap_printprog, METH_VARARGS, NULL},
 	 { (char *)"getLength", _wrap_getLength, METH_VARARGS, NULL},
+	 { (char *)"printAstint", _wrap_printAstint, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
