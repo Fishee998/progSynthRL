@@ -111,9 +111,8 @@ class Maze(object):
                         else:
                             reward = reward - 0.1
             
-        done = bool(spin_reward == 18)
-        if done:
-            reward = 2
+        done = bool(newfitnessValue == 80)
+        if spin_reward == 18:
             print("done")
 
         # print('action: {action} fitness: {fitness}'.format(action=action, fitness=newfitnessValue))

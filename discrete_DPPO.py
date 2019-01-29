@@ -28,10 +28,12 @@ import example
 import pickle
 import astEncoder
 import sampling
-import copy
-import input
+import time
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
+
 EP_MAX = 10000
 EP_LEN = 100
 N_WORKER = 1                # parallel workers
@@ -60,11 +62,12 @@ RL = DeepQNetwork(env.action_space.n,
                       # output_graph=True
                       )
 
+start = time.clock()
 
 class PPONet(object):
     def __init__(self):
-        config = tf.ConfigProto() 
-        config.gpu_options.per_process_gpu_memory_fraction = 0.3
+        config = tf.ConfigProto()
+        config.gpu_options.allow_growth = True
         self.sess = tf.Session(config=config)
         # self.tfs = tf.placeholder(tf.float32, [None, S_DIM], 'state')
         self.n_features = 10
@@ -109,10 +112,12 @@ class PPONet(object):
             tf.clip_by_value(ratio, 1. - EPSILON, 1. + EPSILON) * self.tfadv))
 
         self.atrain_op = tf.train.AdamOptimizer(A_LR).minimize(self.aloss)
+
         self.sess.run(tf.global_variables_initializer())
         with open('./vectors.pkl', 'rb') as fh:
             self.embeddings, self.embed_lookup = pickle.load(fh)
             # num_feats = len(embeddings[0])
+
 
     def update(self):
         global GLOBAL_UPDATE_COUNTER
@@ -563,6 +568,9 @@ class Worker(object):
                         action2 = action
                         a = RL.getAction(action1, action2)
                         r, done, info_ = self.env.step(index_, a)
+                        if done:
+                            print('time: {time:.1f}'.format(time=time.clock() - start))
+
                         info_.candidates[index_] = info_.candidate
                         s_ = RL.obs(info_.candidate, action1)
                         one_hot_action1_ = RL.one_hot_action1(action1)
