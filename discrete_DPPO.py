@@ -73,7 +73,7 @@ class PPONet(object):
         self.n_features = 10
         self.nodes = tf.placeholder(tf.float32, shape=(None, None, self.n_features), name='nodes')
         self.children = tf.placeholder(tf.int32, shape=(None, None, None), name='children')
-        self.action1 = tf.placeholder(tf.float32, shape=(None, 135), name='action1')
+        self.action1 = tf.placeholder(tf.float32, shape=(None, 43), name='action1')
         self.children_tb = None
         self.vector_lookup_tb = None
         self.kkk = None
@@ -131,8 +131,8 @@ class PPONet(object):
                 # y = QUEUE.qsize()
                 data = [QUEUE.get() for _ in range(QUEUE.qsize())]      # collect data from all workers
                 data = np.vstack(data)
-                S_DIM_ = S_DIM + 135
-                ch, s, a1, a, r, p = data[:, :135], data[:, 135: S_DIM_], data[:, S_DIM_: S_DIM_ + 42], data[:, S_DIM_+42: S_DIM_ + 43].ravel(), data[:, -2:-1],  data[:, -1:]
+                S_DIM_ = S_DIM + 43
+                ch, s, a1, a, r, p = data[:, :43], data[:, 43: S_DIM_], data[:, S_DIM_: S_DIM_ + 42], data[:, S_DIM_+42: S_DIM_ + 43].ravel(), data[:, -2:-1],  data[:, -1:]
                 nodes = []
                 children = []
                 for cand in p:
@@ -599,7 +599,7 @@ class Worker(object):
                     one_hot_actionchoosen = self.one_hot_actionchsen(action_choosen)
                     one_hot_action1 = self.one_hot_action1(action1)
                     one_hot_act1chsn = np.concatenate(
-                        (np.concatenate((one_hot_action1, one_hot_actionchoosen), axis=0), [fitness / 100.00]), axis=0)
+                        (one_hot_action1, [fitness / 100.00]), axis=0)
 
                     # one_hot_act1chsn: [?, 135]
                     action, action_value, action_store = self.ppo.choose_action(nodes_, children_, [one_hot_act1chsn], s, candidate, action1)
@@ -613,7 +613,7 @@ class Worker(object):
                         one_hot_actionchoosen_ = self.one_hot_actionchsen(action_choosen_)
                         one_hot_action1_ = self.one_hot_action1(action1)
                         one_hot_act1chsn_ = np.concatenate(
-                            (np.concatenate((one_hot_action1_, one_hot_actionchoosen_), axis=0), [fitness / 100.00]),
+                            (one_hot_action1_, [fitness / 100.00]),
                             axis=0)
                     else:
                         action2 = action
@@ -633,7 +633,7 @@ class Worker(object):
                         one_hot_actionchoosen_ = self.one_hot_actionchsen(action_choosen_)
                         one_hot_action1_ = self.one_hot_action1(action1)
                         one_hot_act1chsn_ = np.concatenate(
-                            (np.concatenate((one_hot_action1_, one_hot_actionchoosen_), axis=0), [fitness / 100.00]),
+                            (one_hot_action1_, [fitness / 100.00]),
                             axis=0)
 
                     buffer_candidate.append(candidate)
