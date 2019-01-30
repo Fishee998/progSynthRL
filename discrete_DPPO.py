@@ -73,6 +73,7 @@ class PPONet(object):
         self.n_features = 10
         self.nodes = tf.placeholder(tf.float32, shape=(None, None, self.n_features), name='nodes')
         self.children = tf.placeholder(tf.int32, shape=(None, None, None), name='children')
+        self.action1 = tf.placeholder(tf.float32, shape=(None, 135), name='action1')
         self.children_tb = None
         self.vector_lookup_tb = None
         self.kkk = None
@@ -81,7 +82,8 @@ class PPONet(object):
         w_init = tf.random_normal_initializer(0., .1)
 
         conv2 = self.conv_layer(1, 100, self.nodes, self.children, self.n_features)
-        self.pooling2 = self.pooling_layer(conv2)
+        pooling = self.pooling_layer(conv2)
+        self.pooling2 = tf.concat((pooling, self.action1), axis=1)
 
         lc = tf.layers.dense(self.pooling2, 100, tf.nn.relu, kernel_initializer=w_init, name='lc')
         # lc = tf.layers.dense(self.tfs, 100, tf.nn.relu, kernel_initializer=w_init, name='lc')
@@ -129,7 +131,8 @@ class PPONet(object):
                 # y = QUEUE.qsize()
                 data = [QUEUE.get() for _ in range(QUEUE.qsize())]      # collect data from all workers
                 data = np.vstack(data)
-                s, a1, a, r, p = data[:, :S_DIM], data[:, S_DIM: S_DIM + 42], data[:, S_DIM+42: S_DIM + 43].ravel(), data[:, -2:-1],  data[:, -1:]
+                S_DIM_ = S_DIM + 135
+                ch, s, a1, a, r, p = data[:, :135], data[:, 135: S_DIM_], data[:, S_DIM_: S_DIM_ + 42], data[:, S_DIM_+42: S_DIM_ + 43].ravel(), data[:, -2:-1],  data[:, -1:]
                 nodes = []
                 children = []
                 for cand in p:
@@ -139,10 +142,10 @@ class PPONet(object):
                     children.append(children_)
                 nodes, children = sampling._pad_batch(nodes, children)
                 # input_ = self.sess.run(self.pooling2, {self.nodes: nodes, self.children: children})
-                adv = self.sess.run(self.advantage, {self.nodes: nodes, self.children: children, self.tfdc_r: r})
+                adv = self.sess.run(self.advantage, {self.nodes: nodes, self.children: children, self.action1: ch, self.tfdc_r: r})
                 # update actor and critic in a update loop
-                [self.sess.run(self.atrain_op, {self.nodes: nodes, self.children: children, self.tfa: a, self.tfadv: adv}) for _ in range(UPDATE_STEP)]
-                [self.sess.run(self.ctrain_op, {self.nodes: nodes, self.children: children, self.tfdc_r: r}) for _ in range(UPDATE_STEP)]
+                [self.sess.run(self.atrain_op, {self.nodes: nodes, self.children: children, self.action1: ch, self.tfa: a, self.tfadv: adv}) for _ in range(UPDATE_STEP)]
+                [self.sess.run(self.ctrain_op, {self.nodes: nodes, self.children: children, self.action1: ch, self.tfdc_r: r}) for _ in range(UPDATE_STEP)]
                 #[self.sess.run(self.atrain_op, {self.tfs: s, self.tfa: a, self.tfadv: adv}) for _ in range(UPDATE_STEP)]
                 #[self.sess.run(self.ctrain_op, {self.tfs: s, self.tfdc_r: r}) for _ in range(UPDATE_STEP)]
                 UPDATE_EVENT.clear()        # updating finished
@@ -154,7 +157,7 @@ class PPONet(object):
         # self.s_ = tf.placeholder(tf.float32, [None, self.n_features], name='s_')    # input
         self.nodes_ = tf.placeholder(tf.float32, shape=(None, None, self.n_features), name='nodes')
         self.children_ = tf.placeholder(tf.int32, shape=(None, None, None), name='children')
-        # self.action1_ = tf.placeholder(tf.float32, shape=(None, 135), name='action1_')
+        self.action1_ = tf.placeholder(tf.float32, shape=(None, 135), name='action1_')
         with tf.variable_scope('target_net'):
             # c_names(collections_names) are the collections to store variables
             c_names = ['target_net_params', tf.GraphKeys.GLOBAL_VARIABLES]
@@ -191,7 +194,7 @@ class PPONet(object):
             conv2 = self.conv_layer(1, 100, self.nodes, self.children, self.n_features)
             self.pooling2 = self.pooling_layer(conv2)
             # self.pooling2 = pooling2 = tf.concat((pooling2, self.action1_), axis=1)
-            l_a = tf.layers.dense(self.pooling2, 100, tf.nn.relu, trainable=trainable)
+            l_a = tf.layers.dense(self.pooling2, 64, tf.nn.relu, trainable=trainable)
             # l_a = tf.layers.dense(self.tfs, 100, tf.nn.relu, trainable=trainable)
             a_prob = tf.layers.dense(l_a, A_DIM, tf.nn.softmax, trainable=trainable)
         params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope=name)
@@ -220,9 +223,9 @@ class PPONet(object):
             prog_index = prog_index + 1
         return nodes, children
 
-    def choose_action(self,nodes, children, s, candidate, action1):  # run by a local
+    def choose_action(self,nodes, children, action1chosen,  s, candidate, action1):  # run by a local
         # prob_weights = self.sess.run(self.pi, feed_dict={self.tfs: s[None, :]})
-        prob_weights = self.sess.run(self.pi, feed_dict={self.nodes: nodes, self.children: children})
+        prob_weights = self.sess.run(self.pi, feed_dict={self.nodes: nodes, self.children: children, self.action1: action1chosen})
         # prob_weights = self.sess.run(self.pi, feed_dict={self.nodes_: nodes, self.children_: children})
         a = prob_weights.shape[1]
         b = prob_weights.ravel()
@@ -241,6 +244,7 @@ class PPONet(object):
 
         # action = np.random.choice(range(prob_weights.shape[1]), p=prob_weights.ravel())  # select action w.r.t the actions prob
         action = np.random.choice(range(prob_weights.shape[1]), p = b)
+        print(action)
 
         action_store = action
         if action < 42:
@@ -252,10 +256,10 @@ class PPONet(object):
         assert action_value != 0
         return action, action_value, action_store
 
-    def get_v(self, nodes, children):
+    def get_v(self, nodes, children, action1):
         #if s.ndim < 2: s = s[np.newaxis, :]
         #return self.sess.run(self.v, {self.tfs: s})[0, 0]
-        return self.sess.run(self.v, {self.nodes: nodes, self.children: children})[0, 0]
+        return self.sess.run(self.v, {self.nodes: nodes, self.children: children, self.action1: action1})[0, 0]
 
     '''
     def get_v(self, s):
@@ -528,6 +532,38 @@ class Worker(object):
 
         return nodes, children
 
+    def getChoosenActions(self, candidate, act1Set, action1):
+        action1s = np.nonzero(act1Set)[0]
+        # act1Set[action1 - 1] != 0 and
+        if act1Set[action1 - 1] != -1 and act1Set[action1 - 1] != 0:
+            action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
+            # actions = action2set
+            actions = np.append(action1s, action2set)
+        else:
+            actions = action1s
+        return actions
+
+    def one_hot_actionchsen(self, action2):
+        one_hot_action2 = np.zeros(92)
+        for i in action2:
+            one_hot_action2[i] = 1
+        return one_hot_action2
+
+    def one_hot_action1(self, action1):
+        one_hot_action1 = np.zeros(42)
+        one_hot_action1[action1 - 1] = 1
+        # one_hot_action1 = [one_hot_action1]
+        return np.array(one_hot_action1)
+
+    def action2set(self, action2s):
+        # actionLen = example.getLength(action2s)
+        action2Seleced = []
+        index = 0
+        while example.get_action2(action2s, index) != 100:
+            action2Seleced.append(example.get_action2(action2s, index))
+            index += 1
+        return action2Seleced
+
 
     def work(self):
         global GLOBAL_EP, GLOBAL_RUNNING_R, GLOBAL_UPDATE_COUNTER
@@ -546,24 +582,39 @@ class Worker(object):
             # s = RL.obs(info_, action1)
 
             ep_r = 0
-            buffer_s, buffer_a1, buffer_a, buffer_r, buffer_candidate = [], [], [], [], []
+            buffer_s, buffer_a1, buffer_a, buffer_r, buffer_candidate, buffer_ch = [], [], [], [], [], []
             for t in range(EP_LEN):
                 if not ROLLING_EVENT.is_set():                  # while global PPO is updating
                     ROLLING_EVENT.wait()                        # wait until PPO is updated
-                    buffer_s, buffer_a, buffer_r, buffer_a1 = [], [], [], []   # clear history buffer, use new policy to collect data
+                    buffer_s, buffer_a, buffer_r, buffer_a1, buffer_candidate, buffer_ch = [], [], [], [], [], []   # clear history buffer, use new policy to collect data
                 for index_ in range(len(info_.candidates)):
                     candidate = example.copyProgram(info_.candidates[index_])
                     s = RL.obs(candidate, action1)
                     example.printAstint(candidate)
                     nodes, children = sampling.gen_samplesint(embeddings)
                     nodes_, children_ = self._pad_batch_(nodes, children)
-                    action, action_value, action_store = self.ppo.choose_action(nodes_, children_, s, candidate, action1)
+                    fitness = example.get_fitness(candidate)
+
+                    action_choosen = self.getChoosenActions(candidate, s, action1)
+                    one_hot_actionchoosen = self.one_hot_actionchsen(action_choosen)
+                    one_hot_action1 = self.one_hot_action1(action1)
+                    one_hot_act1chsn = np.concatenate(
+                        (np.concatenate((one_hot_action1, one_hot_actionchoosen), axis=0), [fitness / 100.00]), axis=0)
+
+                    # one_hot_act1chsn: [?, 135]
+                    action, action_value, action_store = self.ppo.choose_action(nodes_, children_, [one_hot_act1chsn], s, candidate, action1)
                     if action_store < 42:
                         action1 = action
                         s_ = RL.obs(info_.candidates[index_], action1)
                         r = -0.1
                         done = False
                         nodes_, children_ = self._pad_batch_(nodes, children)
+                        action_choosen_ = self.getChoosenActions(candidate, s_, action1)
+                        one_hot_actionchoosen_ = self.one_hot_actionchsen(action_choosen_)
+                        one_hot_action1_ = self.one_hot_action1(action1)
+                        one_hot_act1chsn_ = np.concatenate(
+                            (np.concatenate((one_hot_action1_, one_hot_actionchoosen_), axis=0), [fitness / 100.00]),
+                            axis=0)
                     else:
                         action2 = action
                         a = RL.getAction(action1, action2)
@@ -573,11 +624,17 @@ class Worker(object):
 
                         info_.candidates[index_] = info_.candidate
                         s_ = RL.obs(info_.candidate, action1)
-                        one_hot_action1_ = RL.one_hot_action1(action1)
                         candidate_ = example.copyProgram(info_.candidates[index_])
                         example.printAstint(candidate_)
                         nodes, children = sampling.gen_samplesint(embeddings)
                         nodes_, children_ = self._pad_batch_(nodes, children)
+
+                        action_choosen_ = self.getChoosenActions(candidate_, s_, action1)
+                        one_hot_actionchoosen_ = self.one_hot_actionchsen(action_choosen_)
+                        one_hot_action1_ = self.one_hot_action1(action1)
+                        one_hot_act1chsn_ = np.concatenate(
+                            (np.concatenate((one_hot_action1_, one_hot_actionchoosen_), axis=0), [fitness / 100.00]),
+                            axis=0)
 
                     buffer_candidate.append(candidate)
                     buffer_a1.append(one_hot_action1_)
@@ -585,6 +642,7 @@ class Worker(object):
                     # a = action_store
                     buffer_a.append(action_store)
                     buffer_r.append(r)
+                    buffer_ch.append(one_hot_act1chsn)
                     # s = s_
                     ep_r += r
 
@@ -593,7 +651,7 @@ class Worker(object):
                         if done:
                             v_s_ = 0                                # end of episode
                         else:
-                            v_s_ = self.ppo.get_v(nodes_, children_)
+                            v_s_ = self.ppo.get_v(nodes_, children_, [one_hot_act1chsn_])
                             # v_s_ = self.ppo.get_v(s_)
 
                         discounted_r = []                           # compute discounted reward
@@ -602,12 +660,13 @@ class Worker(object):
                             discounted_r.append(v_s_)
                         discounted_r.reverse()
 
+                        bch = np.vstack(buffer_ch)
                         be = np.vstack(buffer_candidate)
                         ba1 = np.vstack(buffer_a1)
                         bs, ba, br = np.vstack(buffer_s), np.vstack(buffer_a), np.array(discounted_r)[:, None]
-                        buffer_s, buffer_a, buffer_r, buffer_candidate, buffer_a1 = [], [], [], [], []
+                        buffer_s, buffer_a, buffer_r, buffer_candidate, buffer_a1, buffer_ch = [], [], [], [], [], []
                         # QUEUE.put(np.hstack((bs, ba, br)))
-                        QUEUE.put(np.hstack((bs, ba1, ba, br, be)))           # put data in the queue
+                        QUEUE.put(np.hstack((bch, bs, ba1, ba, br, be)))           # put data in the queue
                         if GLOBAL_UPDATE_COUNTER >= MIN_BATCH_SIZE:
                             ROLLING_EVENT.clear()       # stop collecting data
                             UPDATE_EVENT.set()          # globalPPO update
