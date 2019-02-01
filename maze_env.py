@@ -85,7 +85,7 @@ class Maze(object):
             reward = 1
             print("???")
             self.maxCandidate = None
-            print(len(self.state_spin))
+            # print(len(self.state_spin))
             if len(self.state_spin) > 0:
                 for stae in self.state_spin:
                     if (self.state == stae).all() == False:
@@ -103,7 +103,7 @@ class Maze(object):
                 print("liveness")
                 reward = reward + 0.1
             else:
-                if spin_reward == 10:
+                if spin_reward == 8:
                     reward = reward + 0.2
                     print("safety")
                 else:
@@ -117,9 +117,8 @@ class Maze(object):
                         else:
                             reward = reward - 0.1
             
-        done = bool(spin_reward == 20)
-        if done:
-            reward = 2
+        done = bool(newfitnessValue == 80)
+        if spin_reward == 18:
             print("done")
 
         # print('action: {action} fitness: {fitness}'.format(action=action, fitness=newfitnessValue))
@@ -142,6 +141,7 @@ class Maze(object):
             # self.astActNodes_.append(astActNodes)
         '''
         candidate = example.getCandidate(candidates, 0)
+
         self.candidate = candidate
         self.state = np.array(self.getstate(candidate))
         self.fitness = example.get_fitness(candidate)
@@ -153,6 +153,7 @@ class Maze(object):
         self.state = spaces.Box(low=-1.0, high=6501.0, shape=(42,), dtype=np.int)
         # self.state = spaces.Box(low=0, high=20, shape=(300,), dtype=int)
         # 100 candidates
+
         self.reset()
         if self.maxCandidate != None:
             candidate_ = example.copyProgram(candidate)
@@ -161,6 +162,21 @@ class Maze(object):
             # self.fitness = example.get_fitness(candidate)
         if len(self.candidate_spin) != 0:
             self.candidates.extend(self.candidate_spin)
+        '''
+        example.freeAll(None, self.candidate_[0], None, None, None, 2)
+        self.state_ = []
+        self.candidate_[0] = example.copyProgram(candidate)
+        state = self.getstate(candidate)
+        self.state_.append(np.array(state))
+        '''
+        self.candidates = []
+        candidates = prog.initProg()
+        candidate = example.getCandidate(candidates, 0)
+        self.candidates.append(candidate)
+        if self.maxCandidate != None:
+            self.candidate = example.copyProgram(candidate)
+            self.candidates.append(self.candidate)
+        self.candidates.extend(self.candidate_spin)
         return self
 
     def reset_1(self, candidate):

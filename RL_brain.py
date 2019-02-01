@@ -103,14 +103,6 @@ class DeepQNetwork:
                 b2 = tf.get_variable('b2', [1, self.n_actions1], initializer=b_initializer, collections=c_names)
                 self.q_eval1 = tf.matmul(l1, w2) + b2
 
-            '''
-            # second layer. collections is used later when assign to target net
-            with tf.variable_scope('l2_2'):
-                w2_2 = tf.get_variable('w2', [n_l1, self.n_actions2], initializer=w_initializer, collections=c_names)
-                b2_2 = tf.get_variable('b2', [1, self.n_actions2], initializer=b_initializer, collections=c_names)
-                self.q_eval2 = tf.matmul(l1, w2_2) + b2_2
-            '''
-
         with tf.variable_scope('loss'):
             self.loss = tf.reduce_mean(tf.squared_difference(self.q_target1, self.q_eval1))
             # self.loss2 = tf.reduce_mean(tf.squared_difference(self.q_target2, self.q_eval2))
@@ -138,27 +130,6 @@ class DeepQNetwork:
                 b2_1 = tf.get_variable('b2', [1, self.n_actions1], initializer=b_initializer, collections=c_names)
                 self.q_next1 = tf.matmul(l1, w2_1) + b2_1
 
-            '''
-            with tf.variable_scope('l2_2'):
-                w2_2 = tf.get_variable('w2', [n_l1, self.n_actions2], initializer=w_initializer, collections=c_names)
-                b2_2 = tf.get_variable('b2', [1, self.n_actions2], initializer=b_initializer, collections=c_names)
-                self.q_next2 = tf.matmul(l1, w2_2) + b2_2
-            '''
-
-    '''       
-    def store_transition(self, s, a1, a2, r, s_):
-        if not hasattr(self, 'memory_counter'):
-            self.memory_counter = 0
-
-        transition = np.hstack((s, [a1, a2, r], s_))
-
-        # replace the old memory with new memory
-        index = self.memory_counter % self.memory_size
-        self.memory[index, :] = transition
-
-        self.memory_counter += 1
-    '''
-
     def store_transition(self, s, a1, r, s_):
         if not hasattr(self, 'memory_counter'):
             self.memory_counter = 0
@@ -170,7 +141,6 @@ class DeepQNetwork:
         self.memory[index, :] = transition
 
         self.memory_counter += 1
-
 
     def store_transition_good(self, s, a1, r, s_):
         if not hasattr(self, 'memory_counter_good'):
@@ -195,7 +165,6 @@ class DeepQNetwork:
         self.memory_bad[index, :] = transition
 
         self.memory_counter_bad += 1
-
 
     def store_badtransition1(self, s, a1, r, s_):
         if not hasattr(self, 'memory_counter_bad1'):
@@ -256,7 +225,8 @@ class DeepQNetwork:
         if act1Set[action1 - 1] != -1 and act1Set[action1 - 1] != 0:
             action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
             # actions = action2set
-            actions = np.append(action1s, action2set)
+            action1 = random.sample(action1s, 2)
+            actions = np.append(action1, action2set)
         else:
             actions = action1s
 
@@ -396,6 +366,23 @@ class DeepQNetwork:
         print(action_store)
         return action, action_value, action_store
 
+
+    def _pad_batch(self, nodes, children):
+        if not nodes:
+            return [], [], []
+        max_nodes = max([len(x) for x in nodes])
+        max_children = max([len(x) for x in children])
+        feature_len = len(nodes[0][0])
+        child_len = max([len(c) for n in children for c in n])
+
+        nodes = [n + [[0] * feature_len] * (max_nodes - len(n)) for n in nodes]
+        # pad batches so that every batch has the same number of nodes
+        children = [n + ([[]] * (max_children - len(n))) for n in children]
+        # pad every child sample so every node has the same number of children
+        children = [[c + [0] * (child_len - len(c)) for c in sample] for sample in children]
+
+        return nodes, children
+
     def learn(self):
         # check to replace target parameters
         if self.learn_step_counter % self.replace_target_iter == 0:
@@ -428,9 +415,6 @@ class DeepQNetwork:
                 self.s: batch_memory[:, :self.n_features],  # newest params
             })
 
-        # change q_target w.r.t q_eval's action
-
-
         batch_index = np.arange(self.batch_size, dtype=np.int32)
         eval_act_index1 = batch_memory[:, self.n_features].astype(int)
         reward = batch_memory[:, self.n_features + 1]
@@ -438,14 +422,6 @@ class DeepQNetwork:
         x = np.max(q_next1, axis=1)
 
         sets = np.nonzero(batch_memory[:, -self.n_features:])
-        '''
-        if batch_memory[:,  -self.n_features:][eval_act_index1] != 0 and batch_memory[:,  -self.n_features:][eval_act_index1] != -1:
-            action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
-            # actions = action2set
-            actions = np.append(action1s, action2set)
-            else:
-                actions = action1s
-        '''
 
         q_target1[batch_index, eval_act_index1] = reward + self.gamma * np.max(q_next1, axis=1)
 
@@ -471,8 +447,13 @@ class DeepQNetwork:
             print("epsilon", self.epsilon)
             print("learn_step_counter", self.learn_step_counter)
 
-    def one_hot_action1(self,action1):
+    def one_hot_action1(self, action1):
         one_hot_action1 = np.zeros(42)
+        one_hot_action1[action1 - 1] = 1
+        return one_hot_action1
+
+    def one_hot_action_store(self, action1):
+        one_hot_action1 = np.zeros(92)
         one_hot_action1[action1 - 1] = 1
         return one_hot_action1
 
@@ -507,3 +488,9 @@ class DeepQNetwork:
             else:
                 state.append(example.state_i(vector, ind))
         return state
+
+    def one_hot_actionchsen(self, action2):
+        one_hot_action2 = np.zeros(92)
+        for i in action2:
+            one_hot_action2[i] = 1
+        return one_hot_action2

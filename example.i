@@ -57,9 +57,15 @@ program* getCandidate(program** candidate, int i)
 {
     return candidate[i];
 }
+
 int state_i(int* vector, int i)
 {
     return vector[i];
+}
+int intProg(int i)
+{
+    extern int *gp_progint;
+    return gp_progint[i];
 }
 int judgeNULL(treenode* l)
 {
@@ -98,3 +104,4 @@ extern program** initProg(Expr** requirements ,int numofrequirements,double* coe
 extern program* mutation_(program* candidate0, int nodeNum, int actType,Expr** requirements ,int numofrequirements,double* coef);
 extern void printprog(treenode* root,int blank,program* prog);
 extern int getLength(int* action2);
+extern void printAstint(program* prog);
