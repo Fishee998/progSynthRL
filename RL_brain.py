@@ -393,7 +393,7 @@ class DeepQNetwork:
         else:
             action_store = action
             action = action - 42
-
+        print(action_store)
         return action, action_value, action_store
 
     def learn(self):

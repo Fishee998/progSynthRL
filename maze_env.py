@@ -5,6 +5,8 @@ from gym import spaces
 from gym.utils import seeding
 import numpy as np
 import math
+
+candidate_num = 1
 class Maze(object):
 
     actionSet = astEncoder.setActSet()
@@ -31,6 +33,7 @@ class Maze(object):
         self.state_spin = []
         self.candidate_spin = []
         self.candidates = []
+        self.states = []
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
@@ -67,6 +70,7 @@ class Maze(object):
                 self.maxCandidate = maxCandidate
                 print('maxfitness:{maxfitness}'.format(maxfitness = self.maxFitness))
             self.fitness = newfitnessValue
+            print(newfitnessValue)
 
             if newfitnessValue > 74:
                 reward = -0.1
@@ -75,9 +79,10 @@ class Maze(object):
                     reward = -0.3
                 else:
                     reward = -0.5
+
         spin_reward = 0
         if newfitnessValue > 79:
-            reward = 0.1
+            reward = 1
             print("???")
             self.maxCandidate = None
             print(len(self.state_spin))
@@ -102,7 +107,7 @@ class Maze(object):
                     reward = reward + 0.2
                     print("safety")
                 else:
-                    if spin_reward == 20:
+                    if spin_reward == 18:
                         reward = 2
                         done = True
                     else:
@@ -128,46 +133,34 @@ class Maze(object):
         # self.candidate_ = []
         # self.state_ = []
         candidates = prog.initProg()
-        '''
+
         for index in range(candidate_num):
-            candidate = example.getCandidate(candidates, index)
-            self.candidate.append(candidate)
-            state = self.getstate(candidate)
-            self.state.append(np.array(state))
+            candidate_ = example.getCandidate(candidates, index)
+            self.candidates.append(candidate_)
+            state_ = self.getstate(candidate_)
+            self.states.append(np.array(state_))
             # self.astActNodes_.append(astActNodes)
         '''
-
         candidate = example.getCandidate(candidates, 0)
         self.candidate = candidate
         self.state = np.array(self.getstate(candidate))
         self.fitness = example.get_fitness(candidate)
         self.candidates.append(self.candidate)
-
+        '''
         return self
 
     def reset_(self, candidate):
         self.state = spaces.Box(low=-1.0, high=6501.0, shape=(42,), dtype=np.int)
         # self.state = spaces.Box(low=0, high=20, shape=(300,), dtype=int)
         # 100 candidates
-        '''
-        example.freeAll(None, self.candidate_[0], None, None, None, 2)
-        self.state_ = []
-        self.candidate_[0] = example.copyProgram(candidate)
-        state = self.getstate(candidate)
-        self.state_.append(np.array(state))
-        '''
+        self.reset()
         if self.maxCandidate != None:
-            self.candidate = example.copyProgram(candidate)
-            self.state = self.getstate(candidate)
-            self.fitness = example.get_fitness(candidate)
-        else:
-            candidates = prog.initProg()
-            candidate = example.getCandidate(candidates, 0)
-            self.candidate = candidate
-        self.candidates.append(self.candidate)
-        self.candidates.extend(self.state_spin)
-
-
+            candidate_ = example.copyProgram(candidate)
+            self.candidates.append(candidate_)
+            self.states.append(np.array(self.getstate(candidate_)))
+            # self.fitness = example.get_fitness(candidate)
+        if len(self.candidate_spin) != 0:
+            self.candidates.extend(self.candidate_spin)
         return self
 
     def reset_1(self, candidate):

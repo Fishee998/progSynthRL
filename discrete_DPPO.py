@@ -118,6 +118,7 @@ class PPONet(object):
 
     def choose_action(self, s, candidate, action1):  # run by a local
         prob_weights = self.sess.run(self.pi, feed_dict={self.tfs: s[None, :]})
+        # print(prob_weights)
         a = prob_weights.shape[1]
         b = prob_weights.ravel()
         observation = s[np.newaxis, :]
@@ -143,6 +144,7 @@ class PPONet(object):
         else:
             action_store = action
             action = action - 42
+        # print(action_store)
         assert action_value != 0
         return action, action_value, action_store
 
