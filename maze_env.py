@@ -68,13 +68,14 @@ class Maze(object):
                 print('maxfitness:{maxfitness}'.format(maxfitness = self.maxFitness))
             self.fitness = newfitnessValue
 
-            if newfitnessValue > 74:
-                reward = -0.1
+            if newfitnessValue > 60:
+                reward = 0.1 * (newfitnessValue - fitness)
             else:
-                if newfitnessValue > 64:
-                    reward = -0.3
+                if newfitnessValue > 74:
+                    reward = 0.5 * (newfitnessValue - fitness)
                 else:
-                    reward = -0.5
+                    reward = -0.1
+
         spin_reward = 0
         if newfitnessValue > 79:
             reward = 0.1

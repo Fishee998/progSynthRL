@@ -28,7 +28,7 @@ import example
 os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 EP_MAX = 10000
 EP_LEN = 100
-N_WORKER = 2                # parallel workers
+N_WORKER = 1                # parallel workers
 GAMMA = 0.8                 # reward discount factor
 A_LR = 0.0001               # learning rate for actor
 C_LR = 0.0001               # learning rate for critic
@@ -60,7 +60,10 @@ class PPONet(object):
         config.gpu_options.per_process_gpu_memory_fraction = 0.3
         self.sess = tf.Session(config=config)
         self.tfs = tf.placeholder(tf.float32, [None, S_DIM], 'state')
-
+        self.epsilon = 0
+        self.epsilon_max = 0.8
+        self.epsilon_increment = 0.001
+        self.learn_step_counter = 0
         # critic
         w_init = tf.random_normal_initializer(0., .1)
         lc = tf.layers.dense(self.tfs, 100, tf.nn.relu, kernel_initializer=w_init, name='lc')
@@ -108,6 +111,11 @@ class PPONet(object):
                 UPDATE_EVENT.clear()        # updating finished
                 GLOBAL_UPDATE_COUNTER = 0   # reset counter
                 ROLLING_EVENT.set()         # set roll-out available
+                if self.epsilon < self.epsilon_max:
+                    self.epsilon = self.epsilon + self.epsilon_increment if self.learn_step_counter % 1 == 0 else self.epsilon
+                else:
+                    self.epsilon = self.epsilon_max
+                self.learn_step_counter += 1
 
     def _build_anet(self, name, trainable):
         with tf.variable_scope(name):
@@ -117,25 +125,24 @@ class PPONet(object):
         return a_prob, params
 
     def choose_action(self, s, candidate, action1):  # run by a local
-        prob_weights = self.sess.run(self.pi, feed_dict={self.tfs: s[None, :]})
-        a = prob_weights.shape[1]
-        b = prob_weights.ravel()
         observation = s[np.newaxis, :]
-        action_value = action1
         legalAction = RL.getLegalAction_prob(candidate, observation[0][:-43], action1)
+        action_value = action1
+        if np.random.uniform() < self.epsilon:
+            prob_weights = self.sess.run(self.pi, feed_dict={self.tfs: s[None, :]})
+            a = prob_weights.shape[1]
+            b = prob_weights.ravel()
 
-        for prob_index in range(92):
-            if prob_index not in legalAction:
-                b[prob_index] = 0
-
-        sum_prob = np.sum(b)
-
-        for prob_index in range(92):
-            b[prob_index] = b[prob_index] / sum_prob
-
-        # action = np.random.choice(range(prob_weights.shape[1]), p=prob_weights.ravel())  # select action w.r.t the actions prob
-        action = np.random.choice(range(prob_weights.shape[1]), p = b)
-
+            for prob_index in range(92):
+                if prob_index not in legalAction:
+                    b[prob_index] = 0
+            sum_prob = np.sum(b)
+            for prob_index in range(92):
+                b[prob_index] = b[prob_index] / sum_prob
+            # action = np.random.choice(range(prob_weights.shape[1]), p=prob_weights.ravel())  # select action w.r.t the actions prob
+            action = np.random.choice(range(prob_weights.shape[1]), p = b)
+        else:
+            action = np.random.choice(legalAction)
         action_store = action
         if action < 42:
             # action = action + 1
