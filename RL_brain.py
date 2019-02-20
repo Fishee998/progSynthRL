@@ -253,10 +253,10 @@ class DeepQNetwork:
 
     def getLegalAction_prob(self, candidate, act1Set, action1):
         action1s = np.nonzero(act1Set)[0]
-        if act1Set[action1 - 1] != -1 and act1Set[action1 - 1] != 0:
-            action2set = np.array(self.action2set(example.getLegalAction2(candidate, action1))) + 42
+        if act1Set[action1 - 1] != 2.63 and act1Set[action1 - 1] != 2.64 and act1Set[action1 - 1] != 0:
+            action2set = np.array(self.action2set(example.legalAction2(candidate, action1))) + 40
             # actions = action2set
-            action1 = random.sample(action1s, 2)
+            action1 = random.sample(action1s, 2)    # action1 random 2
             actions = np.append(action1, action2set)
         else:
             actions = action1s
@@ -473,8 +473,8 @@ class DeepQNetwork:
             print("learn_step_counter", self.learn_step_counter)
 
     def one_hot_action1(self,action1):
-        one_hot_action1 = np.zeros(42)
-        one_hot_action1[action1 - 1] = 1
+        one_hot_action1 = np.zeros(27)
+        one_hot_action1[action1] = 1
         return one_hot_action1
 
     def one_hot_action2(self,action2):
@@ -496,15 +496,17 @@ class DeepQNetwork:
         one_hot_action1 = self.one_hot_action1(action1)
         # observation_store = np.append(np.append(np.append(observation_, one_hot_action1), one_hot_action2),
                                       #pow(fitness / 100.00, 2))
-        observation_store = np.append(np.append(observation_, one_hot_action1), fitness / 100.00)
+        observation_store = np.append(np.append(observation_, one_hot_action1), fitness)
         return observation_store
 
     def getstate(self, candidate):
+        # root = example.getroot(candidate)
         vector = example.genVector(candidate)
         state = []
-        for ind in range(42):
+        for ind in range(40):
             if example.state_i(vector, ind) > 0:
-                state.append(example.state_i(vector, ind) / 10000.0000)
+                # print("\n", example.state_i(vector, ind))
+                state.append(example.state_i(vector, ind)/ 100.00 )
             else:
                 state.append(example.state_i(vector, ind))
         return state

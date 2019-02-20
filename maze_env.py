@@ -12,8 +12,8 @@ class Maze(object):
     def __init__(self):
         self.n_features = 2
         # self.action_space = spaces.Tuple((spaces.Discrete(49), spaces.Discrete(50)))
-        self.action_space = spaces.Discrete(92)
-        self.observation_space = spaces.Box(low= -1.0, high=6501.0, shape=(85,), dtype=np.int)
+        self.action_space = spaces.Discrete(67)
+        self.observation_space = spaces.Box(low= -1.0, high=6501.0, shape=(68,), dtype=np.int)
         self.seed()
         self.viewer = None
         self.state = None
@@ -45,8 +45,8 @@ class Maze(object):
 
         candidate_ = prog.mutation(candidate, action[0], action[1])
         self.candidate = example.copyProgram(candidate_)
-
-        illegal = example.illegal(candidate_)
+        # example.printprog(example.getroot(self.candidate), 0, self.candidate)
+        illegal = 0
         reward = 0
         if illegal == 1:
             self.illegal_action += 1
@@ -128,7 +128,9 @@ class Maze(object):
         # 100 candidates
         # self.candidate_ = []
         # self.state_ = []
-        candidates = prog.initProg()
+        candidate = prog.initProg()
+        # a = example.genVector(candidate)
+
         '''
         for index in range(candidate_num):
             candidate = example.getCandidate(candidates, index)
@@ -137,13 +139,11 @@ class Maze(object):
             self.state.append(np.array(state))
             # self.astActNodes_.append(astActNodes)
         '''
-
-        candidate = example.getCandidate(candidates, 0)
+        # candidate = example.getCandidate(candidates, 0)
         self.candidate = candidate
-        self.state = np.array(self.getstate(candidate))
+        # self.state = np.array(self.getstate(candidate))
         self.fitness = example.get_fitness(candidate)
         self.candidates.append(self.candidate)
-
         return self
 
     def reset_(self, candidate):
@@ -158,8 +158,7 @@ class Maze(object):
         self.state_.append(np.array(state))
         '''
         self.candidates = []
-        candidates = prog.initProg()
-        candidate = example.getCandidate(candidates, 0)
+        candidate = prog.initProg()
         self.candidates.append(candidate)
         if self.maxCandidate != None:
             self.candidate = example.copyProgram(candidate)
@@ -180,9 +179,9 @@ class Maze(object):
     def getstate(self, candidate):
         vector = example.genVector(candidate)
         state = []
-        for ind in range(42):
+        for ind in range(40):
             if example.state_i(vector, ind) > 0:
-                state.append(example.state_i(vector, ind) / 10000.0000)
+                state.append(example.vector_i(vector, ind))
             else:
                 state.append(example.state_i(vector, ind))
         return state

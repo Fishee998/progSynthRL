@@ -120,6 +120,10 @@ def get_program(candidate, number):
     return _example.get_program(candidate, number)
 get_program = _example.get_program
 
+def vector_i(vector, i):
+    return _example.vector_i(vector, i)
+vector_i = _example.vector_i
+
 def neicun():
     return _example.neicun()
 neicun = _example.neicun
@@ -172,9 +176,17 @@ def isNUll(p):
     return _example.isNUll(p)
 isNUll = _example.isNUll
 
-def findNode(root, prog, num):
-    return _example.findNode(root, prog, num)
-findNode = _example.findNode
+def printprog(root, blank, prog):
+    return _example.printprog(root, blank, prog)
+printprog = _example.printprog
+
+def set_requirments(numofrequirements):
+    return _example.set_requirments(numofrequirements)
+set_requirments = _example.set_requirments
+
+def initProg(requirements, numofrequirements):
+    return _example.initProg(requirements, numofrequirements)
+initProg = _example.initProg
 
 def genVector(prog):
     return _example.genVector(prog)
@@ -184,78 +196,17 @@ def copyProgram(prog):
     return _example.copyProgram(prog)
 copyProgram = _example.copyProgram
 
-def spin_(candidate):
-    return _example.spin_(candidate)
-spin_ = _example.spin_
+def setTreenodeNum(root, prog, number):
+    return _example.setTreenodeNum(root, prog, number)
+setTreenodeNum = _example.setTreenodeNum
 
-def getLegalAction2(parent, nodeNum):
-    return _example.getLegalAction2(parent, nodeNum)
-getLegalAction2 = _example.getLegalAction2
+def legalAction2(parent, nodeNum):
+    return _example.legalAction2(parent, nodeNum)
+legalAction2 = _example.legalAction2
 
-def mutation1(parent, nodeNum, actionType):
-    return _example.mutation1(parent, nodeNum, actionType)
-mutation1 = _example.mutation1
-
-def printAst(prog):
-    return _example.printAst(prog)
-printAst = _example.printAst
-
-def set_coef(numofrequirements):
-    return _example.set_coef(numofrequirements)
-set_coef = _example.set_coef
-
-def set_requirments(numofrequirements):
-    return _example.set_requirments(numofrequirements)
-set_requirments = _example.set_requirments
-
-def fact(n):
-    return _example.fact(n)
-fact = _example.fact
-
-def my_mod(x, y):
-    return _example.my_mod(x, y)
-my_mod = _example.my_mod
-
-def get_time():
-    return _example.get_time()
-get_time = _example.get_time
-
-def genInitTemplate(num):
-    return _example.genInitTemplate(num)
-genInitTemplate = _example.genInitTemplate
-
-def genOrganism(templat):
-    return _example.genOrganism(templat)
-genOrganism = _example.genOrganism
-
-def calculateFitness(prog, exp, numexp, coef):
-    return _example.calculateFitness(prog, exp, numexp, coef)
-calculateFitness = _example.calculateFitness
-
-def freeAll(org, prog, t, c, e, type):
-    return _example.freeAll(org, prog, t, c, e, type)
-freeAll = _example.freeAll
-
-def setAll(prog):
-    return _example.setAll(prog)
-setAll = _example.setAll
-
-def initProg(requirements, numofrequirements, coef):
-    return _example.initProg(requirements, numofrequirements, coef)
-initProg = _example.initProg
-
-def mutation_(candidate0, nodeNum, actType, requirements, numofrequirements, coef):
-    return _example.mutation_(candidate0, nodeNum, actType, requirements, numofrequirements, coef)
+def mutation_(parent, nodeNum, actionNum, requirements):
+    return _example.mutation_(parent, nodeNum, actionNum, requirements)
 mutation_ = _example.mutation_
-
-def printprog(root, blank, prog):
-    return _example.printprog(root, blank, prog)
-printprog = _example.printprog
-
-def getLength(action2):
-    return _example.getLength(action2)
-getLength = _example.getLength
 # This file is compatible with both classic and new-style classes.
 
-cvar = _example.cvar
 

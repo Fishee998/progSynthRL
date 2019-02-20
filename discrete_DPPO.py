@@ -66,7 +66,7 @@ class PPONet(object):
         self.learn_step_counter = 0
         # critic
         w_init = tf.random_normal_initializer(0., .1)
-        lc = tf.layers.dense(self.tfs, 100, tf.nn.relu, kernel_initializer=w_init, name='lc')
+        lc = tf.layers.dense(self.tfs, 50, tf.nn.softmax, kernel_initializer=w_init, name='lc')
         self.v = tf.layers.dense(lc, 1)
         self.tfdc_r = tf.placeholder(tf.float32, [None, 1], 'discounted_r')
         self.advantage = self.tfdc_r - self.v
@@ -126,30 +126,33 @@ class PPONet(object):
 
     def choose_action(self, s, candidate, action1):  # run by a local
         observation = s[np.newaxis, :]
-        legalAction = RL.getLegalAction_prob(candidate, observation[0][:-43], action1)
+        # print(observation)
+        legalAction = RL.getLegalAction_prob(candidate, observation[0][:40], action1)
+        # print(legalAction)
         action_value = action1
         if np.random.uniform() < self.epsilon:
+            #print(s[None, :])
             prob_weights = self.sess.run(self.pi, feed_dict={self.tfs: s[None, :]})
             a = prob_weights.shape[1]
             b = prob_weights.ravel()
 
-            for prob_index in range(92):
+            for prob_index in range(67):
                 if prob_index not in legalAction:
                     b[prob_index] = 0
             sum_prob = np.sum(b)
-            for prob_index in range(92):
+            for prob_index in range(67):
                 b[prob_index] = b[prob_index] / sum_prob
             # action = np.random.choice(range(prob_weights.shape[1]), p=prob_weights.ravel())  # select action w.r.t the actions prob
             action = np.random.choice(range(prob_weights.shape[1]), p = b)
         else:
             action = np.random.choice(legalAction)
         action_store = action
-        if action < 42:
+        if action < 40:
             # action = action + 1
             action_value = s[action]
         else:
-            action_store = action
-            action = action - 42
+
+            action = action - 40
         assert action_value != 0
         return action, action_value, action_store
 
@@ -193,7 +196,7 @@ class Worker(object):
                     s = RL.obs(candidate, action1)
                     action, action_value, action_store = self.ppo.choose_action(s, candidate, action1)
                     # print('action:{action}'.format(action=action_store))
-                    if action_store < 42:
+                    if action_store < 40:
                         action1 = action
                         s_ = RL.obs(info_.candidates[index_], action1)
                         r = -0.1
