@@ -207,6 +207,10 @@ legalAction2 = _example.legalAction2
 def mutation_(parent, nodeNum, actionNum, requirements):
     return _example.mutation_(parent, nodeNum, actionNum, requirements)
 mutation_ = _example.mutation_
+
+def freeAll(org, prog, t, c, e, type):
+    return _example.freeAll(org, prog, t, c, e, type)
+freeAll = _example.freeAll
 # This file is compatible with both classic and new-style classes.
 
 

@@ -33,6 +33,6 @@ def mutation(candidate, nodeNum, actionType):
     print("action2: ", actionType)
     '''
     candidate1 = example.mutation_(candidate, nodeNum, actionType, requirements)
-    root = example.getroot(candidate1)
-    example.printprog(root, 0, candidate1)
+    #root = example.getroot(candidate1)
+    #example.printprog(root, 0, candidate1)
     return candidate1

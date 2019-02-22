@@ -473,7 +473,7 @@ class DeepQNetwork:
             print("learn_step_counter", self.learn_step_counter)
 
     def one_hot_action1(self,action1):
-        one_hot_action1 = np.zeros(27)
+        one_hot_action1 = np.zeros(40)
         one_hot_action1[action1] = 1
         return one_hot_action1
 

@@ -2980,13 +2980,16 @@ SWIG_Python_NonDynamicSetAttr(PyObject *obj, PyObject *name, PyObject *value) {
 /* -------- TYPES TABLE (BEGIN) -------- */
 
 #define SWIGTYPE_p_char swig_types[0]
-#define SWIGTYPE_p_int swig_types[1]
-#define SWIGTYPE_p_p_Expr swig_types[2]
-#define SWIGTYPE_p_p_program swig_types[3]
-#define SWIGTYPE_p_program swig_types[4]
-#define SWIGTYPE_p_treenode swig_types[5]
-static swig_type_info *swig_types[7];
-static swig_module_info swig_module = {swig_types, 6, 0, 0, 0, 0};
+#define SWIGTYPE_p_cond swig_types[1]
+#define SWIGTYPE_p_exp_ swig_types[2]
+#define SWIGTYPE_p_int swig_types[3]
+#define SWIGTYPE_p_organism swig_types[4]
+#define SWIGTYPE_p_p_Expr swig_types[5]
+#define SWIGTYPE_p_p_program swig_types[6]
+#define SWIGTYPE_p_program swig_types[7]
+#define SWIGTYPE_p_treenode swig_types[8]
+static swig_type_info *swig_types[10];
+static swig_module_info swig_module = {swig_types, 9, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -4020,6 +4023,72 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_freeAll(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  organism *arg1 = (organism *) 0 ;
+  program *arg2 = (program *) 0 ;
+  treenode *arg3 = (treenode *) 0 ;
+  cond *arg4 = (cond *) 0 ;
+  exp_ *arg5 = (exp_ *) 0 ;
+  int arg6 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  void *argp3 = 0 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  int val6 ;
+  int ecode6 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  PyObject * obj4 = 0 ;
+  PyObject * obj5 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOOOO:freeAll",&obj0,&obj1,&obj2,&obj3,&obj4,&obj5)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_organism, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "freeAll" "', argument " "1"" of type '" "organism *""'"); 
+  }
+  arg1 = (organism *)(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_program, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "freeAll" "', argument " "2"" of type '" "program *""'"); 
+  }
+  arg2 = (program *)(argp2);
+  res3 = SWIG_ConvertPtr(obj2, &argp3,SWIGTYPE_p_treenode, 0 |  0 );
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "freeAll" "', argument " "3"" of type '" "treenode *""'"); 
+  }
+  arg3 = (treenode *)(argp3);
+  res4 = SWIG_ConvertPtr(obj3, &argp4,SWIGTYPE_p_cond, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "freeAll" "', argument " "4"" of type '" "cond *""'"); 
+  }
+  arg4 = (cond *)(argp4);
+  res5 = SWIG_ConvertPtr(obj4, &argp5,SWIGTYPE_p_exp_, 0 |  0 );
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "freeAll" "', argument " "5"" of type '" "exp_ *""'"); 
+  }
+  arg5 = (exp_ *)(argp5);
+  ecode6 = SWIG_AsVal_int(obj5, &val6);
+  if (!SWIG_IsOK(ecode6)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode6), "in method '" "freeAll" "', argument " "6"" of type '" "int""'");
+  } 
+  arg6 = (int)(val6);
+  freeAll(arg1,arg2,arg3,arg4,arg5,arg6);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 static PyMethodDef SwigMethods[] = {
 	 { (char *)"SWIG_PyInstanceMethod_New", (PyCFunction)SWIG_PyInstanceMethod_New, METH_O, NULL},
 	 { (char *)"new_intp", _wrap_new_intp, METH_VARARGS, NULL},
@@ -4050,6 +4119,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"setTreenodeNum", _wrap_setTreenodeNum, METH_VARARGS, NULL},
 	 { (char *)"legalAction2", _wrap_legalAction2, METH_VARARGS, NULL},
 	 { (char *)"mutation_", _wrap_mutation_, METH_VARARGS, NULL},
+	 { (char *)"freeAll", _wrap_freeAll, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
@@ -4057,7 +4127,10 @@ static PyMethodDef SwigMethods[] = {
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_cond = {"_p_cond", "cond *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_exp_ = {"_p_exp_", "exp_ *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_int = {"_p_int", "int *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_organism = {"_p_organism", "organism *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_p_Expr = {"_p_p_Expr", "Expr **", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_p_program = {"_p_p_program", "program **", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_program = {"_p_program", "program *", 0, 0, (void*)0, 0};
@@ -4065,7 +4138,10 @@ static swig_type_info _swigt__p_treenode = {"_p_treenode", "treenode *", 0, 0, (
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_char,
+  &_swigt__p_cond,
+  &_swigt__p_exp_,
   &_swigt__p_int,
+  &_swigt__p_organism,
   &_swigt__p_p_Expr,
   &_swigt__p_p_program,
   &_swigt__p_program,
@@ -4073,7 +4149,10 @@ static swig_type_info *swig_type_initial[] = {
 };
 
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_cond[] = {  {&_swigt__p_cond, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_exp_[] = {  {&_swigt__p_exp_, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_int[] = {  {&_swigt__p_int, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_organism[] = {  {&_swigt__p_organism, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_p_Expr[] = {  {&_swigt__p_p_Expr, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_p_program[] = {  {&_swigt__p_p_program, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_program[] = {  {&_swigt__p_program, 0, 0, 0},{0, 0, 0, 0}};
@@ -4081,7 +4160,10 @@ static swig_cast_info _swigc__p_treenode[] = {  {&_swigt__p_treenode, 0, 0, 0},{
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_char,
+  _swigc__p_cond,
+  _swigc__p_exp_,
   _swigc__p_int,
+  _swigc__p_organism,
   _swigc__p_p_Expr,
   _swigc__p_p_program,
   _swigc__p_program,

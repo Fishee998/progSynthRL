@@ -94,3 +94,4 @@ extern program* copyProgram(program* prog);
 extern int setTreenodeNum(treenode* root, program* prog, int number);
 int* legalAction2(program* parent, int nodeNum);
 program *mutation_(program* parent, int nodeNum, int actionNum, Expr** requirements);
+extern void freeAll(organism* org,program* prog,treenode* t,cond* c,exp_* e,int type);

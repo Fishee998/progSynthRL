@@ -13,7 +13,7 @@ class Maze(object):
         self.n_features = 2
         # self.action_space = spaces.Tuple((spaces.Discrete(49), spaces.Discrete(50)))
         self.action_space = spaces.Discrete(67)
-        self.observation_space = spaces.Box(low= -1.0, high=6501.0, shape=(68,), dtype=np.int)
+        self.observation_space = spaces.Box(low= -1.0, high=6501.0, shape=(81,), dtype=np.int)
         self.seed()
         self.viewer = None
         self.state = None
@@ -68,16 +68,22 @@ class Maze(object):
                 print('maxfitness:{maxfitness}'.format(maxfitness = self.maxFitness))
             self.fitness = newfitnessValue
 
-            if newfitnessValue > 60:
-                reward = 0.1 * (newfitnessValue - fitness)
+            if newfitnessValue > 30:
+                reward = 0.03 * (newfitnessValue - fitness)
             else:
-                if newfitnessValue > 74:
-                    reward = 0.5 * (newfitnessValue - fitness)
+                if newfitnessValue > 40:
+                    reward = 0.05 * (newfitnessValue - fitness)
                 else:
-                    reward = -0.1
+                    if newfitnessValue > 60:
+                        reward = 0.1 * (newfitnessValue - fitness)
+                    else:
+                        if newfitnessValue > 74:
+                            reward = 0.5 * (newfitnessValue - fitness)
+                        else:
+                            reward = -0.1
 
         spin_reward = 0
-        if newfitnessValue > 79:
+        if newfitnessValue > 97:
             reward = 0.1
             print("???")
             self.maxCandidate = None
@@ -161,7 +167,7 @@ class Maze(object):
         candidate = prog.initProg()
         self.candidates.append(candidate)
         if self.maxCandidate != None:
-            self.candidate = example.copyProgram(candidate)
+            self.candidate = example.copyProgram(self.maxCandidate)
             self.candidates.append(self.candidate)
         self.candidates.extend(self.candidate_spin)
 

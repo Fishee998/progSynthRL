@@ -27,7 +27,7 @@ import example
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 EP_MAX = 10000
-EP_LEN = 100
+EP_LEN = 300
 N_WORKER = 1                # parallel workers
 GAMMA = 0.8                 # reward discount factor
 A_LR = 0.0001               # learning rate for actor
@@ -66,7 +66,7 @@ class PPONet(object):
         self.learn_step_counter = 0
         # critic
         w_init = tf.random_normal_initializer(0., .1)
-        lc = tf.layers.dense(self.tfs, 50, tf.nn.softmax, kernel_initializer=w_init, name='lc')
+        lc = tf.layers.dense(self.tfs, 50, tf.nn.leaky_relu, kernel_initializer=w_init, name='lc')
         self.v = tf.layers.dense(lc, 1)
         self.tfdc_r = tf.placeholder(tf.float32, [None, 1], 'discounted_r')
         self.advantage = self.tfdc_r - self.v
@@ -199,7 +199,7 @@ class Worker(object):
                     if action_store < 40:
                         action1 = action
                         s_ = RL.obs(info_.candidates[index_], action1)
-                        r = -0.1
+                        r = -0.
                         done = False
                     else:
                         action2 = action

@@ -369,7 +369,9 @@ void printprog(treenode* root,int blank,program* prog)
     //printf("%d",root->numofstatements);
     switch(root->type)
     {
-        case 0: for(i = 0;i < blank;i++)printf(" ");printf("if(");
+        case 0: for(i = 0;i < blank;i++)printf(" ");
+            printf("%d", root->number);
+            printf("if(");
             printcond(root->cond1,prog);
             printf(")\n");
             for(i = 0;i < blank;i++)printf(" ");printf("{\n");
@@ -381,7 +383,7 @@ void printprog(treenode* root,int blank,program* prog)
             printprog(root->treenode2,blank + 2,prog);
             for(i = 0;i < blank;i++)printf(" ");printf("}\n");
             break;
-        case 1: for(i = 0;i < blank;i++)printf(" ");printf("while(");
+        case 1: for(i = 0;i < blank;i++)printf(" ");printf("%d", root->number);printf("while(");
             printcond(root->cond1,prog);
             printf(")\n");
             for(i = 0;i < blank;i++)printf(" ");printf("{\n");
@@ -392,6 +394,7 @@ void printprog(treenode* root,int blank,program* prog)
             printprog(root->treenode2,blank,prog);
             break;
         case 3: for(i = 0;i < blank;i++)printf(" ");
+            printf("%d", root->number);
             if(root->index >= 0)
                 printf("v[%d] = ",root->index);
             else if(root->index == -1)
@@ -404,6 +407,7 @@ void printprog(treenode* root,int blank,program* prog)
             printf(";\n");
             break;
         case 4: for(i = 0;i < blank;i++)printf(" ");
+            printf("%d", root->number);
             if(root->sema1->index == -1)
                 printf("wait(mutex);\n");
             else if(root->sema1->index == -2)
@@ -414,6 +418,7 @@ void printprog(treenode* root,int blank,program* prog)
                 printf("wait(sema[%d]);\n",root->sema1->index);
             break;
         case 5: for(i = 0;i < blank;i++)printf(" ");
+            printf("%d", root->number);
             if(root->sema1->index == -1)
                 printf("signal(mutex);\n");
             else if(root->sema1->index == -2)
@@ -424,9 +429,11 @@ void printprog(treenode* root,int blank,program* prog)
                 printf("signal(sema[%d]);\n",root->sema1->index);
             break;
         case 6: for(i = 0;i < blank;i++)printf(" ");
+        printf("%d", root->number);
             printf("think\n");
             break;
         case 7:for(i = 0;i < blank;i++)printf(" ");
+        printf("%d", root->number);
             printf("eat\n");
             break;
     }
@@ -1464,6 +1471,25 @@ int* legalAction2(program* parent, int nodeNum)
         }
     }
 
+    if (mnode->fixed != 1 && (mnode->depth + mnode->height < newprog->maxdepth + 1))
+    {
+        for (int k = 20; k < 22; k++)
+        {
+            action[i_act] = k;
+            i_act++;
+        }
+    }
+
+    if (mnode->depth == 2 && mnode->numofstatements < 8 || mnode->depth == 3 && mnode->numofstatements < 4)
+    {
+        for (int k = 22; k < 24; k++)
+        {
+            action[i_act] = k;
+            i_act++;
+        }
+    }
+
+    /*
     if (mnode->depth + mnode->height < newprog->maxdepth + 1)
     {
         for (int k = 20; k < 24; k++)
@@ -1482,14 +1508,7 @@ int* legalAction2(program* parent, int nodeNum)
             i_act++;
         }
     }
-    else if((mnode->depth + mnode->height < newprog->maxdepth + 1) && (mnode->depth == 2 && mnode->numofstatements >= 8 || mnode->depth == 3 && mnode->numofstatements < 4))
-    {
-        for (int k = 22; k < 24; k++)
-        {
-            action[i_act] = k;
-            i_act++;
-        }
-    }
+    */
 
 
     if (mnode->treenode1 != NULL && mnode->treenode1->fixed != 1 && mnode->fixed != 1 && (mnode->treenode2 == NULL || mnode->treenode2->fixed == 0))
@@ -1800,13 +1819,6 @@ program *mutation_(program* parent, int nodeNum, int actionNum, Expr** requireme
             if (mnode->parent->treenode1 == mnode)
             {
                 treenode* temp = mnode->parent->treenode2;
-                while(temp->type == 2)
-                {
-                    freeAll(0, 0, temp->treenode1, 0, 0, 0);
-                    treenode* tofree = temp;
-                    temp = temp-> treenode2;
-                    free(tofree);
-                }
                 if(mnode->parent == mnode->parent->parent->treenode1)
                 {
                     mnode->parent->parent->treenode1 = mnode->parent->treenode2;
@@ -1822,13 +1834,6 @@ program *mutation_(program* parent, int nodeNum, int actionNum, Expr** requireme
             else if(mnode->parent->treenode2 == mnode)
             {
                 treenode* temp = mnode->treenode1;
-                while(temp->type == 2)
-                {
-                    freeAll(0, 0, temp->treenode2, 0, 0, 0);
-                    treenode* tofree = temp;
-                    temp = temp-> treenode1;
-                    free(tofree);
-                }
                 if(mnode->parent == mnode->parent->parent->treenode1)
                 {
                     mnode->parent->parent->treenode1 = mnode->parent->treenode1;
@@ -1846,6 +1851,9 @@ program *mutation_(program* parent, int nodeNum, int actionNum, Expr** requireme
     newprog->root = new_;
     organism* org = genOrganism(newprog);
     newprog->fitness = calculateFitness(org, requirements, numofrequirements, coef);
+    setAll(newprog);
+    // printprog(newprog->root,0,newprog);
+
     //printf("endofmutation\n");
     return newprog;
 }
