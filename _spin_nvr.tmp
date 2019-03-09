@@ -1,31 +1,60 @@
-never e1 {    /* !([] (((cs0+cs1)<=1))) */
+never e1 {    /* !([] ((! ((t0==1))) || (<> ((e0==1))))) */
 T0_init:
 	do
-	:: atomic { (! ((((cs0+cs1)<=1)))) -> assert(!(! ((((cs0+cs1)<=1))))) }
+	:: (! ((! ((t0==1)))) && ! (((e0==1)))) -> goto accept_S4
+	:: (1) -> goto T0_init
+	od;
+accept_S4:
+	do
+	:: (! (((e0==1)))) -> goto accept_S4
+	od;
+}
+never e2 {    /* !([] ((! ((e0==1))) || (((s0==0)) && ((s1==0))))) */
+T0_init:
+	do
+	:: atomic { (! (((! ((e0==1))) || (((s0==0)) && ((s1==0)))))) -> assert(!(! (((! ((e0==1))) || (((s0==0)) && ((s1==0))))))) }
 	:: (1) -> goto T0_init
 	od;
 accept_all:
 	skip
 }
-never e2 {    /* !([] ((! ((try0==1))) || (<> ((cs0==1))))) */
+never e3 {    /* !([] ((! ((t1==1))) || (<> ((e1==1))))) */
 T0_init:
 	do
-	:: (! ((! ((try0==1)))) && ! (((cs0==1)))) -> goto accept_S4
+	:: (! ((! ((t1==1)))) && ! (((e1==1)))) -> goto accept_S4
 	:: (1) -> goto T0_init
 	od;
 accept_S4:
 	do
-	:: (! (((cs0==1)))) -> goto accept_S4
+	:: (! (((e1==1)))) -> goto accept_S4
 	od;
 }
-never e3 {    /* !([] ((! ((try1==1))) || (<> ((cs1==1))))) */
+never e4 {    /* !([] ((! ((e1==1))) || (((s1==1)) && ((s2==1))))) */
 T0_init:
 	do
-	:: (! ((! ((try1==1)))) && ! (((cs1==1)))) -> goto accept_S4
+	:: atomic { (! (((! ((e1==1))) || (((s1==1)) && ((s2==1)))))) -> assert(!(! (((! ((e1==1))) || (((s1==1)) && ((s2==1))))))) }
+	:: (1) -> goto T0_init
+	od;
+accept_all:
+	skip
+}
+never e5 {    /* !([] ((! ((t2==1))) || (<> ((e2==1))))) */
+T0_init:
+	do
+	:: (! ((! ((t2==1)))) && ! (((e2==1)))) -> goto accept_S4
 	:: (1) -> goto T0_init
 	od;
 accept_S4:
 	do
-	:: (! (((cs1==1)))) -> goto accept_S4
+	:: (! (((e2==1)))) -> goto accept_S4
 	od;
+}
+never e6 {    /* !([] ((! ((e2==1))) || (((s2==2)) && ((s0==2))))) */
+T0_init:
+	do
+	:: atomic { (! (((! ((e2==1))) || (((s2==2)) && ((s0==2)))))) -> assert(!(! (((! ((e2==1))) || (((s2==2)) && ((s0==2))))))) }
+	:: (1) -> goto T0_init
+	od;
+accept_all:
+	skip
 }

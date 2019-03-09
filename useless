@@ -1,7 +1,10 @@
-ltl e1: [] (((cs0+cs1)<=1))
-ltl e2: [] ((! ((try0==1))) || (<> ((cs0==1))))
-ltl e3: [] ((! ((try1==1))) || (<> ((cs1==1))))
-  the model contains 3 never claims: e3, e2, e1
+ltl e1: [] ((! ((t0==1))) || (<> ((e0==1))))
+ltl e2: [] ((! ((e0==1))) || (((s0==0)) && ((s1==0))))
+ltl e3: [] ((! ((t1==1))) || (<> ((e1==1))))
+ltl e4: [] ((! ((e1==1))) || (((s1==1)) && ((s2==1))))
+ltl e5: [] ((! ((t2==1))) || (<> ((e2==1))))
+ltl e6: [] ((! ((e2==1))) || (((s2==2)) && ((s0==2))))
+  the model contains 6 never claims: e6, e5, e4, e3, e2, e1
   only one claim is used in a verification run
   choose which one with ./pan -a -N name (defaults to -N e1)
   or use e.g.: spin -search -ltl e1 ./output/mutex.pml

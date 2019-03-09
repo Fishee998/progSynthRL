@@ -40,7 +40,7 @@ typedef struct condition
 {
     int type;
     //new -1:wi;    0:True;     1EQ;    2:NEQ
-    
+
     exp_* exp1;
     exp_* exp2;
 }cond;
@@ -50,14 +50,15 @@ typedef struct treenode
     int type;//0:IF  1:WHILE  2:SEQ 3:ASGN 4:WAIT 5:SIGNAL 6:think 7:eat
     int index;//ASSIGN left VAR index    -1:v[p]  -2:v[me]
     cond* cond1;
-    struct treenode* treenode_children[8];
-    // struct treenode* treenode2;
+    struct treenode* treenode1;
+    struct treenode* treenode2;
     struct treenode* next;
     struct treenode* parent;
     exp_* exp1;
     sema* sema1;
     int goodexamples;
     int badexamples;
+    int pc;
     int depth;
     int height;
     int numofstatements;
@@ -96,11 +97,11 @@ typedef struct Expr
     ExprType type;
     UnOp uop;
     BinOp bop;
-    
+
     int stepbound;
     char* name;
     int value;
-    
+
     struct Expr* child;
     struct Expr* left;
     struct Expr* right;
@@ -146,7 +147,7 @@ typedef struct treeRank
 int satisfyMutationReduction(treenode* t);
 void mutationCond(cond* root,program* prog,int type);
 //void mutationExp(exp* root,program* prog);
-//program* mutation(program* parent);
+program* mutation(program* parent);
 
 program** genNewCandidate(int numofcandidate,program** candidate,int numofmutation);
 program** genNewCandidateWithCoefficient1(int numofcandidate,program** candidate,int numofmutation,double coef);
@@ -162,12 +163,12 @@ void setNext(treenode* root);
 void setParent(treenode* root);
 
 int checkEnterCS(trace* t);
-double calculateFitness(organism* prog,Expr** exp,int numexp,double* coef);
+extern double calculateFitness(organism* prog,Expr** exp,int numexp,double* coef);
 void calculateFitness2(organism* prog,int type);
 
 void initTraceGlobalVar(int steplength);
 void freeTrace(trace* t);
-program* initProg(Expr** requirements ,int numofrequirements);
+
 //bool checkIfFixed(treenode* t);
 bool statementsTooLong(treenode* t);
 void printType(treenode* t);
@@ -189,7 +190,6 @@ treenode* genCS(int depth,program* prog);
 void addCS(program* prog);
 int equalExp(exp_* e1,exp_* e2);
 
-void setTreenodeNum(treenode* root, program* prog, int number);
 void setNumOfStatements(treenode* root);
 void setLinesTreenode(treenode* t,int depth);
 int setFixed(treenode* t);
@@ -226,9 +226,21 @@ int getStepBound(Expr* exp);
 Expr** set_requirments(int numofrequirements);
 int* genVector(program* prog);
 treenode* findNode(treenode* root,program* prog, int num, treenode* result);
-//int* legalAction2(program* parent, int nodeNum);
-program *mutation_(program* parent, int nodeNum, int actionNum);
-program* mutation_new(program* parent, int mutationtype, Expr** requirements, int numofrequirements);
-int* legalAction(program* parent);
-#endif /* example_h */
+int* legalAction2(program* parent, int nodeNum);
+int spin_(program* candidate);
 
+extern int* genVector(program* prog);
+extern void genVectorTreenode(treenode* node, int* id);
+extern int getTreenodeId(treenode* node);
+extern int getConditionId(cond* c);
+extern int setTreenodeNum(treenode* root, program* prog, int number);
+extern double My_variable;
+extern int fact(int n);
+extern int my_mod(int x, int y);
+extern char *get_time();
+extern program* copyProgram(program* prog);
+extern program* initProg(Expr** requirements ,int numofrequirements);
+extern int* genVector(program* prog);
+extern program *mutation_(program* parent, int nodeNum, int actionNum, Expr** requirements);
+
+#endif /* example_h */

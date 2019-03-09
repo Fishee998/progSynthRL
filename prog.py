@@ -4,13 +4,13 @@ import astEncoder
 numofrequirements = 12
 def some():
     requirements = example.set_requirments(numofrequirements)
-
     return requirements
 
 def initProg():
     requirements = some()
     # 100 candidates
     candidate = example.initProg(requirements, numofrequirements)
+
     return candidate
 
 def actionLegal():
@@ -24,15 +24,9 @@ def actionLegal():
     actionType = astEncoder.getAction2(nodth)
     print(nodeNum, actionType)
 
-def mutation(candidate, nodeNum, actionType):
+def mutation(candidate, action):
     requirements = some()
-
-
-    '''
-    print("action1: ", nodeNum)
-    print("action2: ", actionType)
-    '''
-    candidate1 = example.mutation_(candidate, nodeNum, actionType, requirements)
+    candidate1 = example.mutation_new(candidate, action, requirements, numofrequirements)
     #root = example.getroot(candidate1)
     #example.printprog(root, 0, candidate1)
     return candidate1

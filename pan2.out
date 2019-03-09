@@ -1,8 +1,8 @@
 pan: ltl formula e2
-pan:1: acceptance cycle (at depth 142)
+pan:1: assertion violated  !( !(( !((e0==1))||((s0==0)&&(s1==0))))) (at depth 44)
 pan: wrote mutex.pml.trail
 
-(Spin Version 6.4.6 -- 2 December 2016)
+(Spin Version 6.4.8 -- 2 March 2018)
 Warning: Search not completed
 	+ Partial Order Reduction
 
@@ -12,16 +12,16 @@ Full statespace search for:
 	acceptance   cycles 	+ (fairness enabled)
 	invalid end states	- (disabled by never claim)
 
-State-vector 36 byte, depth reached 143, errors: 1
-       71 states, stored (73 visited)
-        6 states, matched
-       79 transitions (= visited+matched)
+State-vector 60 byte, depth reached 44, errors: 1
+       23 states, stored
+        0 states, matched
+       23 transitions (= stored+matched)
         0 atomic steps
 hash conflicts:         0 (resolved)
 
 Stats on memory usage (in Megabytes):
-    0.004	equivalent memory usage for states (stored*(State-vector + overhead))
-    0.281	actual memory usage for states
+    0.002	equivalent memory usage for states (stored*(State-vector + overhead))
+    0.276	actual memory usage for states
   128.000	memory used for hash table (-w24)
     0.534	memory used for DFS stack (-m10000)
   128.730	total actual memory usage

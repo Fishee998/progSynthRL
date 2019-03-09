@@ -251,18 +251,26 @@ class DeepQNetwork:
             index += 1
         return action2Seleced
 
-    def getLegalAction_prob(self, candidate, act1Set, action1):
-        action1s = np.nonzero(act1Set)[0]
-        if act1Set[action1 - 1] != 2.63 and act1Set[action1 - 1] != 2.64 and act1Set[action1 - 1] != 0:
-            action2set = np.array(self.action2set(example.legalAction2(candidate, action1))) + 40
-            # actions = action2set
-            action1 = random.sample(action1s, 2)    # action1 random 2
-            actions = np.append(action1, action2set)
-        else:
-            actions = action1s
+    def getLegalAction_prob(self, candidate):
+        legalAction_c = example.legalAction(candidate)
+        legalAction = []
+        for i in range(3):
+            legalAction.append(example.vector_i(legalAction_c, i))
 
-        actions = actions.flatten()
+        actions = []
+        if legalAction[0] != 0:
+            for index in range(legalAction[0]):
+                actions.append(index)
 
+        if legalAction[1] != 0:
+            for index in range(legalAction[1]):
+                actions.append(index + 132)
+
+        if legalAction[2] != 0:
+            for index in range(legalAction[2]):
+                actions.append(index + 142)
+
+        # legalAction = legalAction.flatten()
         return actions
 
     def getAction1(self,candidate, act1Set, action1, action1_value):
@@ -483,7 +491,7 @@ class DeepQNetwork:
             one_hot_action2[i] = 1
         return one_hot_action2
 
-    def obs(self, candidate, action1):
+    def obs(self, candidate):
         observation_ = self.getstate(candidate)
         fitness = example.get_fitness(candidate)
         '''
@@ -492,11 +500,7 @@ class DeepQNetwork:
         else:
             action2set = []
         '''
-
-        one_hot_action1 = self.one_hot_action1(action1)
-        # observation_store = np.append(np.append(np.append(observation_, one_hot_action1), one_hot_action2),
-                                      #pow(fitness / 100.00, 2))
-        observation_store = np.append(np.append(observation_, one_hot_action1), fitness)
+        observation_store = np.append(observation_, fitness)
         return observation_store
 
     def getstate(self, candidate):

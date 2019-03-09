@@ -1,4 +1,4 @@
-pan: ltl formula e1
+pan: ltl formula e5
 pan:1: acceptance cycle (at depth 52)
 pan: wrote mutex.pml.trail
 
@@ -7,20 +7,20 @@ Warning: Search not completed
 	+ Partial Order Reduction
 
 Full statespace search for:
-	never claim         	+ (e1)
+	never claim         	+ (e5)
 	assertion violations	+ (if within scope of claim)
 	acceptance   cycles 	+ (fairness enabled)
 	invalid end states	- (disabled by never claim)
 
-State-vector 60 byte, depth reached 53, errors: 1
-      273 states, stored (479 visited)
-      358 states, matched
-      837 transitions (= visited+matched)
+State-vector 60 byte, depth reached 54, errors: 1
+      943 states, stored (3325 visited)
+     2913 states, matched
+     6238 transitions (= visited+matched)
         0 atomic steps
 hash conflicts:         0 (resolved)
 
 Stats on memory usage (in Megabytes):
-    0.023	equivalent memory usage for states (stored*(State-vector + overhead))
+    0.079	equivalent memory usage for states (stored*(State-vector + overhead))
     0.276	actual memory usage for states
   128.000	memory used for hash table (-w24)
     0.534	memory used for DFS stack (-m10000)

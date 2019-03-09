@@ -200,17 +200,21 @@ def setTreenodeNum(root, prog, number):
     return _example.setTreenodeNum(root, prog, number)
 setTreenodeNum = _example.setTreenodeNum
 
-def legalAction2(parent, nodeNum):
-    return _example.legalAction2(parent, nodeNum)
-legalAction2 = _example.legalAction2
+def mutation_new(parent, mutationtype, requirements, numofrequirements):
+    return _example.mutation_new(parent, mutationtype, requirements, numofrequirements)
+mutation_new = _example.mutation_new
 
-def mutation_(parent, nodeNum, actionNum, requirements):
-    return _example.mutation_(parent, nodeNum, actionNum, requirements)
-mutation_ = _example.mutation_
+def spin_(candidate):
+    return _example.spin_(candidate)
+spin_ = _example.spin_
 
 def freeAll(org, prog, t, c, e, type):
     return _example.freeAll(org, prog, t, c, e, type)
 freeAll = _example.freeAll
+
+def legalAction(parent):
+    return _example.legalAction(parent)
+legalAction = _example.legalAction
 # This file is compatible with both classic and new-style classes.
 
 

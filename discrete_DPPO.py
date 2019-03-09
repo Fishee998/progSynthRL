@@ -27,14 +27,14 @@ import example
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 EP_MAX = 10000
-EP_LEN = 300
+EP_LEN = 30
 N_WORKER = 1                # parallel workers
 GAMMA = 0.8                 # reward discount factor
 A_LR = 0.0001               # learning rate for actor
 C_LR = 0.0001               # learning rate for critic
 MIN_BATCH_SIZE = 64         # minimum batch size for updating PPO
 UPDATE_STEP = 30            # loop update operation n-steps
-EPSILON = 0.001            # for clipping surrogate objective
+EPSILON = 0.0001            # for clipping surrogate objective
 GAME = 'CartPole-v0'
 
 env = Maze()
@@ -124,37 +124,29 @@ class PPONet(object):
         params = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope=name)
         return a_prob, params
 
-    def choose_action(self, s, candidate, action1):  # run by a local
-        observation = s[np.newaxis, :]
+    def choose_action(self, s, candidate):  # run by a local
+        # observation = s[np.newaxis, :]
         # print(observation)
-        legalAction = RL.getLegalAction_prob(candidate, observation[0][:40], action1)
-        # print(legalAction)
-        action_value = action1
+        legalAction = RL.getLegalAction_prob(candidate)
+        if not legalAction:
+            legalAction = [-1]
         if np.random.uniform() < self.epsilon:
-            #print(s[None, :])
             prob_weights = self.sess.run(self.pi, feed_dict={self.tfs: s[None, :]})
-            a = prob_weights.shape[1]
+            # a = prob_weights.shape[1]
             b = prob_weights.ravel()
-
-            for prob_index in range(67):
+            print(b)
+            for prob_index in range(152):
                 if prob_index not in legalAction:
                     b[prob_index] = 0
             sum_prob = np.sum(b)
-            for prob_index in range(67):
+            for prob_index in range(152):
                 b[prob_index] = b[prob_index] / sum_prob
             # action = np.random.choice(range(prob_weights.shape[1]), p=prob_weights.ravel())  # select action w.r.t the actions prob
             action = np.random.choice(range(prob_weights.shape[1]), p = b)
         else:
             action = np.random.choice(legalAction)
-        action_store = action
-        if action < 40:
-            # action = action + 1
-            action_value = s[action]
-        else:
 
-            action = action - 40
-        assert action_value != 0
-        return action, action_value, action_store
+        return action
 
     
     def get_v(self, s):
@@ -176,7 +168,8 @@ class Worker(object):
             #    info_ = self.env.reset_(self.maxCandidate)
             # observation = state + act1 + legal act2 + fitValue
             # else:
-
+            info_ = self.env.reset()
+            '''
             if GLOBAL_EP == 0:
                 info_ = self.env.reset()
             else:
@@ -184,33 +177,28 @@ class Worker(object):
                 info_ = self.env.reset_(maxCand)
 
             # s = RL.obs(info_, action1)
-
+            '''
             ep_r = 0
             buffer_s, buffer_a, buffer_r = [], [], []
             for t in range(EP_LEN):
+
                 if not ROLLING_EVENT.is_set():                  # while global PPO is updating
                     ROLLING_EVENT.wait()                        # wait until PPO is updated
                     buffer_s, buffer_a, buffer_r = [], [], []   # clear history buffer, use new policy to collect data
                 for index_ in range(len(info_.candidates)):
                     candidate = info_.candidates[index_]
-                    s = RL.obs(candidate, action1)
-                    action, action_value, action_store = self.ppo.choose_action(s, candidate, action1)
+                    s = RL.obs(candidate)
+                    action = self.ppo.choose_action(s, candidate)
+                    if action == -1:
+                        break
                     # print('action:{action}'.format(action=action_store))
-                    if action_store < 40:
-                        action1 = action
-                        s_ = RL.obs(info_.candidates[index_], action1)
-                        r = -0.
-                        done = False
-                    else:
-                        action2 = action
-                        a = RL.getAction(action1, action2)
-                        r, done, info_ = self.env.step(index_, a)
-                        info_.candidates[index_] = info_.candidate
-                        s_ = RL.obs(info_.candidate, action1)
+                    r, done, info_ = self.env.step(index_, action)
+                    info_.candidates[index_] = info_.candidate
+                    s_ = RL.obs(info_.candidate)
 
                     buffer_s.append(s)
                     # a = action_store
-                    buffer_a.append(action_store)
+                    buffer_a.append(action)
                     buffer_r.append(r)
                     # s = s_
                     ep_r += r
@@ -240,7 +228,8 @@ class Worker(object):
                             break
 
                         if done: break
-
+                if action == -1:
+                    break
             # record reward changes, plot later
             if len(GLOBAL_RUNNING_R) == 0: GLOBAL_RUNNING_R.append(ep_r)
             else: GLOBAL_RUNNING_R.append(GLOBAL_RUNNING_R[-1]*0.9+ep_r*0.1)

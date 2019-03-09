@@ -12,8 +12,8 @@ class Maze(object):
     def __init__(self):
         self.n_features = 2
         # self.action_space = spaces.Tuple((spaces.Discrete(49), spaces.Discrete(50)))
-        self.action_space = spaces.Discrete(67)
-        self.observation_space = spaces.Box(low= -1.0, high=6501.0, shape=(81,), dtype=np.int)
+        self.action_space = spaces.Discrete(152)
+        self.observation_space = spaces.Box(low= -1.0, high=6501.0, shape=(41,), dtype=np.int)
         self.seed()
         self.viewer = None
         self.state = None
@@ -37,13 +37,13 @@ class Maze(object):
         return [seed]
 
     def step(self, index, action):
-        assert self.action_space.contains(action[0] + action[1]), "%r (%s) invalid" % (action, type(action))
+        assert self.action_space.contains(action), "%r (%s) invalid" % (action, type(action))
         # self.fitness = []
         candidate = self.candidates[index]
 
         fitness = example.get_fitness(candidate)
 
-        candidate_ = prog.mutation(candidate, action[0], action[1])
+        candidate_ = prog.mutation(candidate, action)
         self.candidate = example.copyProgram(candidate_)
         # example.printprog(example.getroot(self.candidate), 0, self.candidate)
         illegal = 0
@@ -68,6 +68,7 @@ class Maze(object):
                 print('maxfitness:{maxfitness}'.format(maxfitness = self.maxFitness))
             self.fitness = newfitnessValue
 
+            '''
             if newfitnessValue > 30:
                 reward = 0.03 * (newfitnessValue - fitness)
             else:
@@ -81,10 +82,10 @@ class Maze(object):
                             reward = 0.5 * (newfitnessValue - fitness)
                         else:
                             reward = -0.1
-
+            '''
         spin_reward = 0
         if newfitnessValue > 97:
-            reward = 0.1
+            reward = 1
             print("???")
             self.maxCandidate = None
             print(len(self.state_spin))
@@ -101,6 +102,7 @@ class Maze(object):
             self.spin_used = 1
 
             spin_reward = example.spin_(candidate_)
+            '''
             if spin_reward == 4:
                 print("liveness")
                 reward = reward + 0.1
@@ -118,8 +120,10 @@ class Maze(object):
                             reward = reward + 0.2
                         else:
                             reward = reward - 0.1
-            
-        done = bool(spin_reward == 20)
+            '''
+        else:
+            reward = -0.1
+        done = bool(spin_reward == 30)
         if done:
             reward = 2
             print("done")
@@ -136,7 +140,11 @@ class Maze(object):
         # self.state_ = []
         candidate = prog.initProg()
         # a = example.genVector(candidate)
-
+        self.candidate = candidate
+        # self.state = np.array(self.getstate(candidate))
+        self.fitness = example.get_fitness(candidate)
+        self.candidates = [self.candidate]
+        #self.candidates.append(self.candidate)
         '''
         for index in range(candidate_num):
             candidate = example.getCandidate(candidates, index)
@@ -146,10 +154,7 @@ class Maze(object):
             # self.astActNodes_.append(astActNodes)
         '''
         # candidate = example.getCandidate(candidates, 0)
-        self.candidate = candidate
-        # self.state = np.array(self.getstate(candidate))
-        self.fitness = example.get_fitness(candidate)
-        self.candidates.append(self.candidate)
+
         return self
 
     def reset_(self, candidate):

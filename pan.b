@@ -2,13 +2,52 @@
 	default: Uerror("bad return move");
 	case  0: goto R999; /* nothing to undo */
 
+		 /* CLAIM e6 */
+;
+		
+	case 3: // STATE 1
+		goto R999;
+
+	case 4: // STATE 10
+		;
+		p_restor(II);
+		;
+		;
+		goto R999;
+
+		 /* CLAIM e5 */
+;
+		;
+		;
+		;
+		
+	case 7: // STATE 13
+		;
+		p_restor(II);
+		;
+		;
+		goto R999;
+
+		 /* CLAIM e4 */
+;
+		
+	case 8: // STATE 1
+		goto R999;
+
+	case 9: // STATE 10
+		;
+		p_restor(II);
+		;
+		;
+		goto R999;
+
 		 /* CLAIM e3 */
 ;
 		;
 		;
 		;
 		
-	case 5: // STATE 13
+	case 12: // STATE 13
 		;
 		p_restor(II);
 		;
@@ -17,11 +56,11 @@
 
 		 /* CLAIM e2 */
 ;
-		;
-		;
-		;
 		
-	case 8: // STATE 13
+	case 13: // STATE 1
+		goto R999;
+
+	case 14: // STATE 10
 		;
 		p_restor(II);
 		;
@@ -30,127 +69,101 @@
 
 		 /* CLAIM e1 */
 ;
+		;
+		;
+		;
 		
-	case 9: // STATE 1
-		goto R999;
-
-	case 10: // STATE 10
+	case 17: // STATE 13
 		;
 		p_restor(II);
 		;
 		;
 		goto R999;
 
-		 /* PROC q */
+		 /* PROC p2 */
 
-	case 11: // STATE 1
+	case 18: // STATE 1
 		;
-		now.wi1 = trpt->bup.oval;
+		now.wi0 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 12: // STATE 2
+	case 19: // STATE 2
 		;
-		now.wi1 = trpt->bup.oval;
+		now.wi0 = trpt->bup.oval;
 		;
 		goto R999;
 ;
 		;
 		
-	case 14: // STATE 6
+	case 21: // STATE 6
 		;
-		now.try1 = trpt->bup.oval;
-		;
-		goto R999;
-
-	case 15: // STATE 7
-		;
-		now.wi1 = trpt->bup.oval;
+		now.wi2 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 16: // STATE 8
+	case 22: // STATE 7
 		;
-		now.wi1 = trpt->bup.oval;
-		;
-		goto R999;
-
-	case 17: // STATE 11
-		;
-		now.v1 = trpt->bup.oval;
+		now.wi2 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 18: // STATE 12
+	case 23: // STATE 10
 		;
-		now.turn = trpt->bup.oval;
+		now.t2 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 19: // STATE 13
+	case 24: // STATE 11
 		;
-		now.v1 = trpt->bup.oval;
-		;
-		goto R999;
-;
-		;
-		;
-		;
-		
-	case 22: // STATE 16
-		;
-		now.turn = trpt->bup.oval;
+		now.t2 = trpt->bup.oval;
 		;
 		goto R999;
 ;
 		;
 		
-	case 24: // STATE 20
+	case 26: // STATE 15
 		;
-		now.turn = trpt->bup.oval;
-		;
-		goto R999;
-
-	case 25: // STATE 31
-		;
-		now.cs1 = trpt->bup.oval;
+		now.e2 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 26: // STATE 32
+	case 27: // STATE 16
 		;
-		now.try1 = trpt->bup.oval;
+		now.e2 = trpt->bup.oval;
+		;
+		goto R999;
+;
+		;
+		
+	case 29: // STATE 18
+		;
+		now.v2 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 27: // STATE 33
+	case 30: // STATE 22
 		;
-		now.cs1 = trpt->bup.oval;
-		;
-		goto R999;
-
-	case 28: // STATE 34
-		;
-		now.v1 = trpt->bup.oval;
+		now.s0 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 29: // STATE 40
+	case 31: // STATE 29
 		;
 		p_restor(II);
 		;
 		;
 		goto R999;
 
-		 /* PROC p */
+		 /* PROC p1 */
 
-	case 30: // STATE 1
+	case 32: // STATE 1
 		;
 		now.wi0 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 31: // STATE 2
+	case 33: // STATE 2
 		;
 		now.wi0 = trpt->bup.oval;
 		;
@@ -158,85 +171,134 @@
 ;
 		;
 		
-	case 33: // STATE 6
+	case 35: // STATE 6
 		;
-		now.try0 = trpt->bup.oval;
-		;
-		goto R999;
-
-	case 34: // STATE 7
-		;
-		now.wi0 = trpt->bup.oval;
+		now.wi1 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 35: // STATE 8
+	case 36: // STATE 7
 		;
-		now.wi0 = trpt->bup.oval;
-		;
-		goto R999;
-
-	case 36: // STATE 11
-		;
-		now.v0 = trpt->bup.oval;
+		now.wi1 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 37: // STATE 12
+	case 37: // STATE 10
 		;
-		now.turn = trpt->bup.oval;
+		now.t1 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 38: // STATE 13
+	case 38: // STATE 11
 		;
-		now.v0 = trpt->bup.oval;
+		now.t1 = trpt->bup.oval;
 		;
 		goto R999;
 ;
 		;
-		;
-		;
 		
+	case 40: // STATE 15
+		;
+		now.e1 = trpt->bup.oval;
+		;
+		goto R999;
+
 	case 41: // STATE 16
 		;
-		now.turn = trpt->bup.oval;
+		now.e1 = trpt->bup.oval;
 		;
 		goto R999;
 ;
 		;
 		
-	case 43: // STATE 20
+	case 43: // STATE 18
 		;
-		now.turn = trpt->bup.oval;
-		;
-		goto R999;
-
-	case 44: // STATE 31
-		;
-		now.cs0 = trpt->bup.oval;
+		now.v1 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 45: // STATE 32
+	case 44: // STATE 22
 		;
-		now.try0 = trpt->bup.oval;
-		;
-		goto R999;
-
-	case 46: // STATE 33
-		;
-		now.cs0 = trpt->bup.oval;
+		now.s2 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 47: // STATE 34
+	case 45: // STATE 29
+		;
+		p_restor(II);
+		;
+		;
+		goto R999;
+
+		 /* PROC p0 */
+
+	case 46: // STATE 1
+		;
+		now.wi0 = trpt->bup.oval;
+		;
+		goto R999;
+
+	case 47: // STATE 2
+		;
+		now.wi0 = trpt->bup.oval;
+		;
+		goto R999;
+;
+		;
+		
+	case 49: // STATE 6
+		;
+		now.wi0 = trpt->bup.oval;
+		;
+		goto R999;
+
+	case 50: // STATE 7
+		;
+		now.wi0 = trpt->bup.oval;
+		;
+		goto R999;
+
+	case 51: // STATE 10
+		;
+		now.t0 = trpt->bup.oval;
+		;
+		goto R999;
+
+	case 52: // STATE 11
+		;
+		now.t0 = trpt->bup.oval;
+		;
+		goto R999;
+;
+		;
+		
+	case 54: // STATE 15
+		;
+		now.e0 = trpt->bup.oval;
+		;
+		goto R999;
+
+	case 55: // STATE 16
+		;
+		now.e0 = trpt->bup.oval;
+		;
+		goto R999;
+;
+		;
+		
+	case 57: // STATE 18
 		;
 		now.v0 = trpt->bup.oval;
 		;
 		goto R999;
 
-	case 48: // STATE 40
+	case 58: // STATE 22
+		;
+		now.s1 = trpt->bup.oval;
+		;
+		goto R999;
+
+	case 59: // STATE 29
 		;
 		p_restor(II);
 		;
